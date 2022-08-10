@@ -5,6 +5,7 @@
 #include <SDL_image.h>
 
 #include "definitions.h"
+#include "main.h"
 #include "maze.h"
 
 /**
@@ -25,19 +26,19 @@
 
 #define DRAW_TEXTURE(renderer, texture, xpos, ypos)              \
     do {                                                         \
-        SDL_Rect rect = {.x = xpos, .y = ypos};                  \
+        SDL_Rect rect = {.x = (xpos), .y = (ypos)};              \
         SDL_QueryTexture(texture, NULL, NULL, &rect.w, &rect.h); \
         SDL_RenderCopy(renderer, texture, NULL, &rect);          \
     } while (0);
 
-#define DRAW_TEXTURE_WH(renderer, texture, xpos, ypos, width, height)    \
-    do {                                                                 \
-        SDL_Rect rect = {.x = xpos, .y = ypos, .w = width, .h = height}; \
-        SDL_RenderCopy(renderer, texture, NULL, &rect);                  \
+#define DRAW_TEXTURE_WH(renderer, texture, xpos, ypos, width, height)            \
+    do {                                                                         \
+        SDL_Rect rect = {.x = (xpos), .y = (ypos), .w = (width), .h = (height)}; \
+        SDL_RenderCopy(renderer, texture, NULL, &rect);                          \
     } while (0);
 
-SDL_Texture *load_texture(char *fp);
-SDL_Surface *draw_surface(void);
-void draw_grid(SDL_Renderer *renderer, Grid *grid);
+void draw_grid(struct Resources *resources, SDL_Renderer *renderer, Grid *grid);
+void cache_resource(struct Resources *resources, SDL_Renderer *renderer, char *fp);
+void free_resources(struct Resources *resources);
 
 #endif /* IMAGES_H */

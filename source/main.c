@@ -31,16 +31,14 @@ int main(int argc, char *argv[]) {
     game->win = win;
     game->renderer = renderer;
 
-    game->stage.grid = generate_aldous_broder(generate_grid(5, 6));
-    print_grid(game->stage.grid);
+    game->resources = calloc(1, sizeof(struct Resources *));
+    game->resources->texture_size = 10 * sizeof(SDL_Texture *);
+    game->resources->textures = calloc(10, sizeof(SDL_Texture *));
 
-    printf("%d, %d\n", game->stage.grid->width, game->stage.grid->height);
-    for (int x = 0; x < game->stage.grid->width; x++) {
-        for (int y = 0; y < game->stage.grid->height; y++) {
-            printf("%p, ", game->stage.grid->cells[x][y]);
-        }
-        puts("");
-    }
+    puts("loading textures:");
+    load_all_textures();
+
+    game->stage.grid = generate_aldous_broder(generate_grid(20, 20));
 
     SDL_bool quit = SDL_FALSE;
     SDL_Event event;
@@ -50,10 +48,21 @@ int main(int argc, char *argv[]) {
         }
         SDL_SetRenderDrawColor(game->renderer, 0, 0, 0, 255);
         SDL_RenderClear(game->renderer);
-        draw_grid(game->renderer, game->stage.grid);
+        draw_grid(game->resources, game->renderer, game->stage.grid);
         SDL_RenderPresent(game->renderer);
     }
     return 0;
+}
+
+void load_all_textures(void) {
+    char *fps[] = {"clr-black.png", "clr-dblue.png", "clr-lorange.png", NULL};
+    int i = 0;
+    while (fps[i] != NULL) {
+        char ffp[50] = "resources/";
+        cache_resource(game->resources, game->renderer, strncat(ffp, fps[i], 38));
+        printf("Loaded image from %s\n", ffp);
+        i++;
+    }
 }
 
 void on_event(SDL_Event *event) {

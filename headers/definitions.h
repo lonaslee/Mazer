@@ -10,8 +10,10 @@
 #define WIN_INIT_WIDTH 800
 #define WIN_INIT_HEIGHT 600
 
-#define MIN(a, b) ((a <= b) ? a : b)
-#define MAX(a, b) ((a >= b) ? a : b)
+#define MIN(a, b) (((a) <= (b)) ? (a) : (b))
+#define MAX(a, b) (((a) >= (b)) ? (a) : (b))
+#define AVG(a, b) (((a) + (b)) / 2)
+#define HALF(a) ((a) / 2)
 
 #define PRINT_ERR(...) fprintf(stderr, __VA_ARGS__);
 #define EXIT_ERR(...)           \
