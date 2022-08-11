@@ -1,4 +1,5 @@
 /.vscode
+/headers/.vscode
 /app.exe
 /mazer-space.code-workspace
 /output
