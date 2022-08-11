@@ -5,7 +5,6 @@
 #include <SDL_image.h>
 
 #include "definitions.h"
-#include "main.h"
 #include "maze.h"
 
 /**
@@ -38,6 +37,7 @@
     } while (0);
 
 void draw_grid(struct Resources *resources, SDL_Renderer *renderer, Grid *grid);
+void draw_grid_step(struct Resources *resources, SDL_Renderer *renderer, Grid *grid, Cell *cell_mem, Cell *um, Cell *dm, Cell *lm, Cell *rm);
 void cache_resource(struct Resources *resources, SDL_Renderer *renderer, char *fp);
 void free_resources(struct Resources *resources);
 

@@ -5,8 +5,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "graph.h"
 #include "grid.h"
-#include "node.h"
+
 #define RANDDIR (rand() % 4)
 
 #define MOVEX(dir) ((dir == UP || dir == DOWN) ? 0 : (dir == RIGHT) ? 1 \

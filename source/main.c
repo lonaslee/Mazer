@@ -7,10 +7,13 @@
 
 #include "SDL.h"
 #include "SDL_image.h"
+
 /* project headers */
 #include "definitions.h"
 #include "images.h"
 #include "maze.h"
+
+Game *game;
 
 int main(int argc, char *argv[]) {
     puts("Enter.");
@@ -35,10 +38,10 @@ int main(int argc, char *argv[]) {
     game->resources->texture_size = 10 * sizeof(SDL_Texture *);
     game->resources->textures = calloc(10, sizeof(SDL_Texture *));
 
-    puts("loading textures:");
+    puts("Loading textures:");
     load_all_textures();
 
-    game->stage.grid = generate_aldous_broder(generate_grid(20, 20));
+    game->stage.grid = generate_aldous_broder(generate_grid(4, 4));
 
     SDL_bool quit = SDL_FALSE;
     SDL_Event event;
@@ -50,12 +53,13 @@ int main(int argc, char *argv[]) {
         SDL_RenderClear(game->renderer);
         draw_grid(game->resources, game->renderer, game->stage.grid);
         SDL_RenderPresent(game->renderer);
+        
     }
     return 0;
 }
 
 void load_all_textures(void) {
-    char *fps[] = {"clr-black.png", "clr-dblue.png", "clr-lorange.png", NULL};
+    char *fps[] = {"clr-black.png", "clr-dblue.png", "clr-lorange.png", "clr-lyellow.png", "bg-green.png", NULL};
     int i = 0;
     while (fps[i] != NULL) {
         char ffp[50] = "resources/";

@@ -12,6 +12,7 @@ Grid *generate_grid(int width, int height) {
 
     for (int x = 0; x < width; x++) {
         for (int y = 0; y < height; y++) {
+            grid[x][y].data = 0;
             // printf("\n(%d, %d)\n", x, y);
 
             if (grid[x][y].upperwall == NULL) {
@@ -20,8 +21,8 @@ Grid *generate_grid(int width, int height) {
                         Wall *wall = calloc(1, sizeof(Wall));
                         grid[x][y].upperwall = wall;
                         grid[x][y + 1].lowerwall = wall;
-                        wall->cell2 = &grid[x][y];
                         wall->cell1 = &grid[x][y + 1];
+                        wall->cell2 = &grid[x][y];
                     } else {
                         grid[x][y].upperwall = grid[x][y + 1].lowerwall;
                     }
@@ -38,8 +39,8 @@ Grid *generate_grid(int width, int height) {
                         Wall *wall = calloc(1, sizeof(Wall));
                         grid[x][y].lowerwall = wall;
                         grid[x][y - 1].upperwall = wall;
-                        wall->cell1 = &grid[x][y - 1];
-                        wall->cell2 = &grid[x][y];
+                        wall->cell1 = &grid[x][y];
+                        wall->cell2 = &grid[x][y - 1];
                     } else {
                         grid[x][y].lowerwall = grid[x][y - 1].upperwall;
                     }

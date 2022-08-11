@@ -11,37 +11,6 @@
 #include "definitions.h"
 #include "maze.h"
 
-struct GameStage {
-    void (*keyevent_fn)(SDL_Event *event);
-    void (*mouseevent_fn)(SDL_Event *event);
-    Grid *grid;
-    Graph *graph;
-};
-
-struct GameInputState {
-};
-
-struct Resources {
-    int texture_count;
-    size_t texture_size;
-    SDL_Texture **textures;
-};
-
-typedef struct {
-    SDL_Window *win;
-    SDL_Renderer *renderer;
-    struct GameStage stage;
-    struct GameInputState input_state;
-    struct Resources *resources;
-} Game;
-Game *game;
-
-enum FileNames {
-    CLR_BLACK,
-    CLR_DBLUE,
-    CLR_LORANGE,
-};
-
 int main(int argc, char *argv[]);
 void on_event(SDL_Event *event);
 void load_all_textures(void);
