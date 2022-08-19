@@ -24,12 +24,10 @@ void free_resources(Resources *resources) {
         SDL_DestroyTexture(resources->textures[i]);
     }
     free(resources->textures);
-    resources->textures = NULL;
-    resources->texture_count = 0;
-    resources->texture_size = 0;
+    free(resources);
 }
 
-void draw_grid(Resources *resources, SDL_Renderer *renderer, Grid *grid, int xpos, int ypos) {
+void draw_grid(Resources *resources, SDL_Renderer *renderer, Grid *grid) {
     int winwidth, winheight, cellsize, wallsize, offsetx, offsety;
     SDL_GetWindowSize(SDL_RenderGetWindow(renderer), &winwidth, &winheight);
     cellsize = (MIN(winwidth, winheight) * 0.95) / MAX(grid->width, grid->height);
@@ -51,34 +49,25 @@ void draw_grid(Resources *resources, SDL_Renderer *renderer, Grid *grid, int xpo
              vertical = {.w = wallsize, .h = cellsize};
     for (int x = 0; x < grid->width; x++) {
         for (int y = 0; y < grid->height; y++) {
-            printf("(%d, %d)\n", x, y);
             cell_rect.x = x * (cellsize + wallsize) + offsetx;
             cell_rect.y = winheight - (y + 1) * (cellsize + wallsize) - offsety;
-            printf("%d, %d\n", cell_rect.x, cell_rect.y);
-            if (x == xpos && y == ypos)
-                SDL_RenderCopy(renderer, cell_img, NULL, &cell_rect);
-            else
-                SDL_RenderCopy(renderer, cell_img2, NULL, &cell_rect);
-            if (grid->cells[x][y].upperwall->exists) {
-                horizontal.x = cell_rect.x;
-                horizontal.y = cell_rect.y - wallsize;
-                SDL_RenderCopy(renderer, wall_img2, NULL, &horizontal);
-            }
-            if (grid->cells[x][y].left_wall->exists) {
-                vertical.x = cell_rect.x - wallsize;
-                vertical.y = cell_rect.y;
-                SDL_RenderCopy(renderer, wall_img, NULL, &vertical);
-            }
-            if (grid->cells[x][y].lowerwall->exists) {
-                horizontal.x = cell_rect.x;
-                horizontal.y = cell_rect.y + cellsize;
-                SDL_RenderCopy(renderer, wall_img, NULL, &horizontal);
-            }
-            if (grid->cells[x][y].rightwall->exists) {
-                vertical.x = cell_rect.x + cellsize;
-                vertical.y = cell_rect.y;
-                SDL_RenderCopy(renderer, wall_img, NULL, &vertical);
-            }
+            SDL_RenderCopy(renderer, cell_img2, NULL, &cell_rect);
+
+            horizontal.x = cell_rect.x;
+            horizontal.y = cell_rect.y - wallsize;
+            SDL_RenderCopy(renderer, grid->cells[x][y].upperwall->exists ? wall_img : cell_img2, NULL, &horizontal);
+
+            vertical.x = cell_rect.x - wallsize;
+            vertical.y = cell_rect.y;
+            SDL_RenderCopy(renderer, grid->cells[x][y].left_wall->exists ? wall_img : cell_img2, NULL, &vertical);
+
+            horizontal.x = cell_rect.x;
+            horizontal.y = cell_rect.y + cellsize;
+            SDL_RenderCopy(renderer, grid->cells[x][y].lowerwall->exists ? wall_img : cell_img2, NULL, &horizontal);
+
+            vertical.x = cell_rect.x + cellsize;
+            vertical.y = cell_rect.y;
+            SDL_RenderCopy(renderer, grid->cells[x][y].rightwall->exists ? wall_img : cell_img2, NULL, &vertical);
         }
     }
 }

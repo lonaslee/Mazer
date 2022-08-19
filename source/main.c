@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
         }
         SDL_SetRenderDrawColor(game->renderer, 0, 0, 0, 255);
         SDL_RenderClear(game->renderer);
-        draw_grid(game->resources, game->renderer, game->stage->grid, 2, 4);
+        draw_grid(game->resources, game->renderer, game->stage->grid);
         SDL_RenderPresent(game->renderer);
     }
 
@@ -47,6 +47,7 @@ static void testfn(void) {
     Game *game = get_game();
     Grid *grid = generate_grid(5, 5);
     game->stage->grid = grid;
+    generate_aldous_broder(grid);
 }
 
 Game *get_game(void) {
@@ -118,7 +119,6 @@ static void cleanup(void) {
     putc('.', stdout);
 
     free_resources(game->resources);
-    free(game->resources);
     putc('.', stdout);
 
     free(game);

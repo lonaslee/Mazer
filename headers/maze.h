@@ -35,7 +35,6 @@ enum MazeType {
 };
 
 Grid *generate_aldous_broder(Grid *grid);
-void aldous_broder(Grid *grid);
 int choicenz(int n, ...);
 int choice(int n, ...);
 
