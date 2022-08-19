@@ -2,10 +2,8 @@
 #define DEFINITIONS_H
 
 #include <stdio.h>
-#include <stdlib.h>
 
 #include "SDL.h"
-#include "SDL_image.h"
 #include "maze.h"
 
 #define WIN_INIT_WIDTH 800
@@ -23,28 +21,24 @@
         exit(EXIT_FAILURE);     \
     } while (0);
 
-struct GameStage {
+typedef struct {
     void (*keyevent_fn)(SDL_Event *event);
     void (*mouseevent_fn)(SDL_Event *event);
     Grid *grid;
     Graph *graph;
-};
+} GameStage;
 
-struct GameInputState {
-};
-
-struct Resources {
+typedef struct {
     int texture_count;
     size_t texture_size;
     SDL_Texture **textures;
-};
+} Resources;
 
 typedef struct {
     SDL_Window *win;
     SDL_Renderer *renderer;
-    struct GameStage stage;
-    struct GameInputState input_state;
-    struct Resources *resources;
+    GameStage *stage;
+    Resources *resources;
 } Game;
 extern Game *game;
 
@@ -53,7 +47,10 @@ enum FileNames {
     CLR_DBLUE,
     CLR_LORANGE,
     CLR_LYELLOW,
+    CLR_LGREEN,
     BG_GREEN,
 };
+
+Game *get_game(void);
 
 #endif /* DEFINITIONS_H */

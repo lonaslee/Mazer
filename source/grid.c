@@ -94,6 +94,7 @@ Grid *generate_grid(int width, int height) {
     gridobj->width = width;
     gridobj->height = height;
     gridobj->cells = grid;
+    puts("return");
     return gridobj;
 }
 

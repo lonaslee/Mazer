@@ -2,7 +2,6 @@
 #define IMAGES_H
 
 #include <SDL.h>
-#include <SDL_image.h>
 
 #include "definitions.h"
 #include "maze.h"
@@ -36,9 +35,9 @@
         SDL_RenderCopy(renderer, texture, NULL, &rect);                          \
     } while (0);
 
-void draw_grid(struct Resources *resources, SDL_Renderer *renderer, Grid *grid);
-void draw_grid_step(struct Resources *resources, SDL_Renderer *renderer, Grid *grid, Cell *cell_mem, Cell *um, Cell *dm, Cell *lm, Cell *rm);
-void cache_resource(struct Resources *resources, SDL_Renderer *renderer, char *fp);
-void free_resources(struct Resources *resources);
+void draw_grid(Resources *resources, SDL_Renderer *renderer, Grid *grid, int x, int y);
+void draw_grid_step(Resources *resources, SDL_Renderer *renderer, Grid *grid, Cell *cell_mem, Cell *um, Cell *dm, Cell *lm, Cell *rm);
+SDL_Texture *cache_resource(Resources *resources, SDL_Renderer *renderer, const char *fp);
+void free_resources(Resources *resources);
 
 #endif /* IMAGES_H */

@@ -7,9 +7,7 @@
 #ifndef NODE_H
 #define NODE_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <stdbool.h>
 
 typedef struct Node {
     struct Edge *upper;
@@ -21,7 +19,7 @@ typedef struct Node {
 typedef struct Edge {
     struct Node *node1;
     struct Node *node2;
-    int exists;
+    bool exists;
 } Edge;
 
 /**

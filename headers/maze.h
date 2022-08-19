@@ -1,10 +1,6 @@
 #ifndef MAZE_H
 #define MAZE_H
 
-#include <stdarg.h>
-#include <stdlib.h>
-#include <string.h>
-
 #include "graph.h"
 #include "grid.h"
 
@@ -16,6 +12,7 @@
                                                                     : -1)
 
 enum DIRECTION {
+    STAY,
     UP,
     DOWN,
     LEFT,
@@ -38,6 +35,8 @@ enum MazeType {
 };
 
 Grid *generate_aldous_broder(Grid *grid);
+void aldous_broder(Grid *grid);
+int choicenz(int n, ...);
 int choice(int n, ...);
 
 #endif /* MAZE_H */
