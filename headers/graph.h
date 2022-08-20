@@ -4,22 +4,21 @@
  *        are declared here. This differs from grid in that it uses nodes and edges.
  */
 
-#ifndef NODE_H
-#define NODE_H
-
-#include <stdbool.h>
+#pragma once
 
 typedef struct Node {
     struct Edge *upper;
     struct Edge *lower;
-    struct Edge *left;
+    struct Edge *left_;
     struct Edge *right;
+    int data;
 } Node;
 
 typedef struct Edge {
     struct Node *node1;
     struct Node *node2;
-    bool exists;
+    int exists;
+    int data;
 } Edge;
 
 /**
@@ -42,11 +41,16 @@ typedef struct {
 Graph *generate_graph(int width, int height);
 
 /**
+ * @brief Clear a graph, setting all value fields to 0.
+ *
+ * @param graph graph to clear
+ */
+void clear_graph(Graph *graph);
+
+/**
  * @brief Free all nodes of a graph and all associated edges. It is safe to pass NULL to this function.
  *
  * @param graph graph to free
- * @return number of edges that was freed.
+ * @return int - Number of edges that was freed.
  */
 int free_graph(Graph *graph);
-
-#endif /* NODE_H */

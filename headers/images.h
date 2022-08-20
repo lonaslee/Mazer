@@ -1,5 +1,8 @@
-#ifndef IMAGES_H
-#define IMAGES_H
+/**
+ * @file images.c
+ * @brief Image related functions and macroes are here, including screen interaction functions.
+ */
+#pragma once
 
 #include <SDL.h>
 
@@ -35,9 +38,29 @@
         SDL_RenderCopy(renderer, texture, NULL, &rect);                          \
     } while (0);
 
-void draw_grid(Resources *resources, SDL_Renderer *renderer, Grid *grid);
-void draw_grid_step(Resources *resources, SDL_Renderer *renderer, Grid *grid, Cell *cell_mem, Cell *um, Cell *dm, Cell *lm, Cell *rm);
-SDL_Texture *cache_resource(Resources *resources, SDL_Renderer *renderer, const char *fp);
-void free_resources(Resources *resources);
+/**
+ * @brief Draw a grid / maze on the screen using resources and renderer.
+ *
+ * @param resources resources object to get images from
+ * @param renderer renderer to use
+ * @param grid grid to draw
+ * @param cur_cell cell to highlight, or NULL
+ */
+void draw_grid(Resources *resources, SDL_Renderer *renderer, Grid *grid, Cell *cur_cell);
 
-#endif /* IMAGES_H */
+/**
+ * @brief Cache a resource by reading from a filepath. This expands the resource object's array when needed.
+ *
+ * @param resources resources object to store read texture
+ * @param renderer renderer to use when reading the file
+ * @param fp filepath to read from
+ * @return SDL_Texture* - The texture that was read and cached.
+ */
+SDL_Texture *cache_resource(Resources *resources, SDL_Renderer *renderer, const char *fp);
+
+/**
+ * @brief Free a resources object. This frees the object itself and all cached resources within it.
+ *
+ * @param resources resources object to free
+ */
+void free_resources(Resources *resources);

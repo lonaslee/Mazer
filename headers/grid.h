@@ -4,10 +4,7 @@
  *        are declared here. This differs from graph in that it uses cells and walls.
  */
 
-#ifndef GRID_H
-#define GRID_H
-
-#include <stdbool.h>
+#pragma once
 
 typedef struct Cell {
     struct Wall *upperwall;
@@ -26,7 +23,7 @@ typedef struct Cell {
 typedef struct Wall {
     struct Cell *cell1;
     struct Cell *cell2;
-    bool exists;
+    int exists;
     int data;
 } Wall;
 
@@ -50,18 +47,16 @@ typedef struct {
 Grid *generate_grid(int width, int height);
 
 /**
+ * @brief Clear a grid, setting all value fields to 0.
+ *
+ * @param grid grid to clear.
+ */
+void clear_grid(Grid *grid);
+
+/**
  * @brief Free all cells of a grid and all associated walls.
  *
  * @param grid grid to free
  * @return number of walls that was freed.
  */
 int free_grid(Grid *grid);
-
-/**
- * @brief Print a grid. Not intended for generated mazes. It is safe to pass NULL to this function.
- *
- * @param grid grid to print.
- */
-void print_grid(Grid *grid);
-
-#endif /* GRID_H */

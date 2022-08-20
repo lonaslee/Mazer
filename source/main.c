@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
         }
         SDL_SetRenderDrawColor(game->renderer, 0, 0, 0, 255);
         SDL_RenderClear(game->renderer);
-        draw_grid(game->resources, game->renderer, game->stage->grid);
+        draw_grid(game->resources, game->renderer, game->stage->grid, NULL);
         SDL_RenderPresent(game->renderer);
     }
 
@@ -45,9 +45,9 @@ int main(int argc, char *argv[]) {
 
 static void testfn(void) {
     Game *game = get_game();
-    Grid *grid = generate_grid(5, 5);
+    Grid *grid = generate_grid(40, 40);
     game->stage->grid = grid;
-    generate_aldous_broder(grid);
+    gen_aldous_broder(grid, NULL);
 }
 
 Game *get_game(void) {
@@ -67,7 +67,11 @@ Game *get_game(void) {
         game = calloc(1, sizeof(Game));
         game->win = win;
         game->renderer = renderer;
+
         game->stage = calloc(1, sizeof(GameStage));
+
+        game->settings = calloc(1, sizeof(Settings));
+        game->settings->step_interval = 0;
 
         game->resources = calloc(1, sizeof(Resources));
         game->resources->texture_count = 0;
@@ -79,7 +83,7 @@ Game *get_game(void) {
 
 static void load_all_textures(void) {
     char *fps[] = {"clr-black.png", "clr-dblue.png", "clr-lorange.png", "clr-lyellow.png",
-                   "clr-lgreen.png", "bg-green.png", NULL};
+                   "clr-lgreen.png", "bg-green.png", "clr-white.png", NULL};
     for (int i = 0; fps[i] != NULL; ++i) {
         char ffp[50] = "resources/";
         cache_resource(game->resources, game->renderer, strncat(ffp, fps[i], 38));
@@ -87,7 +91,7 @@ static void load_all_textures(void) {
     }
 }
 
-static void on_event(SDL_Event *event) {
+void on_event(SDL_Event *event) {
     switch (event->type) {
         case SDL_QUIT:
             puts("User exit.");
@@ -120,6 +124,8 @@ static void cleanup(void) {
 
     free_resources(game->resources);
     putc('.', stdout);
+
+    free(game->settings);
 
     free(game);
     puts(" Done.");

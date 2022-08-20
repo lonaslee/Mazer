@@ -98,6 +98,19 @@ Grid *generate_grid(int width, int height) {
     return gridobj;
 }
 
+void clear_grid(Grid *grid) {
+    if (grid == NULL) return;
+    for (int x = 0; x < grid->width; x++) {
+        for (int y = 0; y < grid->height; y++) {
+            grid->cells[x][y].data = 0;
+            if (grid->cells[x][y].upperwall != NULL) grid->cells[x][y].upperwall->exists = grid->cells[x][y].upperwall->data = 0;
+            if (grid->cells[x][y].lowerwall != NULL) grid->cells[x][y].lowerwall->exists = grid->cells[x][y].lowerwall->data = 0;
+            if (grid->cells[x][y].left_wall != NULL) grid->cells[x][y].left_wall->exists = grid->cells[x][y].left_wall->data = 0;
+            if (grid->cells[x][y].rightwall != NULL) grid->cells[x][y].rightwall->exists = grid->cells[x][y].rightwall->data = 0;
+        }
+    }
+}
+
 int free_grid(Grid *grid) {
     if (grid == NULL) return 0;
     int num = 0;
@@ -131,31 +144,4 @@ int free_grid(Grid *grid) {
     }
     free(grid);
     return num;
-}
-
-void print_grid(Grid *grid) {
-    Wall *last;
-    puts("");
-    for (int x = 0; x < grid->width; x++)
-        printf(" %s", grid->cells[x][0].upperwall != NULL ? "-" : "N");
-    puts("");
-
-    for (int y = 1; y < grid->height; y++) {
-        printf("%s %s ", grid->cells[0][y].left_wall != NULL ? "|" : "N", grid->cells[0][y].rightwall != NULL ? "|" : "N");
-        for (int x = 1; x < grid->width; x++) {
-            printf("%s ", grid->cells[x][y].left_wall == grid->cells[x - 1][y].rightwall ? "|" : "N");
-        }
-        puts("");
-
-        if (y < grid->height - 1) {
-            for (int x = 0; x < grid->width; x++) {
-                printf(" %s", grid->cells[x][y].lowerwall == grid->cells[x][y - 1].upperwall ? "-" : "N");
-            }
-            puts("");
-        }
-    }
-
-    for (int x = 0; x < grid->width; x++)
-        printf(" %s", grid->cells[x][0].lowerwall != NULL ? "-" : "N");
-    puts("");
 }
