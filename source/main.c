@@ -36,7 +36,7 @@ int main(int argc, char *argv[]) {
         }
         SDL_SetRenderDrawColor(game->renderer, 0, 0, 0, 255);
         SDL_RenderClear(game->renderer);
-        draw_grid(game->resources, game->renderer, game->stage->grid, NULL);
+        draw_grid(get_grid_resources(), game->renderer, game->stage->grid, NULL, NULL);
         SDL_RenderPresent(game->renderer);
     }
 
@@ -45,9 +45,11 @@ int main(int argc, char *argv[]) {
 
 static void testfn(void) {
     Game *game = get_game();
-    Grid *grid = generate_grid(40, 40);
+    Grid *grid = generate_grid(10, 10);
     game->stage->grid = grid;
-    gen_aldous_broder(grid, NULL);
+    game->settings->step_interval = 0.1;
+
+    gen_ellers(grid, NULL);
 }
 
 Game *get_game(void) {
@@ -79,6 +81,22 @@ Game *get_game(void) {
         game->resources->textures = calloc(10, sizeof(SDL_Texture *));
     }
     return game;
+}
+
+Resources *get_grid_resources(void) {
+    static Resources *grid_resources = NULL;
+    if (grid_resources == NULL) {
+        grid_resources = calloc(1, sizeof(Resources));
+        grid_resources->texture_count = 5;
+        grid_resources->texture_size = 5 * sizeof(SDL_Texture *);
+        grid_resources->textures = calloc(5, sizeof(SDL_Texture *));
+        grid_resources->textures[0] = game->resources->textures[BG_GREEN];
+        grid_resources->textures[1] = game->resources->textures[CLR_LYELLOW];
+        grid_resources->textures[2] = game->resources->textures[CLR_DBLUE];
+        grid_resources->textures[3] = game->resources->textures[CLR_LORANGE];
+        grid_resources->textures[4] = game->resources->textures[CLR_BLACK];
+    };
+    return grid_resources;
 }
 
 static void load_all_textures(void) {
@@ -126,6 +144,8 @@ static void cleanup(void) {
     putc('.', stdout);
 
     free(game->settings);
+    free(get_grid_resources()->textures);
+    free(get_grid_resources());
 
     free(game);
     puts(" Done.");

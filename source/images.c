@@ -27,7 +27,7 @@ void free_resources(Resources *resources) {
     free(resources);
 }
 
-void draw_grid(Resources *resources, SDL_Renderer *renderer, Grid *grid, Cell *cur_cell) {
+void draw_grid(Resources *resources, SDL_Renderer *renderer, Grid *grid, Cell *this_cell, Cell **other_cells) {
     int winwidth, winheight, cellsize, wallsize, offsetx, offsety;
     SDL_GetWindowSize(SDL_RenderGetWindow(renderer), &winwidth, &winheight);
     cellsize = (MIN(winwidth, winheight) * 0.95) / MAX(grid->width, grid->height);
@@ -35,24 +35,39 @@ void draw_grid(Resources *resources, SDL_Renderer *renderer, Grid *grid, Cell *c
     cellsize -= wallsize;
     offsetx = HALF(winwidth - (cellsize + wallsize) * grid->width) + HALF(wallsize);
     offsety = HALF(winheight - (cellsize + wallsize) * grid->height) + HALF(wallsize);
-    // printf("%d, %d, %d\n", cellsize, offsetx, offsety);
 
-    SDL_Texture *base = resources->textures[BG_GREEN];
+    if (other_cells == NULL) other_cells = (Cell *[]){NULL};
+
+    SDL_Texture *base = resources->textures[0];
     SDL_RenderCopy(renderer, base, NULL, NULL);
 
-    SDL_Texture *cell_img = resources->textures[CLR_LYELLOW];
-    SDL_Texture *cell_img2 = resources->textures[CLR_LGREEN];
-    SDL_Texture *wall_img = resources->textures[CLR_BLACK];
-    SDL_Texture *wall_img2 = resources->textures[CLR_LORANGE];
-    SDL_Rect cell_rect = {.w = cellsize, .h = cellsize},
-             horizontal = {.w = cellsize, .h = wallsize},
-             vertical = {.w = wallsize, .h = cellsize};
+    SDL_Texture *cell_img = resources->textures[1];
+    SDL_Texture *cell_img2 = resources->textures[2];
+    SDL_Texture *cell_img3 = resources->textures[3];
+
+    SDL_Texture *wall_img = resources->textures[4];
+
+    SDL_Rect cell_rect = {.w = cellsize, .h = cellsize};
+    SDL_Rect horizontal = {.w = cellsize, .h = wallsize};
+    SDL_Rect vertical = {.w = wallsize, .h = cellsize};
+
     for (int x = 0; x < grid->width; x++) {
         for (int y = 0; y < grid->height; y++) {
             cell_rect.x = x * (cellsize + wallsize) + offsetx;
             cell_rect.y = winheight - (y + 1) * (cellsize + wallsize) - offsety;
-            SDL_RenderCopy(renderer, &grid->cells[x][y] == cur_cell ? cell_img2 : cell_img, NULL, &cell_rect);
 
+            if (&grid->cells[x][y] == this_cell) {
+                SDL_RenderCopy(renderer, cell_img2, NULL, &cell_rect);
+            } else {
+                for (int i = 0; other_cells[i] != NULL; i++)
+                    if (&grid->cells[x][y] == other_cells[i]) {
+                        SDL_RenderCopy(renderer, cell_img3, NULL, &cell_rect);
+                        goto walls;
+                    }
+                SDL_RenderCopy(renderer, cell_img, NULL, &cell_rect);
+            }
+
+        walls:
             horizontal.x = cell_rect.x;
             horizontal.y = cell_rect.y - wallsize;
             SDL_RenderCopy(renderer, grid->cells[x][y].upperwall->exists ? wall_img : cell_img, NULL, &horizontal);

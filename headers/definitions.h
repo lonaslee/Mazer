@@ -79,6 +79,15 @@ enum FileNames {
 extern Game *get_game(void);
 
 /**
+ * @brief Get the grid resources object. The grid resources object contains textures used by print_grid and other
+ *        functions to display a grid. This function creates the resource object on first call, return
+ *        the same pointer to it on subsequent calls.
+ *
+ * @return Resources* - The pointer to a resources object.
+ */
+extern Resources *get_grid_resources(void);
+
+/**
  * @brief Handle events.
  *
  * @param event event to handle
