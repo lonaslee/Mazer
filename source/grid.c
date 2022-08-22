@@ -13,7 +13,6 @@ Grid *generate_grid(int width, int height) {
     for (int x = 0; x < width; x++) {
         for (int y = 0; y < height; y++) {
             grid[x][y].data = 0;
-            // printf("\n(%d, %d)\n", x, y);
 
             if (grid[x][y].upperwall == NULL) {
                 if (y != height - 1) {
@@ -31,7 +30,6 @@ Grid *generate_grid(int width, int height) {
                     grid[x][y].upperwall = wall;
                     wall->cell2 = &grid[x][y];
                 }
-                // printf("upper\n");
             }
             if (grid[x][y].lowerwall == NULL) {
                 if (y != 0) {
@@ -49,7 +47,6 @@ Grid *generate_grid(int width, int height) {
                     grid[x][y].lowerwall = wall;
                     wall->cell1 = &grid[x][y];
                 }
-                // printf("lower\n");
             }
             if (grid[x][y].left_wall == NULL) {
                 if (x != 0) {
@@ -67,7 +64,6 @@ Grid *generate_grid(int width, int height) {
                     grid[x][y].left_wall = wall;
                     wall->cell2 = &grid[x][y];
                 }
-                // printf("left\n");
             }
             if (grid[x][y].rightwall == NULL) {
                 if (x != width - 1) {
@@ -85,7 +81,6 @@ Grid *generate_grid(int width, int height) {
                     grid[x][y].rightwall = wall;
                     wall->cell1 = &grid[x][y];
                 }
-                // printf("right\n");
             }
         }
     }
@@ -94,7 +89,6 @@ Grid *generate_grid(int width, int height) {
     gridobj->width = width;
     gridobj->height = height;
     gridobj->cells = grid;
-    puts("return");
     return gridobj;
 }
 

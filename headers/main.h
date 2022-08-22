@@ -1,7 +1,7 @@
 #pragma once
 
 #include "SDL.h"
-#include "definitions.h"
+#include "common.h"
 
 int main(int argc, char *argv[]);
 

@@ -4,7 +4,7 @@
 #include <SDL_image.h>
 #include <stdlib.h>
 
-#include "definitions.h"
+#include "common.h"
 #include "destroy.h"
 #include "maze.h"
 

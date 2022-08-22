@@ -5,7 +5,7 @@
 
 #include "SDL.h"
 #include "SDL_image.h"
-#include "definitions.h"
+#include "common.h"
 
 void destroy_resources(char *type, int num, ...) {
     printf("call\n");

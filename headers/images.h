@@ -6,7 +6,7 @@
 
 #include <SDL.h>
 
-#include "definitions.h"
+#include "common.h"
 #include "maze.h"
 
 /**
@@ -44,7 +44,7 @@
  * @param resources resources object to get images from. this gets the background from index 0 of textures, three cell images from indices 1, 2, 3, and one wall image from index 4
  * @param renderer renderer to use
  * @param grid grid to draw
- * @param cur_cell cell to highlight, or NULL
+ * @param this_cell cell to highlight, or NULL
  * @param other_cells NULL terminated sequence of other cells to highlight, or NULL
  */
 void draw_grid(Resources *resources, SDL_Renderer *renderer, Grid *grid, Cell *this_cell, Cell **other_cells);

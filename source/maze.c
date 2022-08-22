@@ -119,58 +119,87 @@ Grid *gen_sidewinder(Grid *grid, MazeGenOptions *options) {
     grid->cells[grid->width - 1][grid->height - 1].rightwall->exists = 1;
 }
 
-Grid *gen_ellers(Grid *grid, MazeGenOptions *options) {  // TODO complete
-    puts("ellers");
-    grid->type = ELLERS;
-    const int group_size_max = options != NULL ? (options->opts[0] != 0 ? options->opts[0] : 5) : 5;
-    int randdiv = group_size_max - (group_size_max == 5 ? 2 : 0);
+Grid *gen_ellers(Grid *grid, MazeGenOptions *options) {  // FIXME broken
+    int group_size_max = options != NULL ? (options->opts[0] != 0 ? options->opts[0] : 5) : 5;
+    int randdiv = options != NULL ? (options->opts[1] != 0 ? options->opts[1] : 2) : 2;
     for (int x = 0; x < grid->width; x++) {
         for (int y = 0; y < grid->height; y++) {
             grid->cells[x][y].upperwall->exists = 1;
             grid->cells[x][y].lowerwall->exists = 1;
             grid->cells[x][y].left_wall->exists = 1;
             grid->cells[x][y].rightwall->exists = 1;
-            grid->cells[x][y].data = 0;
         }
     }
 
-    printf("%d, %d\n", group_size_max, randdiv);
-    int cur_group_num = 0;
+    int groupnum = 1;
+    for (int y = grid->height - 1; y > 0; y--) {
+        /* First iteration to get rid of cells not in a set */ {
+            for (int x = 0; x < grid->width; x++) {
+                if (grid->cells[x][y].data == 0)
+                    grid->cells[x][y].data = groupnum++;
+                // grid_step(grid, &grid->cells[x][y], NULL, ELLERS);
+            }
+        }
+        puts("second");
+        List *groups = list_new(10);
+        List *cur_group = groups->new_list(group_size_max);
+        /* Second iteration to join cells into sets randomly */ {
+            int cur_group_size = 0;
+            for (int x = 0; x < grid->width; x++) {
+                Cell *cptr_group[group_size_max];
+                for (int i = 0; i < cur_group->idx; i++)
+                    cptr_group[i] = (Cell *)cur_group->elements[i];
+                grid_step(grid, &grid->cells[x][y], cptr_group, ELLERS);
+                cur_group_size++;
+                cur_group->append(cur_group, &grid->cells[x][y]);
+                if (!(rand() % randdiv) || cur_group_size == group_size_max || x == grid->width - 1 || grid->cells[x][y].data == grid->cells[x + 1][y].data) {
+                    groups->append(groups, cur_group);
+                    cur_group = groups->new_list(group_size_max);
+                    grid->cells[x][y].rightwall->exists = 1;
+                    cur_group_size = 0;
+                } else {
+                    grid->cells[x][y].rightwall->exists = 0;
+                    grid->cells[x + 1][y].data = grid->cells[x][y].data;
+                }
+            }
+        }
+
+        /* Third iteration to create downward passages */ {
+            for (int i = 0; i < groups->idx; i++) {
+                List *group = (List *)groups->elements[i];
+                Cell *cptr_group[group_size_max];
+                for (int i = 0; i < group->idx; i++)
+                    cptr_group[i] = (Cell *)group->elements[i];
+                grid_step(grid, (Cell *)&group->elements[0], cptr_group, ELLERS);
+                ((Cell *)group->elements[rand() % group->idx])->lowerwall->exists = 0;
+                for (int x = 0; x < group->idx; x++) {
+                    if (!(rand() % group_size_max)) ((Cell *)group->elements[x])->lowerwall->exists = 0;
+                }
+                group->del(group);
+            }
+        }
+    }
+    puts("here");
+    for (int x = 0; x < grid->width; x++) {
+        if (grid->cells[x][0].data == 0)
+            grid->cells[x][0].data = groupnum++;
+        grid->cells[x][0].lowerwall->exists = 1;
+    }
+    puts("here");
+    for (int x = 0; x < grid->width - 1; x++) {
+        if (grid->cells[x][0].data != grid->cells[x + 1][0].data) {
+            grid->cells[x][0].rightwall->exists = 0;
+            grid->cells[x + 1][0].data = grid->cells[x][0].data;
+            x++;
+        }
+    }
+
+    puts("");
     for (int y = grid->height - 1; y >= 0; y--) {
         for (int x = 0; x < grid->width; x++) {
-            putc('i', stdout);
-            Cell *cell_group[group_size_max];
-            int g_size;
-            for (g_size = 1; x - g_size >= 0 && grid->cells[x - g_size][y].data == cur_group_num; g_size++) {
-                cell_group[g_size - 1] = &grid->cells[x - g_size][y];
-            }
-            cell_group[g_size - 1] = NULL;
-            grid_step(grid, &grid->cells[x][y], cell_group, ELLERS);
-
-            if (!(rand() % randdiv) || g_size == group_size_max || x == grid->width - 1) {
-                grid->cells[x][y].data = cur_group_num;
-                if (y != 0) {
-                    int idx = rand() % (g_size + 1);
-                    for (int i = 0; x - i >= 0 && grid->cells[x - i][y].data == cur_group_num; i++) {
-                        if (i == idx) {
-                            grid->cells[x - i][y - 1].data = cur_group_num;
-                            grid->cells[x - i][y].lowerwall->exists = 0;
-                        }
-                    }
-                }
-                cur_group_num++;
-
-            } else {
-                grid->cells[x][y].data = cur_group_num;
-                grid->cells[x][y].rightwall->exists = 0;
-            }
+            printf("%3d ", grid->cells[x][y].data);
         }
-
-        int this_group_num = grid->cells[grid->width - 1][y].data;
-        for (int x = grid->width - 1; x >= 0; x--) {
-            if (grid->cells[x][y].data == this_group_num) {
-            }
-        }
+        puts("");
     }
 }
 
@@ -188,26 +217,4 @@ void grid_step(Grid *grid, Cell *this_cell, Cell **other_cells, enum MazeType ty
         draw_grid(get_grid_resources(), game->renderer, grid, this_cell, other_cells);
         SDL_RenderPresent(game->renderer);
     }
-}
-
-int choice(int n, ...) {
-    va_list vargs;
-    va_start(vargs, n);
-    int randnum = rand() % n;
-    for (int i = 0; i < n; i++) {
-        int varg = va_arg(vargs, int);
-        if (i == randnum) return varg;
-    }
-}
-
-int choicenz(int n, ...) {
-    va_list vargs;
-    va_start(vargs, n);
-    int nums[20];
-    int j = 0;
-    for (int i = 0; i < n; i++) {
-        int varg = va_arg(vargs, int);
-        if (varg != 0) nums[j++] = varg;
-    }
-    return nums[rand() % j];
 }

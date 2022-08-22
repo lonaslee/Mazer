@@ -1,5 +1,5 @@
 /**
- * @file definitions.c
+ * @file common.c
  * @brief Project wide declarations.
  *
  */
@@ -20,12 +20,20 @@
 #define HALF(a) ((a) / 2)
 #define YESNO (rand() % 2)
 
+#define SETARR(arr, len, val)       \
+    for (int i = 0; i < len; i++) { \
+        arr[i] = val;               \
+    }
+#define CLRARR(arr, len) SETARR(arr, len, NULL)
+#define ZFLARR(arr, len) SETARR(arr, len, 0)
+
 #define PRINT_ERR(...) fprintf(stderr, __VA_ARGS__);
 #define EXIT_ERR(...)           \
     do {                        \
         PRINT_ERR(__VA_ARGS__); \
         exit(EXIT_FAILURE);     \
     } while (0);
+
 /**
  * @brief The stage of the game.
  */
@@ -59,6 +67,10 @@ typedef struct {
     Resources *resources;
     Settings *settings;
 } Game;
+/**
+ * @brief The main game object.
+ *
+ */
 extern Game *game;
 
 enum FileNames {
@@ -71,12 +83,27 @@ enum FileNames {
     CLR_WHITE,
 };
 
+typedef struct List {
+    int len;
+    int idx;
+    void **elements;
+    struct List *(*new_list)(int len);
+    void (*del)(struct List *list);
+    void (*append)(struct List *list, void *value);
+    void (*join)(struct List *dest_list, struct List *source_list);
+} List;
+
+List *list_new(int len);
+void list_del(List *list);
+void list_append(List *list, void *value);
+void list_join(List *dest_list, List *source_list);
+
 /**
  * @brief Get the game object. Creates the game on first call, return the same pointer
  *        to it on subsequent calls.
  * @return Game* - The pointer to a game object.
  */
-extern Game *get_game(void);
+Game *get_game(void);
 
 /**
  * @brief Get the grid resources object. The grid resources object contains textures used by print_grid and other
@@ -85,7 +112,25 @@ extern Game *get_game(void);
  *
  * @return Resources* - The pointer to a resources object.
  */
-extern Resources *get_grid_resources(void);
+Resources *get_grid_resources(void);
+
+/**
+ * @brief Pick a random non-zero number out of the given arguments. This takes a max of 20 arguments.
+ *
+ * @param n amount of integers being passed
+ * @param ... integer choices to pick from, max 20 vlas
+ * @return int - random non-zero integer from arguments
+ */
+int choicenz(int n, ...);
+
+/**
+ * @brief Pick a random number out of the given arguments.
+ *
+ * @param n amount of integers being passed
+ * @param ... integer choices to pick from
+ * @return int - random integer from arguments
+ */
+int choice(int n, ...);
 
 /**
  * @brief Handle events.

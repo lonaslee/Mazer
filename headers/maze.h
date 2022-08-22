@@ -76,7 +76,7 @@ Grid *gen_sidewinder(Grid *grid, MazeGenOptions *options);
  * @brief Generate a maze using Eller's Algorithm.
  *
  * @param grid grid to generate maze in
- * @param options this algorithm has 1 option: max gropu size
+ * @param options this algorithm has 1 option: max group size
  * @return Grid* - same maze pointer passed
  */
 Grid *gen_ellers(Grid *grid, MazeGenOptions *options);
@@ -90,21 +90,3 @@ Grid *gen_ellers(Grid *grid, MazeGenOptions *options);
  * @param type the algorithm being used
  */
 void grid_step(Grid *grid, Cell *this_cell, Cell **other_cells, enum MazeType type);
-
-/**
- * @brief Pick a random non-zero number out of the given arguments. This takes a max of 20 arguments.
- *
- * @param n amount of integers being passed
- * @param ... integer choices to pick from, max 20 vlas
- * @return int - random non-zero integer from arguments
- */
-int choicenz(int n, ...);
-
-/**
- * @brief Pick a random number out of the given arguments.
- *
- * @param n amount of integers being passed
- * @param ... integer choices to pick from
- * @return int - random integer from arguments
- */
-int choice(int n, ...);
