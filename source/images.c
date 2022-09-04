@@ -32,6 +32,7 @@ void draw_grid(Resources *resources, SDL_Renderer *renderer, Grid *grid, Cell *t
     SDL_GetWindowSize(SDL_RenderGetWindow(renderer), &winwidth, &winheight);
     cellsize = (MIN(winwidth, winheight) * 0.95) / MAX(grid->width, grid->height);
     wallsize = cellsize / 20;
+    if (wallsize < 1) wallsize = 1;
     cellsize -= wallsize;
     offsetx = HALF(winwidth - (cellsize + wallsize) * grid->width) + HALF(wallsize);
     offsety = HALF(winheight - (cellsize + wallsize) * grid->height) + HALF(wallsize);

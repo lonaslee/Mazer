@@ -45,11 +45,14 @@ int main(int argc, char *argv[]) {
 
 static void testfn(void) {
     Game *game = get_game();
-    Grid *grid = generate_grid(15, 15);
+    Grid *grid = generate_grid(200, 200);
     game->stage->grid = grid;
-    game->settings->step_interval = 0.0001;
+    game->settings->step_interval = 0.0;
 
-    gen_ellers(grid, NULL);
+    MazeGenOptions mgo = {.numof = 2};
+    mgo.opts[0] = 2;
+    mgo.opts[1] = 3;
+    gen_aldous_broder(grid, NULL);
 }
 
 static void load_all_textures(void) {
@@ -86,15 +89,15 @@ static void cleanup(void) {
     printf("Cleaning up");
     SDL_DestroyWindow(game->win);
     SDL_DestroyRenderer(game->renderer);
-    putc('.', stdout);
+    oputc('.');
 
     free_grid(game->stage->grid);
     free_graph(game->stage->graph);
     free(game->stage);
-    putc('.', stdout);
+    oputc('.');
 
     free_resources(game->resources);
-    putc('.', stdout);
+    oputc('.');
 
     free(game->settings);
     free(get_grid_resources()->textures);

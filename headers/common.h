@@ -9,10 +9,13 @@
 #include <stdlib.h>
 
 #include "SDL.h"
-#include "maze.h"
+#include "graph.h"
+#include "grid.h"
 
 #define WIN_INIT_WIDTH 800
 #define WIN_INIT_HEIGHT 600
+
+#define oputc(char) putc((char), stdout)
 
 #define MIN(a, b) (((a) <= (b)) ? (a) : (b))
 #define MAX(a, b) (((a) >= (b)) ? (a) : (b))
@@ -20,10 +23,13 @@
 #define HALF(a) ((a) / 2)
 #define YESNO (rand() % 2)
 
-#define SETARR(arr, len, val)       \
-    for (int i = 0; i < len; i++) { \
-        arr[i] = val;               \
-    }
+#define SETARR(arr, len, val)           \
+    do {                                \
+        for (int i = 0; i < len; i++) { \
+            arr[i] = val;               \
+        }                               \
+    } while (0);
+
 #define CLRARR(arr, len) SETARR(arr, len, NULL)
 #define ZFLARR(arr, len) SETARR(arr, len, 0)
 
@@ -33,6 +39,55 @@
         PRINT_ERR(__VA_ARGS__); \
         exit(EXIT_FAILURE);     \
     } while (0);
+
+/**
+ * @brief Select a random element from array of n length.
+ *
+ * @param n length of the array
+ * @param array array to select from
+ */
+#define choicearr(n, array) (array[rand() % (n)])
+
+/**
+ * @brief Select a random integer from a range. First number is included, last number excluded.
+ *        Both numbers must be positive and unique.
+ *
+ * @param start start of the range, inclusive
+ * @param stop end of the range, non-inclusive
+ */
+#define choicerange(start, stop) ((rand() % ((stop) - (start))) + (start))
+
+/**
+ * @brief Select a random integer from a range, exclusive on both ends.
+ *
+ * @param start start of the range, non-inclusive
+ * @param stop end of the range, non-inclusive
+ */
+#define nincchoicerange(start, stop) choicerange(((start) + 1), (stop))
+
+/**
+ * @brief A structure to hold data on a custom maze generation options for an algorithm.
+ *        Algorithms expect all arguments to be in order inside the opts field.
+ */
+typedef struct {
+    int numof;
+    int opts[100];
+} MazeGenOptions;
+
+enum MazeType {
+    ALDOUS_BRODER,
+    WILSONS,
+    BINARY_TREE,
+    SIDEWINDER,
+    ELLERS,
+    HUNT_AND_KILL,
+    RECURSIVE_BACKTRACKER,
+    RECURSIVE_DIVISION,
+    KRUSKALS,
+    PRIMS,
+    GROWING_TREE,
+    GROWING_BINARY_TREE
+};
 
 /**
  * @brief The stage of the game.
@@ -67,6 +122,7 @@ typedef struct {
     Resources *resources;
     Settings *settings;
 } Game;
+
 /**
  * @brief The main game object.
  *
@@ -82,21 +138,6 @@ enum FileNames {
     BG_GREEN,
     CLR_WHITE,
 };
-
-typedef struct List {
-    int len;
-    int idx;
-    void **elements;
-    struct List *(*new_list)(int len);
-    void (*del)(struct List *list);
-    void (*append)(struct List *list, void *value);
-    void (*join)(struct List *dest_list, struct List *source_list);
-} List;
-
-List *list_new(int len);
-void list_del(List *list);
-void list_append(List *list, void *value);
-void list_join(List *dest_list, List *source_list);
 
 /**
  * @brief Get the game object. Creates the game on first call, return the same pointer

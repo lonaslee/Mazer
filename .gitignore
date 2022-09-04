@@ -1,9 +1,7 @@
-/.vscode
-/headers/.vscode
-/app.exe
-/mazer-space.code-workspace
+*/.vscode
+/*.exe
+/*.code-workspace
 /output
 /SDL2
-/SDL2.dll
 /SDL2_image
-/SDL2_image.dll
+/*.dll
