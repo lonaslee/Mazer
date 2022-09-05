@@ -27,7 +27,7 @@ Grid *gen_aldous_broder(Grid *grid, MazeGenOptions *options) {
         curx += MOVEX(dir);
         cury += MOVEY(dir);
         this_cell = &grid->cells[curx][cury];
-        if (this_cell->data == 1) continue;
+        if (this_cell->data) continue;
         this_cell->data = 1;
         visited++;
         this_cell->upperwall->exists = dir != DOWN;

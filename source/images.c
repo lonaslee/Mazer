@@ -63,7 +63,7 @@ void draw_grid(Resources *resources, SDL_Renderer *renderer, Grid *grid, Cell *t
                 for (int i = 0; other_cells[i] != NULL; i++)
                     if (&grid->cells[x][y] == other_cells[i]) {
                         SDL_RenderCopy(renderer, cell_img3, NULL, &cell_rect);
-                        goto walls;
+                        goto walls;  // can confirm a dinosaur jumped me
                     }
                 SDL_RenderCopy(renderer, cell_img, NULL, &cell_rect);
             }

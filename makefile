@@ -9,15 +9,21 @@ LARGS := -LD:/c/mazer/SDL2/x86_64-w64-mingw32/lib -lmingw32 -lSDL2main -lSDL2 -L
 CFLAGS := -c $(IARGS)
 
 
-all: mazes cmp lnk	
+all: cmazes cmp lnk
 	@echo done
 	a.exe
+
+z: cmazes lnk
+	@echo done
+
+n: cmp lnk
+	@echo done
 
 cmp:
 	@echo compiling
 	$(foreach sf, $(wildcard $(SRCDIR)*.c), $(CC) $(sf) $(CFLAGS) -o $(ODIR)$(notdir $(basename $(sf))).o $(CMDSEP))
 
-mazes:
+cmazes:
 	@echo compiling mazes
 	$(foreach mf, $(wildcard $(SRCDIR)mazes/*.c), $(CC) $(mf) $(CFLAGS) -o $(ODIR)$(notdir $(basename $(mf))).o $(CMDSEP))
 

@@ -45,14 +45,15 @@ int main(int argc, char *argv[]) {
 
 static void testfn(void) {
     Game *game = get_game();
-    Grid *grid = generate_grid(200, 200);
+    Grid *grid = generate_grid(10, 10);
     game->stage->grid = grid;
-    game->settings->step_interval = 0.0;
+    game->settings->step_interval = 0.01;
 
     MazeGenOptions mgo = {.numof = 2};
-    mgo.opts[0] = 2;
-    mgo.opts[1] = 3;
-    gen_aldous_broder(grid, NULL);
+    mgo.opts[0] = 100;
+    mgo.opts[1] = 15;
+
+    gen_ellers(grid, NULL);
 }
 
 static void load_all_textures(void) {
