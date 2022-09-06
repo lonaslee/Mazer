@@ -4,10 +4,10 @@
 #include "grid.h"
 
 /**
- * @brief Generate a maze using the Aldous-Broder Algorithm.
+ * @brief Generate a maze using Wilson's Algorithm.
  *
  * @param grid grid to generate maze in
  * @param options this algorithm has no customizeable options, this can be NULL
  * @return Grid* - same maze pointer passed
  */
-Grid *gen_aldous_broder(Grid *grid, MazeGenOptions *options);
+Grid *gen_wilsons(Grid *grid, MazeGenOptions *options);

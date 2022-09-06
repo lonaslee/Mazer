@@ -8,7 +8,7 @@
 #include "grid.h"
 #include "images.h"
 
-void grid_step(Grid *grid, Cell *this_cell, Cell **other_cells) {
+void draw_grid_step(Grid *grid, Cell *this_cell, Cell **other_cells) {
     Game *game = get_game();
     if (game->settings->step_interval == 0) return;
     clock_t start = clock();

@@ -19,7 +19,7 @@ Grid *gen_aldous_broder(Grid *grid, MazeGenOptions *options) {
     this_cell->data = 1;
 
     while (visited < grid->width * grid->height - 1) {
-        grid_step(grid, &grid->cells[curx][cury], NULL);
+        draw_grid_step(grid, &grid->cells[curx][cury], NULL);
         enum DIRECTION dir = choicenz(4, UP * (cury != (grid->height - 1)),
                                       DOWN * (cury != 0),
                                       LEFT * (curx != 0),

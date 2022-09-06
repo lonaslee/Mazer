@@ -10,7 +10,7 @@ Grid *gen_binary_tree(Grid *grid, MazeGenOptions *options) {
     grid->type = BINARY_TREE;
     for (int y = grid->height - 1; y >= 0; y--) {
         for (int x = 0; x < grid->width; x++) {
-            grid_step(grid, &grid->cells[x][y], NULL);
+            draw_grid_step(grid, &grid->cells[x][y], NULL);
             if (YESNO) {
                 grid->cells[x][y].upperwall->exists = 0;
                 grid->cells[x][y].left_wall->exists = 1;

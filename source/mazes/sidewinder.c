@@ -28,7 +28,7 @@ Grid *gen_sidewinder(Grid *grid, MazeGenOptions *options) {
                 cell_group[g_size - 1] = &grid->cells[x - g_size][y];
             }
             cell_group[g_size - 1] = NULL;
-            grid_step(grid, &grid->cells[x][y], cell_group);
+            draw_grid_step(grid, &grid->cells[x][y], cell_group);
             if (!(rand() % randmod) || group == group_size_max || x == grid->width - 1) {
                 if (group == 0)
                     grid->cells[x][y].upperwall->exists = 0;

@@ -27,7 +27,7 @@ enum DIRECTION {
  * @param other_cells NULL terminated list of other cells to display
  * @param type the algorithm being used
  */
-void grid_step(Grid *grid, Cell *this_cell, Cell **other_cells);
+void draw_grid_step(Grid *grid, Cell *this_cell, Cell **other_cells);
 
 /* For testing */
 void print_grid(Grid *grid);

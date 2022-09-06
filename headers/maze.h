@@ -11,3 +11,4 @@
 #include "binary_tree.h"
 #include "ellers.h"
 #include "sidewinder.h"
+#include "wilsons.h"

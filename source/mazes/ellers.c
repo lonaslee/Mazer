@@ -25,7 +25,7 @@ Grid *gen_ellers(Grid *grid, MazeGenOptions *options) {
         // join adjacents
         int setsize = 1;
         for (int x = 0; x < grid->width - 1; x++) {
-            grid_step(grid, &grid->cells[x][y], (Cell *[]){&grid->cells[x + 1][y], NULL});
+            draw_grid_step(grid, &grid->cells[x][y], (Cell *[]){&grid->cells[x + 1][y], NULL});
             if (grid->cells[x][y].data == grid->cells[x + 1][y].data || !(rand() % rrandmod) || setsize >= setsize_max) { /* SEP */
                 setsize = 1;
             } else { /* JOIN */
@@ -48,7 +48,7 @@ Grid *gen_ellers(Grid *grid, MazeGenOptions *options) {
             int cursetnum = grid->cells[x][y].data;
             do {
                 cellset[setsize++] = &grid->cells[x++][y];
-                grid_step(grid, &grid->cells[x][y], cellset);
+                draw_grid_step(grid, &grid->cells[x][y], cellset);
             } while (x < grid->width && grid->cells[x][y].data == cursetnum);
             x--;
 
@@ -77,7 +77,7 @@ Grid *gen_ellers(Grid *grid, MazeGenOptions *options) {
                 }
             }
         }
-        grid_step(grid, &grid->cells[x][0], NULL);
+        draw_grid_step(grid, &grid->cells[x][0], NULL);
     }
     grid->cells[grid->width - 1][0].lowerwall->exists = 1;
 }

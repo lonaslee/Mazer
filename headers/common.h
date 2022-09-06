@@ -129,6 +129,17 @@ typedef struct {
  */
 extern Game *game;
 
+typedef struct {
+    int len;
+    int idx;
+    void **elements;
+} List;
+
+List *list_new(int len);
+void list_del(List *list);
+void list_append(List *list, void *element);
+void list_append_unique(List *list, void *value);
+
 enum FileNames {
     CLR_BLACK,
     CLR_DBLUE,
