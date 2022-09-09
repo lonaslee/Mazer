@@ -8,32 +8,30 @@
 
 Grid *gen_aldous_broder(Grid *grid, MazeGenOptions *options) {
     grid->type = ALDOUS_BRODER;
-    int curx = rand() % grid->width;
-    int cury = rand() % grid->height;
+    int cx = rand() % grid->width;
+    int cy = rand() % grid->height;
     int visited = 0;
-    Cell *this_cell = &grid->cells[curx][cury];
-    this_cell->upperwall->exists = 1;
-    this_cell->lowerwall->exists = 1;
-    this_cell->left_wall->exists = 1;
-    this_cell->rightwall->exists = 1;
-    this_cell->data = 1;
+    grid->cells[cx][cy].upperwall->exists = 1;
+    grid->cells[cx][cy].lowerwall->exists = 1;
+    grid->cells[cx][cy].left_wall->exists = 1;
+    grid->cells[cx][cy].rightwall->exists = 1;
+    grid->cells[cx][cy].data = 1;
 
     while (visited < grid->width * grid->height - 1) {
-        draw_grid_step(grid, &grid->cells[curx][cury], NULL);
-        enum DIRECTION dir = choicenz(4, UP * (cury != (grid->height - 1)),
-                                      DOWN * (cury != 0),
-                                      LEFT * (curx != 0),
-                                      RIGHT * (curx != (grid->width - 1)));
-        curx += MOVEX(dir);
-        cury += MOVEY(dir);
-        this_cell = &grid->cells[curx][cury];
-        if (this_cell->data) continue;
-        this_cell->data = 1;
+        draw_grid_step(grid, &grid->cells[cx][cy], NULL);
+        enum DIRECTION dir = choicenz(4, UP * (cy != (grid->height - 1)),
+                                      DOWN * (cy != 0),
+                                      LEFT * (cx != 0),
+                                      RIGHT * (cx != (grid->width - 1)));
+        cx += MOVEX(dir);
+        cy += MOVEY(dir);
+        if (grid->cells[cx][cy].data) continue;
         visited++;
-        this_cell->upperwall->exists = dir != DOWN;
-        this_cell->lowerwall->exists = dir != UP;
-        this_cell->left_wall->exists = dir != RIGHT;
-        this_cell->rightwall->exists = dir != LEFT;
+        grid->cells[cx][cy].data = 1;
+        grid->cells[cx][cy].upperwall->exists = dir != DOWN;
+        grid->cells[cx][cy].lowerwall->exists = dir != UP;
+        grid->cells[cx][cy].left_wall->exists = dir != RIGHT;
+        grid->cells[cx][cy].rightwall->exists = dir != LEFT;
     }
     return grid;
 }

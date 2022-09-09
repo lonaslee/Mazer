@@ -14,10 +14,10 @@ enum DIRECTION {
     RIGHT
 };
 
-#define MOVEX(dir) ((dir == UP || dir == DOWN) ? 0 : (dir == RIGHT) ? 1 \
-                                                                    : -1)
-#define MOVEY(dir) ((dir == LEFT || dir == RIGHT) ? 0 : (dir == UP) ? 1 \
-                                                                    : -1)
+#define MOVEX(dir) (((dir) == UP || (dir) == DOWN || (dir) == STAY) ? 0 : ((dir) == RIGHT) ? 1 \
+                                                                                           : -1)
+#define MOVEY(dir) (((dir) == LEFT || (dir) == RIGHT || (dir) == STAY) ? 0 : ((dir) == UP) ? 1 \
+                                                                                           : -1)
 
 /**
  * @brief Maze generation functions call this function on every "step" of the algorithm to display the step.
@@ -31,3 +31,5 @@ void draw_grid_step(Grid *grid, Cell *this_cell, Cell **other_cells);
 
 /* For testing */
 void print_grid(Grid *grid);
+
+void carve_path(Grid *grid, int x, int y, enum DIRECTION dir);

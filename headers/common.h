@@ -167,11 +167,11 @@ Game *get_game(void);
 Resources *get_grid_resources(void);
 
 /**
- * @brief Pick a random non-zero number out of the given arguments. This takes a max of 20 arguments.
+ * @brief Pick a random non-zero number out of the given arguments.
  *
  * @param n amount of integers being passed
- * @param ... integer choices to pick from, max 20 vlas
- * @return int - random non-zero integer from arguments
+ * @param ... integer choices to pick from
+ * @return int - random non-zero integer from arguments, or 0 if all arguments are 0
  */
 int choicenz(int n, ...);
 

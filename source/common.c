@@ -91,11 +91,16 @@ int choice(int n, ...) {
 int choicenz(int n, ...) {
     va_list vargs;
     va_start(vargs, n);
-    int nums[20];
+    int *nums = calloc(n, sizeof(int));
     int j = 0;
-    for (int i = 0; i < n; i++) {
-        int varg = va_arg(vargs, int);
-        if (varg != 0) nums[j++] = varg;
+    int varg;
+    for (int i = 0; i < n; i++)
+        if ((varg = va_arg(vargs, int)) != 0) nums[j++] = varg;
+    if (j == 0) {
+        free(nums);
+        return 0;
     }
-    return nums[rand() % j];
+    int res = nums[rand() % j];
+    free(nums);
+    return res;
 }
