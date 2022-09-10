@@ -26,24 +26,12 @@ void draw_grid_step(Grid *grid, Cell *this_cell, Cell **other_cells) {
 
 void carve_path(Grid *grid, int x, int y, enum DIRECTION dir) {
     Cell next = grid->cells[x + MOVEX(dir)][y + MOVEY(dir)];
-    if (dir != STAY)
-        next.upperwall->exists = next.lowerwall->exists = next.rightwall->exists = next.left_wall->exists = 1;
-    switch (dir) {
-        case UP:
-            next.lowerwall->exists = 0;
-            break;
-        case DOWN:
-            next.upperwall->exists = 0;
-            break;
-        case LEFT:
-            next.rightwall->exists = 0;
-            break;
-        case RIGHT:
-            next.left_wall->exists = 0;
-            break;
-        default:
-            break;
-    }
+    if (dir == STAY) return;
+
+    next.upperwall->exists = dir != DOWN;
+    next.lowerwall->exists = dir != UP;
+    next.left_wall->exists = dir != RIGHT;
+    next.rightwall->exists = dir != LEFT;
 }
 
 void print_grid(Grid *grid) {
