@@ -4,6 +4,7 @@
 
 #include "common.h"
 #include "grid.h"
+#include "limits.h"
 #include "maze_common.h"
 
 Grid *gen_ellers(Grid *grid, MazeGenOptions *options) {

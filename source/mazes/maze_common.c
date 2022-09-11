@@ -24,6 +24,13 @@ void draw_grid_step(Grid *grid, Cell *this_cell, Cell **other_cells) {
     }
 }
 
+int is_stuck(Cell *cell) {
+    return (!cell->upperwall->cell1 || cell->upperwall->cell1->data) &&
+           (!cell->lowerwall->cell2 || cell->lowerwall->cell2->data) &&
+           (!cell->left_wall->cell1 || cell->left_wall->cell1->data) &&
+           (!cell->rightwall->cell2 || cell->rightwall->cell2->data);
+}
+
 void carve_path(Grid *grid, int x, int y, enum DIRECTION dir) {
     Cell next = grid->cells[x + MOVEX(dir)][y + MOVEY(dir)];
     if (dir == STAY) return;

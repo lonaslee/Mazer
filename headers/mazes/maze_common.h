@@ -14,10 +14,18 @@ enum DIRECTION {
     RIGHT
 };
 
-#define MOVEX(dir) (((dir) == UP || (dir) == DOWN || (dir) == STAY) ? 0 : ((dir) == RIGHT) ? 1 \
-                                                                                           : -1)
-#define MOVEY(dir) (((dir) == LEFT || (dir) == RIGHT || (dir) == STAY) ? 0 : ((dir) == UP) ? 1 \
-                                                                                           : -1)
+#define MOVEX(dir) ((dir) == RIGHT ? 1 : (dir) == LEFT ? -1 \
+                                                       : 0)
+#define MOVEY(dir) ((dir) == UP ? 1 : (dir) == DOWN ? -1 \
+                                                    : 0)
+
+/**
+ * @brief Check if all cells around the given cell have occupied `data` fields.
+ *
+ * @param cell cell to check
+ * @return int
+ */
+int is_stuck(Cell *cell);
 
 /**
  * @brief Maze generation functions call this function on every "step" of the algorithm to display the step.
