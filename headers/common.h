@@ -9,7 +9,6 @@
 #include <stdlib.h>
 
 #include "SDL.h"
-#include "graph.h"
 #include "grid.h"
 
 #define WIN_INIT_WIDTH 800
@@ -96,7 +95,6 @@ typedef struct {
     void (*keyevent_fn)(SDL_Event *event);
     void (*mouseevent_fn)(SDL_Event *event);
     Grid *grid;
-    Graph *graph;
 } GameStage;
 
 /**

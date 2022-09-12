@@ -47,7 +47,7 @@ typedef struct {
 Grid *generate_grid(int width, int height);
 
 /**
- * @brief Clear a grid, setting all value fields to 0.
+ * @brief Clear a grid, setting all `data` and `exists` fields to 0.
  *
  * @param grid grid to clear.
  */

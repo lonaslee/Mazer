@@ -75,6 +75,7 @@ Grid *gen_wilsons(Grid *grid, MazeGenOptions *options) {
                 break;
         }
         draw_grid_step(grid, (Cell *)path->elements[path->idx - 1], (Cell **)path->elements);
+        list_del(path);
     }
     return grid;
 }
