@@ -3,6 +3,5 @@
 /*.exe
 /*.code-workspace
 /output
-/SDL2
-/SDL2_image
+/SDL2*
 /*.dll

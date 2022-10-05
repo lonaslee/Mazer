@@ -18,7 +18,7 @@ Grid *gen_wilsons(Grid *grid, MazeGenOptions *options) {
     while (treesize < grid->width * grid->height) {
         int ox;
         int oy;
-        do {
+        do {  // TODO use list of remainings
             ox = rand() % grid->width;
             oy = rand() % grid->height;
         } while (grid->cells[ox][oy].data != 0);
@@ -27,7 +27,8 @@ Grid *gen_wilsons(Grid *grid, MazeGenOptions *options) {
         List *path = list_new(10);
         draw_grid_step(grid, &grid->cells[ox][oy], (Cell **)path->elements);
         while (grid->cells[cx][cy].data != 5) {
-            list_append_unique(path, &grid->cells[cx][cy]);
+            if (grid->cells[cx][cy].data == 0 || grid->cells[cx][cy].data == 5)
+                list_append(path, &grid->cells[cx][cy]);
             enum DIRECTION dir = choicenz(4, UP * (cy != (grid->height - 1)),
                                           DOWN * (cy != 0),
                                           LEFT * (cx != 0),

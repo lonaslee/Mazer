@@ -1,5 +1,5 @@
 /**
- * @file collections.c
+ * @file linkedlist.c
  * @brief Linked list implementations.
  */
 #pragma once
