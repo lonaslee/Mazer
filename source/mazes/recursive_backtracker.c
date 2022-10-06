@@ -2,44 +2,41 @@
 
 #include <stdlib.h>
 
+#include "collections.h"
 #include "common.h"
 #include "grid.h"
-#include "linkedlist.h"
 #include "maze_common.h"
 
 Grid *gen_recursive_backtracker(Grid *grid, MazeGenOptions *options) {
     grid->type = RECURSIVE_BACKTRACKER;
-    int cx = rand() % grid->width;
-    int cy = rand() % grid->height;
-    Cell *cc = &grid->cells[cx][cy];
+    Cell *cc = &grid->cells[rand() % grid->width][rand() % grid->height];
+    cc->upperwall->exists = cc->lowerwall->exists = cc->left_wall->exists = cc->rightwall->exists = 1;
     cc->data = 1;
     LinkedList *stack = llnew(0, (void *)cc);
 
     int treesize = 1;
-    while (treesize < grid->width * grid->height) {
+    while (1) {
         void *vstack[stack->len + 1];
         llvtolist(stack, vstack, -1, -1);
         vstack[stack->len] = NULL;
         draw_grid_step(grid, cc, (Cell **)vstack);
 
-        enum DIRECTION dir = choicenz(4, UP * (cy != (grid->height - 1) && grid->cells[cx][cy + 1].data != 1),
-                                      DOWN * (cy != 0 && grid->cells[cx][cy - 1].data != 1),
-                                      LEFT * (cx != 0 && grid->cells[cx - 1][cy].data != 1),
-                                      RIGHT * (cx != (grid->width - 1) && grid->cells[cx + 1][cy].data != 1));
-        printf("dir: %d  |  (%d, %d)\n", dir, cx, cy);
+        enum DIRECTION dir = choicenz(4, UP * (cc->upperwall->cell1 && cc->upperwall->cell1->data != 1),
+                                      DOWN * (cc->lowerwall->cell2 && cc->lowerwall->cell2->data != 1),
+                                      LEFT * (cc->left_wall->cell1 && cc->left_wall->cell1->data != 1),
+                                      RIGHT * (cc->rightwall->cell2 && cc->rightwall->cell2->data != 1));
         if (dir == STAY) {
-            puts("SH");
-            // TODO change cx & cy, or use cc to escape loop
             llshave(stack, NULL, NULL);
-            cc = stack->last->vdata;
-            continue;
+            if (stack->len) {
+                cc = stack->last->vdata;
+                continue;
+            } else {
+                break;
+            }
         }
         treesize++;
-
-        carve_path(grid, cx, cy, dir);
-        cx += MOVEX(dir);
-        cy += MOVEY(dir);
-        cc = &grid->cells[cx][cy];
+        carve_path(cc, dir);
+        cc = cell_at(cc, dir);
         cc->data = 1;
         llappend(stack, 0, (void *)cc);
     }

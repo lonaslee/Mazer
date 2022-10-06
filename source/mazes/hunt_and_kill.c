@@ -20,7 +20,7 @@ Grid *gen_hunt_and_kill(Grid *grid, MazeGenOptions *options) {
                                           DOWN * (cy != 0 && grid->cells[cx][cy - 1].data != 1),
                                           LEFT * (cx != 0 && grid->cells[cx - 1][cy].data != 1),
                                           RIGHT * (cx != (grid->width - 1) && grid->cells[cx + 1][cy].data != 1));
-            carve_path(grid, cx, cy, dir);
+            carve_path(&grid->cells[cx][cy], dir);
             cx += MOVEX(dir);
             cy += MOVEY(dir);
         }
@@ -31,13 +31,13 @@ Grid *gen_hunt_and_kill(Grid *grid, MazeGenOptions *options) {
             for (int x = 0; x < grid->width; x++) {
                 if (!grid->cells[x][y].data) {
                     if (grid->cells[x][y].rightwall->cell2 && grid->cells[x][y].rightwall->cell2->data) {
-                        carve_path(grid, x + 1, y, LEFT);
+                        carve_path(&grid->cells[x + 1][y], LEFT);
                     } else if (grid->cells[x][y].left_wall->cell1 && grid->cells[x][y].left_wall->cell1->data) {
-                        carve_path(grid, x - 1, y, RIGHT);
+                        carve_path(&grid->cells[x - 1][y], RIGHT);
                     } else if (grid->cells[x][y].upperwall->cell1 && grid->cells[x][y].upperwall->cell1->data) {
-                        carve_path(grid, x, y + 1, DOWN);
+                        carve_path(&grid->cells[x][y + 1], DOWN);
                     } else if (grid->cells[x][y].lowerwall->cell2 && grid->cells[x][y].lowerwall->cell2->data) {
-                        carve_path(grid, x, y - 1, UP);
+                        carve_path(&grid->cells[x][y - 1], UP);
                     } else
                         continue;
                     cx = x;

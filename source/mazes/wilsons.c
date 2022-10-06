@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 
+#include "collections.h"
 #include "common.h"
 #include "grid.h"
 #include "maze_common.h"

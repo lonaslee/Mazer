@@ -1,8 +1,43 @@
-#include "linkedlist.h"
+#include "collections.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+/* * * * *\
+ * List  *
+\* * * * */
+
+List *list_new(int len) {
+    List *list = calloc(1, sizeof(List));
+    list->len = len;
+    list->idx = 0;
+    list->elements = calloc(len, sizeof(void *));
+    return list;
+}
+
+void list_del(List *list) {
+    free(list->elements);
+    free(list);
+}
+
+void list_append(List *list, void *value) {
+    if (list->idx >= list->len) {
+        list->len *= 2;
+        list->elements = realloc(list->elements, list->len * sizeof(void *));
+    }
+    list->elements[list->idx++] = value;
+}
+
+void list_append_unique(List *list, void *value) {
+    for (int i = 0; i < list->idx; i++)
+        if (list->elements[i] == value) return;
+    list_append(list, value);
+}
+
+/* * * * * * * *\
+ * Linked List *
+\* * * * * * * */
 
 LinkedList *llnew(int idata, void *vdata) {
     LinkedList *ll = calloc(1, sizeof(LinkedList));
@@ -48,6 +83,13 @@ void llappend(LinkedList *llist, int idata, void *vdata) {
 
 void llshave(LinkedList *llist, int *idatabuf, void **vdatabuf) {
     llist->len--;
+    if (!llist->len) {
+        if (idatabuf) *idatabuf = llist->first->idata;
+        if (vdatabuf) *vdatabuf = llist->first->vdata;
+        free(llist->first);
+        llist->first = llist->last = NULL;
+        return;
+    }
     Node *slast;
     for (slast = llist->first; slast->next->next != NULL; slast = slast->next)
         ;
@@ -55,6 +97,7 @@ void llshave(LinkedList *llist, int *idatabuf, void **vdatabuf) {
     if (vdatabuf) *vdatabuf = slast->next->vdata;
     free(slast->next);
     slast->next = NULL;
+    llist->last = slast;
 }
 
 void llinsert(LinkedList *llist, int idx, int idata, void *vdata) {
@@ -82,6 +125,8 @@ void llremove(LinkedList *llist, int idx, int *idatabuf, void **vdatabuf) {
         Node *newfirst = llist->first->next;
         free(llist->first);
         llist->first = newfirst;
+    } else if (idx == llist->len - 1) {
+        llshave(llist, idatabuf, vdatabuf);
     } else {
         Node *prev = llgetitem(llist, idx - 1);
         if (idatabuf) *idatabuf = prev->next->idata;

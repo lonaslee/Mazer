@@ -1,8 +1,19 @@
 /**
- * @file linkedlist.c
- * @brief Linked list implementations.
+ * @file collections.c
+ * @brief Collection implementations.
  */
 #pragma once
+
+typedef struct {
+    int len;
+    int idx;
+    void **elements;
+} List;
+
+List *list_new(int len);
+void list_del(List *list);
+void list_append(List *list, void *element);
+void list_append_unique(List *list, void *value);
 
 /**
  * @brief A node in a linked list.

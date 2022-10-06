@@ -40,4 +40,19 @@ void draw_grid_step(Grid *grid, Cell *this_cell, Cell **other_cells);
 /* For testing */
 void print_grid(Grid *grid);
 
-void carve_path(Grid *grid, int x, int y, enum DIRECTION dir);
+/**
+ * @brief Carve a path from cell to a surrounding cell in given direction.
+ *
+ * @param cell cell to carve path from
+ * @param dir direction to go
+ */
+void carve_path(Cell *cell, enum DIRECTION dir);
+
+/**
+ * @brief Return the cell at a direction above it.
+ *
+ * @param cell starting cell
+ * @param dir direction of travel
+ * @return Cell*
+ */
+Cell *cell_at(Cell *cell, enum DIRECTION dir);

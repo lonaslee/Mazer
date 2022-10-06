@@ -31,14 +31,23 @@ int is_stuck(Cell *cell) {
            (!cell->rightwall->cell2 || cell->rightwall->cell2->data);
 }
 
-void carve_path(Grid *grid, int x, int y, enum DIRECTION dir) {
-    Cell next = grid->cells[x + MOVEX(dir)][y + MOVEY(dir)];
-    if (dir == STAY) return;
+void carve_path(Cell *cell, enum DIRECTION dir) {
+    Cell *next = cell_at(cell, dir);
+    next->upperwall->exists = dir != DOWN;
+    next->lowerwall->exists = dir != UP;
+    next->left_wall->exists = dir != RIGHT;
+    next->rightwall->exists = dir != LEFT;
+}
 
-    next.upperwall->exists = dir != DOWN;
-    next.lowerwall->exists = dir != UP;
-    next.left_wall->exists = dir != RIGHT;
-    next.rightwall->exists = dir != LEFT;
+Cell *cell_at(Cell *cell, enum DIRECTION dir) {
+    if (!cell) return NULL;
+    switch (dir) {
+        case UP:    return cell->upperwall ? cell->upperwall->cell1 : NULL;
+        case DOWN:  return cell->lowerwall ? cell->lowerwall->cell2 : NULL;
+        case LEFT:  return cell->left_wall ? cell->left_wall->cell1 : NULL;
+        case RIGHT: return cell->rightwall ? cell->rightwall->cell2 : NULL;
+        default:    return cell;
+    }
 }
 
 void print_grid(Grid *grid) {

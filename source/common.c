@@ -4,33 +4,6 @@
 
 #include "SDL.h"
 
-List *list_new(int len) {
-    List *list = calloc(1, sizeof(List));
-    list->len = len;
-    list->idx = 0;
-    list->elements = calloc(len, sizeof(void *));
-    return list;
-}
-
-void list_del(List *list) {
-    free(list->elements);
-    free(list);
-}
-
-void list_append(List *list, void *value) {
-    if (list->idx >= list->len) {
-        list->len *= 2;
-        list->elements = realloc(list->elements, list->len * sizeof(void *));
-    }
-    list->elements[list->idx++] = value;
-}
-
-void list_append_unique(List *list, void *value) {
-    for (int i = 0; i < list->idx; i++)
-        if (list->elements[i] == value) return;
-    list_append(list, value);
-}
-
 Game *get_game(void) {
     static Game *game = NULL;
     if (game == NULL) {
