@@ -4,16 +4,44 @@
  */
 #pragma once
 
-typedef struct {
-    int len;
-    int idx;
-    void **elements;
-} List;
+/* * * * *\
+ * Stack *
+\* * * * */
 
-List *list_new(int len);
-void list_del(List *list);
-void list_append(List *list, void *element);
-void list_append_unique(List *list, void *value);
+/**
+ * @brief A stack wrapper of a void**, accessable as the `elements` field. Operations are
+ *        functions with a "sk" prefix. The `len` field will be changed accordingly by
+ *        modifying functions. The `_size` field is for internal use.
+ */
+typedef struct {
+    int _size;
+    int len;
+    void **elements;
+} Stack;
+
+/**
+ * @brief Create a new stack, with a given starting length.
+ */
+Stack *sknew(int length);
+
+/**
+ * @brief Free the memory of a stack.
+ */
+void skdel(Stack *stack);
+
+/**
+ * @brief Push a value on top of a stack.
+ */
+void skpush(Stack *stack, void *value);
+
+/**
+ * @brief Pop a value from the top of a stack.
+ */
+void skpop(Stack *stack, void **databuf);
+
+/* * * * * * * *\
+ * Linked List *
+\* * * * * * * */
 
 /**
  * @brief A node in a linked list.
@@ -26,7 +54,7 @@ typedef struct Node {
 
 /**
  * @brief A linked list. Operations on it are in functions with a "ll" prefix in its name.
- *        The `length` field will always be set accordingly by modifying functions.
+ *        The `len` field will always be set accordingly by modifying functions.
  */
 typedef struct {
     int len;
@@ -35,16 +63,14 @@ typedef struct {
 } LinkedList;
 
 /**
- * @brief Create a new linked list.
+ * @brief Create a new linked list with a first node with field values `idata` and `vdata`.
  *
- * @return LinkedList*
+ * @return LinkedList* - new linked list with first node
  */
 LinkedList *llnew(int idata, void *vdata);
 
 /**
  * @brief Free the memory of a linked list.
- *
- * @param llist list to free
  */
 void lldel(LinkedList *llist);
 

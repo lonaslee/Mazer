@@ -25,11 +25,11 @@ Grid *gen_wilsons(Grid *grid, MazeGenOptions *options) {
         } while (grid->cells[ox][oy].data != 0);
 
         int cx = ox, cy = oy;
-        List *path = list_new(10);
+        Stack *path = sknew(10);
         draw_grid_step(grid, &grid->cells[ox][oy], (Cell **)path->elements);
         while (grid->cells[cx][cy].data != 5) {
             if (grid->cells[cx][cy].data == 0 || grid->cells[cx][cy].data == 5)
-                list_append(path, &grid->cells[cx][cy]);
+                skpush(path, &grid->cells[cx][cy]);
             enum DIRECTION dir = choicenz(4, UP * (cy != (grid->height - 1)),
                                           DOWN * (cy != 0),
                                           LEFT * (cx != 0),
@@ -39,9 +39,9 @@ Grid *gen_wilsons(Grid *grid, MazeGenOptions *options) {
             cy += MOVEY(dir);
             if (grid->cells[cx][cy].data != 0 && grid->cells[cx][cy].data != 5) {
                 Cell *ocell = &grid->cells[cx][cy];
-                for (; path->elements[path->idx - 1] != ocell; path->idx--) {
-                    ((Cell *)path->elements[path->idx - 1])->data = 0;
-                    path->elements[path->idx - 1] = NULL;
+                for (int i = path->len - 1; path->elements[i] != ocell; i--) {
+                    ((Cell *)path->elements[i])->data = 0;
+                    skpop(path, NULL);
                 }
             }
             draw_grid_step(grid, &grid->cells[ox][oy], (Cell **)path->elements);
@@ -51,8 +51,8 @@ Grid *gen_wilsons(Grid *grid, MazeGenOptions *options) {
         enum DIRECTION lastdir = c->data;
         c->upperwall->exists = c->lowerwall->exists = c->left_wall->exists = c->rightwall->exists = 1;
         c->data = 5;
-        treesize += path->idx;
-        for (int i = 1; i < path->idx; i++) {
+        treesize += path->len;
+        for (int i = 1; i < path->len; i++) {
             draw_grid_step(grid, (Cell *)path->elements[i], (Cell **)path->elements);
             Cell *c = path->elements[i];
             c->upperwall->exists = lastdir != DOWN;
@@ -76,8 +76,8 @@ Grid *gen_wilsons(Grid *grid, MazeGenOptions *options) {
                 grid->cells[cx][cy].left_wall->exists = 0;
                 break;
         }
-        draw_grid_step(grid, (Cell *)path->elements[path->idx - 1], (Cell **)path->elements);
-        list_del(path);
+        draw_grid_step(grid, (Cell *)path->elements[path->len - 1], (Cell **)path->elements);
+        skdel(path);
     }
     return grid;
 }

@@ -5,34 +5,38 @@
 #include <string.h>
 
 /* * * * *\
- * List  *
+ * Stack *
 \* * * * */
 
-List *list_new(int len) {
-    List *list = calloc(1, sizeof(List));
-    list->len = len;
-    list->idx = 0;
-    list->elements = calloc(len, sizeof(void *));
-    return list;
+Stack *sknew(int lenth) {
+    Stack *stack = calloc(1, sizeof(Stack));
+    stack->_size = lenth;
+    stack->len = 0;
+    stack->elements = calloc(lenth, sizeof(void *));
+    return stack;
 }
 
-void list_del(List *list) {
-    free(list->elements);
-    free(list);
+void skdel(Stack *stack) {
+    free(stack->elements);
+    free(stack);
 }
 
-void list_append(List *list, void *value) {
-    if (list->idx >= list->len) {
-        list->len *= 2;
-        list->elements = realloc(list->elements, list->len * sizeof(void *));
+void skpush(Stack *stack, void *value) {
+    if (stack->len == stack->_size) {
+        stack->elements = realloc(stack->elements, (stack->_size *= 2) * sizeof(void *));
+        memset(&stack->elements[stack->len], 0, (stack->_size / 2) * sizeof(void *));
     }
-    list->elements[list->idx++] = value;
+    stack->elements[stack->len++] = value;
 }
 
-void list_append_unique(List *list, void *value) {
-    for (int i = 0; i < list->idx; i++)
-        if (list->elements[i] == value) return;
-    list_append(list, value);
+void skpop(Stack *stack, void **databuf) {
+    if (!stack->len) {
+        if (databuf) *databuf = NULL;
+        return;
+    }
+    stack->len--;
+    if (databuf) *databuf = stack->elements[stack->len];
+    stack->elements[stack->len] = NULL;
 }
 
 /* * * * * * * *\
