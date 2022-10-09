@@ -5,8 +5,8 @@ SRCDIR := source/
 ODIR := output/
 
 IARGS := -Iheaders/ -Iheaders/mazes -ISDL2/x86_64-w64-mingw32/include/SDL2 -ISDL2_image/x86_64-w64-mingw32/include/SDL2
-LARGS := -LD:/c/mazer/SDL2/x86_64-w64-mingw32/lib -lmingw32 -lSDL2main -lSDL2 -LD:/c/mazer/SDL2_image/x86_64-w64-mingw32/lib -lSDL2_image #-mwindows
-CFLAGS := -c $(IARGS)
+LARGS := -LD:/c/mazer/SDL2/x86_64-w64-mingw32/lib -lmingw32 -lSDL2main -lSDL2 -LD:/c/mazer/SDL2_image/x86_64-w64-mingw32/lib -lSDL2_image -g #-mwindows
+CFLAGS := -c $(IARGS) -g
 
 
 all: cmazes cmp lnk

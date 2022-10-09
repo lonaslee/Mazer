@@ -47,4 +47,5 @@ Grid *gen_sidewinder(Grid *grid, MazeGenOptions *options) {
         grid->cells[x][grid->height - 1].rightwall->exists = 0;
     }
     grid->cells[grid->width - 1][grid->height - 1].rightwall->exists = 1;
+    return grid;
 }

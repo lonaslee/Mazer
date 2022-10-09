@@ -51,4 +51,5 @@ Grid *gen_hunt_and_kill(Grid *grid, MazeGenOptions *options) {
         cy = -1;
     esc:;
     }
+    return grid;
 }

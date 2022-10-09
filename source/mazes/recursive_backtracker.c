@@ -38,4 +38,5 @@ Grid *gen_recursive_backtracker(Grid *grid, MazeGenOptions *options) {
         cc->data = 1;
         skpush(stack, cc);
     }
+    return grid;
 }

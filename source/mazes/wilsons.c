@@ -75,6 +75,8 @@ Grid *gen_wilsons(Grid *grid, MazeGenOptions *options) {
             case RIGHT:
                 grid->cells[cx][cy].left_wall->exists = 0;
                 break;
+            default:
+                break;
         }
         draw_grid_step(grid, (Cell *)path->elements[path->len - 1], (Cell **)path->elements);
         skdel(path);

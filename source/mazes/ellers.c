@@ -81,4 +81,5 @@ Grid *gen_ellers(Grid *grid, MazeGenOptions *options) {
         draw_grid_step(grid, &grid->cells[x][0], NULL);
     }
     grid->cells[grid->width - 1][0].lowerwall->exists = 1;
+    return grid;
 }

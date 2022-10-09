@@ -4,16 +4,8 @@
  */
 #pragma once
 
+#include "common.h"
 #include "grid.h"
-
-/* Maze generator implementations */
-#include "aldous_broder.h"
-#include "binary_tree.h"
-#include "ellers.h"
-#include "hunt_and_kill.h"
-#include "recursive_backtracker.h"
-#include "sidewinder.h"
-#include "wilsons.h"
 
 /**
  * @brief Generate a maze on a grid.
