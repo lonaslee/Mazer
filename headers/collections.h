@@ -39,6 +39,55 @@ void skpush(Stack *stack, void *value);
  */
 void skpop(Stack *stack, void **databuf);
 
+/* * * * *\
+ * Tree  *
+\* * * * */
+
+/**
+ * @brief A Node in a Tree. Fields are managed by functions with a "tr" prefix.
+ */
+typedef struct TNode {
+    void *data;
+    struct TNode *nextsib;
+    struct TNode *child;
+} TNode;
+
+/**
+ * @brief Create a new tree with a first node.
+ * @return TNode* - tip of the tree, new node created.
+ */
+TNode *trnew(void *data);
+
+/**
+ * @brief Recursively delete all siblings and children of a node.
+ */
+void trdel(TNode *node);
+
+/**
+ * @brief Append a new node to this layer of the tree under the parent of the given node.
+ */
+TNode *trappendsib(TNode *node, void *data);
+
+/**
+ * @brief Remove the last node in this layer of the tree under the parent of the given node.
+ */
+void *trshavesib(TNode *node);
+
+/**
+ * @brief Append a child to the given node's linked list of children, or create the linked
+ *        list if the node has no children. This is equivalent to calling `trappendsib` on
+ *        the node's children.
+ * @return TNode* - the new child created
+ */
+TNode *trappendchild(TNode *node, void *data);
+
+/**
+ * @brief Remove the last child of the given node's linked list of children, and delete the linked
+ *        list if it is the last child of the node. This is equivalent to calling `trshavesib` on
+ *        the node's children.
+ */
+void *trshavechild(TNode *node);
+
 /* * * * * * * *\
  * Linked List *
 \* * * * * * * */
@@ -46,11 +95,11 @@ void skpop(Stack *stack, void **databuf);
 /**
  * @brief A node in a linked list.
  */
-typedef struct Node {
+typedef struct LLNode {
     int idata;
     void *vdata;
-    struct Node *next;
-} Node;
+    struct LLNode *next;
+} LLNode;
 
 /**
  * @brief A linked list. Operations on it are in functions with a "ll" prefix in its name.
@@ -58,8 +107,8 @@ typedef struct Node {
  */
 typedef struct {
     int len;
-    Node *first;
-    Node *last;
+    LLNode *first;
+    LLNode *last;
 } LinkedList;
 
 /**
@@ -79,9 +128,9 @@ void lldel(LinkedList *llist);
  *
  * @param llist list to get node from
  * @param idx index of node
- * @return Node* - node at the index, or NULL if the index is out of range
+ * @return LLNode* - node at the index, or NULL if the index is out of range
  */
-Node *llgetitem(LinkedList *llist, int idx);
+LLNode *llgetitem(LinkedList *llist, int idx);
 
 /**
  * @brief Display a linked list to stdout.

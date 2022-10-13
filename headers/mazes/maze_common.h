@@ -21,11 +21,13 @@ enum DIRECTION {
 
 /**
  * @brief Check if all cells around the given cell have occupied `data` fields.
- *
- * @param cell cell to check
- * @return int
  */
 int is_stuck(Cell *cell);
+
+/**
+ * @brief Check if all 4 of given cell's walls `exist`.
+ */
+int is_surrounded(Cell *cell);
 
 /**
  * @brief Maze generation functions call this function on every "step" of the algorithm to display the step.
@@ -49,7 +51,7 @@ void print_grid(Grid *grid);
 void carve_path(Cell *cell, enum DIRECTION dir);
 
 /**
- * @brief Return the cell at a direction above it.
+ * @brief Return the cell at a direction to a given cell it.
  *
  * @param cell starting cell
  * @param dir direction of travel

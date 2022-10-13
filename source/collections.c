@@ -39,6 +39,74 @@ void skpop(Stack *stack, void **databuf) {
     stack->elements[stack->len] = NULL;
 }
 
+/* * * * *\
+ * Tree  *
+\* * * * */
+
+TNode *trnew(void *data) {
+    TNode *tip = malloc(sizeof(TNode));
+    tip->data = data;
+    tip->nextsib = NULL;
+    tip->child = NULL;
+    return tip;
+}
+
+void trdel(TNode *node) {
+    TNode *cur, *next;
+    for (cur = node, next = cur->nextsib; cur != NULL;) {
+        if (cur->child) trdel(cur->child);
+        free(cur);
+        cur = next;
+        if (next) next = next->nextsib;
+    }
+}
+
+TNode *trappendsib(TNode *node, void *data) {
+    TNode *next = trnew(data);
+    TNode *cur;
+    for (cur = node; cur->nextsib != NULL; cur = cur->nextsib)
+        ;
+    cur->nextsib = next;
+    return next;
+}
+
+void *trshavesib(TNode *node) {
+    TNode *slast;
+    for (slast = node; slast->nextsib->nextsib != NULL; slast = slast->nextsib)
+        ;
+    void *databuf = slast->nextsib->data;
+    trdel(slast->nextsib);
+    slast->nextsib = NULL;
+    return databuf;
+}
+
+TNode *trappendchild(TNode *node, void *data) {
+    TNode *child = trnew(data);
+    if (!node->child) {
+        node->child = child;
+    } else {
+        TNode *cur;
+        for (cur = node->child; cur->nextsib != NULL; cur = cur->nextsib)
+            ;
+        cur->nextsib = child;
+    }
+    return child;
+}
+
+void *trshavechild(TNode *node) {
+    TNode *child = node->child;
+    if (!child) return NULL;
+
+    TNode *slast;
+    for (slast = child; slast->nextsib->nextsib != NULL; slast = slast->nextsib)
+        ;
+    void *databuf = slast->nextsib->data;
+    trdel(slast->nextsib);
+    slast->nextsib = NULL;
+    if (slast == node->child) node->child = NULL;
+    return databuf;
+}
+
 /* * * * * * * *\
  * Linked List *
 \* * * * * * * */
@@ -46,7 +114,7 @@ void skpop(Stack *stack, void **databuf) {
 LinkedList *llnew(int idata, void *vdata) {
     LinkedList *ll = calloc(1, sizeof(LinkedList));
     ll->len = 1;
-    ll->first = calloc(1, sizeof(Node));
+    ll->first = calloc(1, sizeof(LLNode));
     ll->first->idata = idata;
     ll->first->vdata = vdata;
     ll->last = ll->first;
@@ -54,17 +122,17 @@ LinkedList *llnew(int idata, void *vdata) {
 }
 
 void lldel(LinkedList *llist) {
-    for (Node *cur = llist->first; cur != NULL;) {
-        Node *next = cur->next;
+    for (LLNode *cur = llist->first; cur != NULL;) {
+        LLNode *next = cur->next;
         free(cur);
         cur = next;
     }
     free(llist);
 }
 
-Node *llgetitem(LinkedList *llist, int idx) {
+LLNode *llgetitem(LinkedList *llist, int idx) {
     int i = 0;
-    for (Node *cur = llist->first; cur != NULL; cur = cur->next, i++)
+    for (LLNode *cur = llist->first; cur != NULL; cur = cur->next, i++)
         if (i == idx) return cur;
     return NULL;
 }
@@ -72,14 +140,14 @@ Node *llgetitem(LinkedList *llist, int idx) {
 void llprint(LinkedList *llist) {
     printf("\nlen: %d\n", llist->len);
     int i;
-    Node *cur;
+    LLNode *cur;
     for (i = 0, cur = llist->first; cur != NULL; cur = cur->next, i++)
         printf("%d:  int - %d;  void - %p\n", i, cur->idata, cur->vdata);
 }
 
 void llappend(LinkedList *llist, int idata, void *vdata) {
     llist->len++;
-    llist->last->next = calloc(1, sizeof(Node));
+    llist->last->next = calloc(1, sizeof(LLNode));
     llist->last = llist->last->next;
     llist->last->idata = idata;
     llist->last->vdata = vdata;
@@ -94,7 +162,7 @@ void llshave(LinkedList *llist, int *idatabuf, void **vdatabuf) {
         llist->first = llist->last = NULL;
         return;
     }
-    Node *slast;
+    LLNode *slast;
     for (slast = llist->first; slast->next->next != NULL; slast = slast->next)
         ;
     if (idatabuf) *idatabuf = slast->next->idata;
@@ -106,16 +174,16 @@ void llshave(LinkedList *llist, int *idatabuf, void **vdatabuf) {
 
 void llinsert(LinkedList *llist, int idx, int idata, void *vdata) {
     llist->len++;
-    Node *new = calloc(1, sizeof(Node));
+    LLNode *new = calloc(1, sizeof(LLNode));
     new->idata = idata;
     new->vdata = vdata;
     if (idx == 0) {
-        Node *prevfirst = llist->first;
+        LLNode *prevfirst = llist->first;
         llist->first = new;
         new->next = prevfirst;
     } else {
-        Node *prev = llgetitem(llist, idx - 1);
-        Node *prevhere = prev->next;
+        LLNode *prev = llgetitem(llist, idx - 1);
+        LLNode *prevhere = prev->next;
         prev->next = new;
         new->next = prevhere;
     }
@@ -126,16 +194,16 @@ void llremove(LinkedList *llist, int idx, int *idatabuf, void **vdatabuf) {
     if (idx == 0) {
         if (idatabuf) *idatabuf = llist->first->idata;
         if (vdatabuf) *vdatabuf = llist->first->vdata;
-        Node *newfirst = llist->first->next;
+        LLNode *newfirst = llist->first->next;
         free(llist->first);
         llist->first = newfirst;
     } else if (idx == llist->len - 1) {
         llshave(llist, idatabuf, vdatabuf);
     } else {
-        Node *prev = llgetitem(llist, idx - 1);
+        LLNode *prev = llgetitem(llist, idx - 1);
         if (idatabuf) *idatabuf = prev->next->idata;
         if (vdatabuf) *vdatabuf = prev->next->vdata;
-        Node *newhere = prev->next->next;
+        LLNode *newhere = prev->next->next;
         free(prev->next);
         prev->next = newhere;
     }
@@ -143,8 +211,8 @@ void llremove(LinkedList *llist, int idx, int *idatabuf, void **vdatabuf) {
 
 LinkedList *llcopy(LinkedList *llist) {
     LinkedList *cpy = llnew(0, NULL);
-    Node *old;
-    Node *new;
+    LLNode *old;
+    LLNode *new;
     for (old = llist->first, new = cpy->first; old != NULL; old = old->next) {
         llappend(cpy, 0, NULL);
         memcpy(&new->idata, &old->idata, sizeof(int));
@@ -157,7 +225,7 @@ LinkedList *llcopy(LinkedList *llist) {
 int llicount(LinkedList *llist, int ivalue, int *indices) {
     int count = 0;
     int i = 0;
-    for (Node *cur = llist->first; cur != NULL; cur = cur->next, i++)
+    for (LLNode *cur = llist->first; cur != NULL; cur = cur->next, i++)
         if (cur->idata == ivalue) {
             if (indices) indices[count] = i;
             count++;
@@ -168,7 +236,7 @@ int llicount(LinkedList *llist, int ivalue, int *indices) {
 int llvcount(LinkedList *llist, void *vvalue, int *indices) {
     int count = 0;
     int i = 0;
-    for (Node *cur = llist->first; cur != NULL; cur = cur->next, i++)
+    for (LLNode *cur = llist->first; cur != NULL; cur = cur->next, i++)
         if (cur->vdata == vvalue) {
             if (indices) indices[count] = i;
             count++;
@@ -178,21 +246,21 @@ int llvcount(LinkedList *llist, void *vvalue, int *indices) {
 
 int lliindex(LinkedList *llist, int ivalue) {
     int i = 0;
-    for (Node *cur = llist->first; cur != NULL; cur = cur->next, i++)
+    for (LLNode *cur = llist->first; cur != NULL; cur = cur->next, i++)
         if (cur->idata == ivalue) return i;
     return -1;
 }
 
 int llvindex(LinkedList *llist, void *vvalue) {
     int i = 0;
-    for (Node *cur = llist->first; cur != NULL; cur = cur->next, i++) {
+    for (LLNode *cur = llist->first; cur != NULL; cur = cur->next, i++) {
         if (cur->vdata == vvalue) return i;
     }
     return -1;
 }
 
 void llreverse(LinkedList *llist) {
-    Node *prev, *cur, *next;
+    LLNode *prev, *cur, *next;
     for (prev = NULL, cur = llist->first, next = NULL; cur != NULL; prev = cur, cur = next) {
         next = cur->next;
         cur->next = prev;
@@ -206,7 +274,7 @@ void llpop(LinkedList *llist, int *idatabuf, void **vdatabuf) {
 }
 
 void llclear(LinkedList *llist) {
-    for (Node *cur = llist->first; cur != NULL; cur = cur->next) {
+    for (LLNode *cur = llist->first; cur != NULL; cur = cur->next) {
         cur->idata = 0;
         cur->vdata = NULL;
     }
@@ -215,7 +283,7 @@ void llclear(LinkedList *llist) {
 int *llitolist(LinkedList *llist, int *iarr, int start, int stop) {
     if (start == -1) start = 0;
     if (stop == -1) stop = llist->len;
-    Node *cur;
+    LLNode *cur;
     int i;
     for (i = 0, cur = llgetitem(llist, start); cur != NULL && i < stop; cur = cur->next, i++)
         iarr[i] = cur->idata;
@@ -225,7 +293,7 @@ int *llitolist(LinkedList *llist, int *iarr, int start, int stop) {
 void **llvtolist(LinkedList *llist, void **varr, int start, int stop) {
     if (start == -1) start = 0;
     if (stop == -1) stop = llist->len;
-    Node *cur;
+    LLNode *cur;
     int i;
     for (i = 0, cur = llgetitem(llist, start); cur != NULL && i < stop; cur = cur->next, i++)
         varr[i] = cur->vdata;

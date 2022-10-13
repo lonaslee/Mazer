@@ -45,15 +45,15 @@ int main(int argc, char *argv[]) {
 
 static void testfn(void) {
     Game *game = get_game();
-    Grid *grid = generate_grid(10, 10);
+    Grid *grid = generate_grid(4, 4);
     game->stage->grid = grid;
-    game->settings->step_interval = 0.01;
+    game->settings->step_interval = 0.2;
 
     MazeGenOptions mgo = {.numof = 2};
     mgo.opts[0] = 100;
     mgo.opts[1] = 15;
 
-    gen_ellers(grid, NULL);
+    gen_maze(grid, NULL, KRUSKALS);
 }
 
 static void load_all_textures(void) {
@@ -72,18 +72,10 @@ void on_event(SDL_Event *event) {
             puts("User exit.");
             exit(EXIT_SUCCESS);
             break;
-        case SDL_KEYDOWN:
-            game->stage->keyevent_fn(event);
-            break;
 
         default:
             break;
     }
-}
-
-static void on_startscreen_keyevent(SDL_Event *event) {
-    int x, y;
-    int ms = SDL_GetMouseState(&x, &y);
 }
 
 static void cleanup(void) {
@@ -93,7 +85,6 @@ static void cleanup(void) {
     oputc('.');
 
     free_grid(game->stage->grid);
-    free_graph(game->stage->graph);
     free(game->stage);
     oputc('.');
 
@@ -101,9 +92,6 @@ static void cleanup(void) {
     oputc('.');
 
     free(game->settings);
-    free(get_grid_resources()->textures);
-    free(get_grid_resources());
-
     free(game);
     puts(" Done.");
 }

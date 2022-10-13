@@ -5,6 +5,7 @@
 static void divide(Grid *grid, int ox, int oy, int width, int height);
 
 Grid *gen_recursive_division(Grid *grid, MazeGenOptions *options) {
+    grid->type = RECURSIVE_DIVISION;
     for (int x = 0; x < grid->width; x++)
         grid->cells[x][0].lowerwall->exists = grid->cells[x][grid->height - 1].upperwall->exists = 1;
     for (int y = 0; y < grid->height; y++)

@@ -31,6 +31,10 @@ int is_stuck(Cell *cell) {
            (!cell->rightwall->cell2 || cell->rightwall->cell2->data);
 }
 
+int is_surrounded(Cell *cell) {
+    return cell->upperwall->exists && cell->lowerwall->exists && cell->left_wall->exists && cell->rightwall->exists;
+}
+
 void carve_path(Cell *cell, enum DIRECTION dir) {
     Cell *next = cell_at(cell, dir);
     next->upperwall->exists = dir != DOWN;
