@@ -39,6 +39,13 @@ void skpop(Stack *stack, void **databuf) {
     stack->elements[stack->len] = NULL;
 }
 
+void skprint(Stack *stack) {
+    printf("\nStack (size: %d, length: %d)\n\n", stack->_size, stack->len);
+    for (int i = stack->len - 1; i >= 0; i--)
+        printf("%3d  %p\n", i, stack->elements[i]);
+    puts("");
+}
+
 /* * * * *\
  * Tree  *
 \* * * * */
@@ -81,16 +88,11 @@ void *trshavesib(TNode *node) {
 }
 
 TNode *trappendchild(TNode *node, void *data) {
-    TNode *child = trnew(data);
     if (!node->child) {
-        node->child = child;
-    } else {
-        TNode *cur;
-        for (cur = node->child; cur->nextsib != NULL; cur = cur->nextsib)
-            ;
-        cur->nextsib = child;
+        node->child = trnew(data);
+        return node->child;
     }
-    return child;
+    return trappendsib(node->child, data);
 }
 
 void *trshavechild(TNode *node) {
@@ -107,16 +109,40 @@ void *trshavechild(TNode *node) {
     return databuf;
 }
 
+static void indent(int level) {
+    for (int i = 0; i < level; i++) printf("\t");
+}
+
+static void priv_trprint(TNode *tip, int level) {
+    TNode *cur;
+    for (cur = tip->child; cur != NULL; cur = cur->nextsib) {
+        indent(level);
+        printf("   %c\n", 179);
+        indent(level);
+        printf("   %c%c%c ", 195, 196, 196);
+        printf("%5p\n", cur->data);
+        if (cur->child)
+            priv_trprint(cur, level + 1);
+    }
+}
+
+void trprint(TNode *tip) {
+    printf("\nTree\n\n");
+    printf("\t%5p\n", tip->data);
+    if (tip->child)
+        priv_trprint(tip, 1);
+    puts("");
+}
+
 /* * * * * * * *\
  * Linked List *
 \* * * * * * * */
 
-LinkedList *llnew(int idata, void *vdata) {
+LinkedList *llnew(void *data) {
     LinkedList *ll = calloc(1, sizeof(LinkedList));
     ll->len = 1;
     ll->first = calloc(1, sizeof(LLNode));
-    ll->first->idata = idata;
-    ll->first->vdata = vdata;
+    ll->first->data = data;
     ll->last = ll->first;
     return ll;
 }
@@ -138,26 +164,25 @@ LLNode *llgetitem(LinkedList *llist, int idx) {
 }
 
 void llprint(LinkedList *llist) {
-    printf("\nlen: %d\n", llist->len);
+    printf("\nLinkedList (len: %d)\n\n", llist->len);
     int i;
     LLNode *cur;
     for (i = 0, cur = llist->first; cur != NULL; cur = cur->next, i++)
-        printf("%d:  int - %d;  void - %p\n", i, cur->idata, cur->vdata);
+        printf("%3d  %p\n", i, cur->data);
+    puts("");
 }
 
-void llappend(LinkedList *llist, int idata, void *vdata) {
+void llappend(LinkedList *llist, void *data) {
     llist->len++;
     llist->last->next = calloc(1, sizeof(LLNode));
     llist->last = llist->last->next;
-    llist->last->idata = idata;
-    llist->last->vdata = vdata;
+    llist->last->data = data;
 }
 
-void llshave(LinkedList *llist, int *idatabuf, void **vdatabuf) {
+void llshave(LinkedList *llist, void **databuf) {
     llist->len--;
     if (!llist->len) {
-        if (idatabuf) *idatabuf = llist->first->idata;
-        if (vdatabuf) *vdatabuf = llist->first->vdata;
+        if (databuf) *databuf = llist->first->data;
         free(llist->first);
         llist->first = llist->last = NULL;
         return;
@@ -165,18 +190,16 @@ void llshave(LinkedList *llist, int *idatabuf, void **vdatabuf) {
     LLNode *slast;
     for (slast = llist->first; slast->next->next != NULL; slast = slast->next)
         ;
-    if (idatabuf) *idatabuf = slast->next->idata;
-    if (vdatabuf) *vdatabuf = slast->next->vdata;
+    if (databuf) *databuf = slast->next->data;
     free(slast->next);
     slast->next = NULL;
     llist->last = slast;
 }
 
-void llinsert(LinkedList *llist, int idx, int idata, void *vdata) {
+void llinsert(LinkedList *llist, int idx, void *data) {
     llist->len++;
     LLNode *new = calloc(1, sizeof(LLNode));
-    new->idata = idata;
-    new->vdata = vdata;
+    new->data = data;
     if (idx == 0) {
         LLNode *prevfirst = llist->first;
         llist->first = new;
@@ -189,20 +212,18 @@ void llinsert(LinkedList *llist, int idx, int idata, void *vdata) {
     }
 }
 
-void llremove(LinkedList *llist, int idx, int *idatabuf, void **vdatabuf) {
+void llremove(LinkedList *llist, int idx, void **databuf) {
     llist->len--;
     if (idx == 0) {
-        if (idatabuf) *idatabuf = llist->first->idata;
-        if (vdatabuf) *vdatabuf = llist->first->vdata;
+        if (databuf) *databuf = llist->first->data;
         LLNode *newfirst = llist->first->next;
         free(llist->first);
         llist->first = newfirst;
     } else if (idx == llist->len - 1) {
-        llshave(llist, idatabuf, vdatabuf);
+        llshave(llist, databuf);
     } else {
         LLNode *prev = llgetitem(llist, idx - 1);
-        if (idatabuf) *idatabuf = prev->next->idata;
-        if (vdatabuf) *vdatabuf = prev->next->vdata;
+        if (databuf) *databuf = prev->next->data;
         LLNode *newhere = prev->next->next;
         free(prev->next);
         prev->next = newhere;
@@ -210,51 +231,32 @@ void llremove(LinkedList *llist, int idx, int *idatabuf, void **vdatabuf) {
 }
 
 LinkedList *llcopy(LinkedList *llist) {
-    LinkedList *cpy = llnew(0, NULL);
+    LinkedList *cpy = llnew(NULL);
     LLNode *old;
     LLNode *new;
     for (old = llist->first, new = cpy->first; old != NULL; old = old->next) {
-        llappend(cpy, 0, NULL);
-        memcpy(&new->idata, &old->idata, sizeof(int));
-        memcpy(&new->vdata, &old->vdata, sizeof(void *));
+        llappend(cpy, NULL);
+        memcpy(new->data, &old->data, sizeof(void *));
     }
-    llremove(cpy, 0, NULL, NULL);
+    llremove(cpy, 0, NULL);
     return cpy;
 }
 
-int llicount(LinkedList *llist, int ivalue, int *indices) {
+int llcount(LinkedList *llist, void *value, int *indices) {
     int count = 0;
     int i = 0;
     for (LLNode *cur = llist->first; cur != NULL; cur = cur->next, i++)
-        if (cur->idata == ivalue) {
+        if (cur->data == value) {
             if (indices) indices[count] = i;
             count++;
         }
     return count;
 }
 
-int llvcount(LinkedList *llist, void *vvalue, int *indices) {
-    int count = 0;
-    int i = 0;
-    for (LLNode *cur = llist->first; cur != NULL; cur = cur->next, i++)
-        if (cur->vdata == vvalue) {
-            if (indices) indices[count] = i;
-            count++;
-        }
-    return count;
-}
-
-int lliindex(LinkedList *llist, int ivalue) {
-    int i = 0;
-    for (LLNode *cur = llist->first; cur != NULL; cur = cur->next, i++)
-        if (cur->idata == ivalue) return i;
-    return -1;
-}
-
-int llvindex(LinkedList *llist, void *vvalue) {
+int llindex(LinkedList *llist, void *value) {
     int i = 0;
     for (LLNode *cur = llist->first; cur != NULL; cur = cur->next, i++) {
-        if (cur->vdata == vvalue) return i;
+        if (cur->data == value) return i;
     }
     return -1;
 }
@@ -269,33 +271,21 @@ void llreverse(LinkedList *llist) {
     llist->last = llgetitem(llist, llist->len - 1);
 }
 
-void llpop(LinkedList *llist, int *idatabuf, void **vdatabuf) {
-    llremove(llist, rand() % llist->len, idatabuf, vdatabuf);
+void llpop(LinkedList *llist, void **databuf) {
+    llremove(llist, rand() % llist->len, databuf);
 }
 
 void llclear(LinkedList *llist) {
-    for (LLNode *cur = llist->first; cur != NULL; cur = cur->next) {
-        cur->idata = 0;
-        cur->vdata = NULL;
-    }
+    for (LLNode *cur = llist->first; cur != NULL; cur = cur->next)
+        cur->data = NULL;
 }
 
-int *llitolist(LinkedList *llist, int *iarr, int start, int stop) {
+void **lltolist(LinkedList *llist, void **arr, int start, int stop) {
     if (start == -1) start = 0;
     if (stop == -1) stop = llist->len;
     LLNode *cur;
     int i;
     for (i = 0, cur = llgetitem(llist, start); cur != NULL && i < stop; cur = cur->next, i++)
-        iarr[i] = cur->idata;
-    return iarr;
-}
-
-void **llvtolist(LinkedList *llist, void **varr, int start, int stop) {
-    if (start == -1) start = 0;
-    if (stop == -1) stop = llist->len;
-    LLNode *cur;
-    int i;
-    for (i = 0, cur = llgetitem(llist, start); cur != NULL && i < stop; cur = cur->next, i++)
-        varr[i] = cur->vdata;
-    return varr;
+        arr[i] = cur->data;
+    return arr;
 }
