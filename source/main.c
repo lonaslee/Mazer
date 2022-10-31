@@ -9,16 +9,21 @@
 #include "SDL_image.h"
 
 /* project headers */
+#include "collections.h"
 #include "common.h"
 #include "images.h"
 #include "maze.h"
 
 Game *game;
+static int argc;
+static char **argv;
 
-int main(int argc, char *argv[]) {
+int main(int argc_, char *argv_[]) {
     puts("Enter.\n");
     srand(time(0));
     atexit(&cleanup);
+    argc = argc_;
+    argv = argv_;
 
     game = get_game();
 
@@ -27,6 +32,7 @@ int main(int argc, char *argv[]) {
     puts("");
 
     testfn();
+    testfn2();
 
     int quit = 0;
     SDL_Event event;
@@ -43,17 +49,55 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-static void testfn(void) {
+static void parse_argv(int *w, int *h) {
+    for (int i = 0; i < argc; i++) {
+        printf("%d: %s\n", i, argv[i]);
+    }
+
+    for (int i = 0; i < argc; i++) {
+        if (argv[i][0] == '-') {
+            switch (argv[i][1]) {
+                case 'w':
+                case 'W': {
+                    if (strlen(argv[i]) == 2)
+                        *w = atoi(argv[++i]);
+                    else
+                        *w = atoi(&argv[i][2]);
+                    break;
+                }
+                case 'h':
+                case 'H': {
+                    if (strlen(argv[i]) == 2)
+                        *h = atoi(argv[++i]);
+                    else
+                        *h = atoi(&argv[i][2]);
+                    break;
+                }
+                default:
+                    EXIT_ERR("Unrecognised option '-%c'. Exit.\n", argv[i][1]);
+                    break;
+            }
+        }
+    }
+}
+
+static void testfn() {
     Game *game = get_game();
-    Grid *grid = generate_grid(4, 4);
+    int w = 10, h = 10;
+    parse_argv(&w, &h);
+    Grid *grid = generate_grid(w, h);
     game->stage->grid = grid;
-    game->settings->step_interval = 0.2;
+    game->settings->step_interval = 0.001;
 
     MazeGenOptions mgo = {.numof = 2};
     mgo.opts[0] = 100;
     mgo.opts[1] = 15;
 
     gen_maze(grid, NULL, KRUSKALS);
+}
+
+static void testfn2(void) {
+    puts("EXIT testfn2");
 }
 
 static void load_all_textures(void) {

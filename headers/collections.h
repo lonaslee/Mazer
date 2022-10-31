@@ -55,6 +55,7 @@ typedef struct TNode {
     void *data;
     struct TNode *nextsib;
     struct TNode *child;
+    struct TNode *parent;
 } TNode;
 
 /**
@@ -92,6 +93,21 @@ TNode *trappendchild(TNode *node, void *data);
  *        the node's children.
  */
 void *trshavechild(TNode *node);
+
+/**
+ * @brief Append a tree as a sibling to another tree.
+ */
+void trappendsibtree(TNode *tree, TNode *subtree);
+
+/**
+ * @brief Append a tree as a child to another tree.
+ */
+void trappendchildtree(TNode *tree, TNode *subtree);
+
+/**
+ * @brief Get the very top root of a node.
+ */
+TNode *trgetroot(TNode *node);
 
 /**
  * @brief Print a representation of the tree from the given tip.

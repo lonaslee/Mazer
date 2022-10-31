@@ -40,7 +40,7 @@ void skpop(Stack *stack, void **databuf) {
 }
 
 void skprint(Stack *stack) {
-    printf("\nStack (size: %d, length: %d)\n\n", stack->_size, stack->len);
+    printf("\nStack at %p (size: %d, length: %d)\n\n", stack, stack->_size, stack->len);
     for (int i = stack->len - 1; i >= 0; i--)
         printf("%3d  %p\n", i, stack->elements[i]);
     puts("");
@@ -55,6 +55,7 @@ TNode *trnew(void *data) {
     tip->data = data;
     tip->nextsib = NULL;
     tip->child = NULL;
+    tip->parent = tip;
     return tip;
 }
 
@@ -70,6 +71,8 @@ void trdel(TNode *node) {
 
 TNode *trappendsib(TNode *node, void *data) {
     TNode *next = trnew(data);
+    if (node->parent != node)
+        next->parent = node->parent;
     TNode *cur;
     for (cur = node; cur->nextsib != NULL; cur = cur->nextsib)
         ;
@@ -90,6 +93,7 @@ void *trshavesib(TNode *node) {
 TNode *trappendchild(TNode *node, void *data) {
     if (!node->child) {
         node->child = trnew(data);
+        node->child->parent = node;
         return node->child;
     }
     return trappendsib(node->child, data);
@@ -107,6 +111,30 @@ void *trshavechild(TNode *node) {
     slast->nextsib = NULL;
     if (slast == node->child) node->child = NULL;
     return databuf;
+}
+
+TNode *trgetroot(TNode *node) {
+    TNode *root = node;
+    while (root->parent != root) root = root->parent;
+    return root;
+}
+
+void trappendsibtree(TNode *tree, TNode *subtree) {
+    if (tree->parent != tree)
+        subtree->parent = tree->parent;
+    TNode *cur;
+    for (cur = tree; cur->nextsib != NULL; cur = cur->nextsib)
+        ;
+    cur->nextsib = subtree;
+}
+
+void trappendchildtree(TNode *tree, TNode *subtree) {
+    if (!tree->child) {
+        subtree->parent = tree;
+        tree->child = subtree;
+    } else {
+        trappendsibtree(tree->child, subtree);
+    }
 }
 
 static void indent(int level) {
@@ -127,7 +155,7 @@ static void priv_trprint(TNode *tip, int level) {
 }
 
 void trprint(TNode *tip) {
-    printf("\nTree\n\n");
+    printf("\nTree at %p\n\n", tip);
     printf("\t%5p\n", tip->data);
     if (tip->child)
         priv_trprint(tip, 1);
@@ -164,7 +192,7 @@ LLNode *llgetitem(LinkedList *llist, int idx) {
 }
 
 void llprint(LinkedList *llist) {
-    printf("\nLinkedList (len: %d)\n\n", llist->len);
+    printf("\nLinkedList at %p (len: %d)\n\n", llist, llist->len);
     int i;
     LLNode *cur;
     for (i = 0, cur = llist->first; cur != NULL; cur = cur->next, i++)

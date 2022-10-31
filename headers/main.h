@@ -12,5 +12,6 @@ void on_event(SDL_Event *event);
 
 // only main.c should ever include this file, so static decls and no include guard
 static void testfn(void);
+static void testfn2(void);
 static void load_all_textures(void);
 static void cleanup(void);
