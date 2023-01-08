@@ -14,7 +14,6 @@
 #include "images.h"
 #include "maze.h"
 
-Game *game;
 static int argc;
 static char **argv;
 
@@ -40,10 +39,7 @@ int main(int argc_, char *argv_[]) {
         while (SDL_PollEvent(&event)) {
             on_event(&event);
         }
-        SDL_SetRenderDrawColor(game->renderer, 0, 0, 0, 255);
-        SDL_RenderClear(game->renderer);
-        draw_grid(get_grid_resources(), game->renderer, game->stage->grid, NULL, NULL);
-        SDL_RenderPresent(game->renderer);
+        draw_grid(game->stage->grid, NULL, NULL);
     }
 
     return 0;

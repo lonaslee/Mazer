@@ -123,9 +123,8 @@ typedef struct {
 
 /**
  * @brief The main game object.
- *
  */
-extern Game *game;
+Game *game;
 
 enum FileNames {
     CLR_BLACK,

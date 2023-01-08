@@ -1,7 +1,11 @@
-/.vscode
-*/.vscode
-/*.exe
-/*.code-workspace
+
+**/.vscode
+**/.vs
+**/*.code-workspace
+
+**/test.*
+**/*.exe
+**/*.dll
+
 /output
 /SDL2*
-/*.dll

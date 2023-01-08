@@ -17,10 +17,7 @@ void draw_grid_step(Grid *grid, Cell *this_cell, Cell **other_cells) {
         while (SDL_PollEvent(&event)) {
             on_event(&event);
         }
-        SDL_SetRenderDrawColor(game->renderer, 0, 0, 0, 255);
-        SDL_RenderClear(game->renderer);
-        draw_grid(get_grid_resources(), game->renderer, grid, this_cell, other_cells);
-        SDL_RenderPresent(game->renderer);
+        draw_grid(grid, this_cell, other_cells);
     }
 }
 
@@ -46,11 +43,16 @@ void carve_path(Cell *cell, enum DIRECTION dir) {
 Cell *cell_at(Cell *cell, enum DIRECTION dir) {
     if (!cell) return NULL;
     switch (dir) {
-        case UP:    return cell->upperwall ? cell->upperwall->cell1 : NULL;
-        case DOWN:  return cell->lowerwall ? cell->lowerwall->cell2 : NULL;
-        case LEFT:  return cell->left_wall ? cell->left_wall->cell1 : NULL;
-        case RIGHT: return cell->rightwall ? cell->rightwall->cell2 : NULL;
-        default:    return cell;
+        case UP:
+            return cell->upperwall ? cell->upperwall->cell1 : NULL;
+        case DOWN:
+            return cell->lowerwall ? cell->lowerwall->cell2 : NULL;
+        case LEFT:
+            return cell->left_wall ? cell->left_wall->cell1 : NULL;
+        case RIGHT:
+            return cell->rightwall ? cell->rightwall->cell2 : NULL;
+        default:
+            return cell;
     }
 }
 
