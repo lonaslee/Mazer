@@ -32,6 +32,10 @@ static inline void *delnode(LLNode *node) {
 /// @brief return node at given index
 /// @returns nevernull | noreturn
 static inline LLNode *nodeat(LinkedList *list, llsize_t idx) {
+#if BOUND_CHECK
+    if (list->length == 0) LLERROR("nodeat list has no elements")
+#endif
+
     LLFOREACHINDEXED(i, cur, list)
     if (i == idx) return cur;
     LLERROR("nodeat index higher than list length")
@@ -186,10 +190,10 @@ void lljoin(LinkedList *list, LinkedList *other) {
 
 LinkedList *llnsublist(LinkedList *list, llsize_t start, llsize_t length) {
 #if BOUND_CHECK
-    if (!(start <= list->length && list->length < start + length)) LLERROR("nsublist range out of bounds")
+    if (start + length > list->length) LLERROR("nsublist range out of bounds")
 #endif
     LinkedList *sub = llnew();
-    if (length == 0) return sub;
+    if (length == 0 || list->length == 0) return sub;
     LLNode *cur = nodeat(list, start);
     for (llsize_t i = 0; i < length; cur = cur->next, i++)
         llappend(sub, cur->data);
@@ -198,7 +202,7 @@ LinkedList *llnsublist(LinkedList *list, llsize_t start, llsize_t length) {
 
 LinkedList *llsublist(LinkedList *list, llsize_t start, llsize_t end) {
 #if BOUND_CHECK
-    if (!(start <= list->length && list->length < end)) LLERROR("sublist range out of bounds")
+    if (end > list->length) LLERROR("sublist range out of bounds")
     if (end < start) LLERROR("sublist end larger than start")
 #endif
     return llnsublist(list, start, end - start);
