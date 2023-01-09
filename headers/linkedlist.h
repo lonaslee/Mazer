@@ -4,6 +4,8 @@
  * @brief Doubly linked list implementation.
  */
 
+#include <limits.h>
+
 /** Whether functions should error out or segfault. */
 #define BOUND_CHECK 1
 
@@ -33,6 +35,10 @@ const llsize_t llnpos = UINT_MAX;
     for (llsize_t numname = list->length - 1, once = 1; once == 1; once = 0) \
         for (LLNode *name = list->last; name != NULL; name = name->prev, numname--)
 
+/// @brief Comparison function that is given the data of two nodes.
+///        It must return negative for lesser, 0 for equal, and positive for greater.
+typedef int (*llcmpfunc)(const void *, const void *);
+
 /**
  * @brief A doubly linked list. Access and modifications are
  *        provided by functions with the `ll` prefix.
@@ -43,6 +49,9 @@ typedef struct {
     llsize_t length;
 } LinkedList;
 
+/// Indicate that a LinkedList* can be null.
+typedef LinkedList *NullableLinkedListPtr;
+
 typedef struct LLNode {
     struct LLNode *prev;
     struct LLNode *next;
@@ -52,7 +61,6 @@ typedef struct LLNode {
 /**
  * @brief Allocate a linked list.
  *        It must be freed with the `lldel` function.
- * @returns nevernull
  */
 LinkedList *llnew();
 
@@ -121,6 +129,28 @@ llsize_t lllastindex(LinkedList *list, void *value);
 void llreverse(LinkedList *list);
 
 /**
+ * @brief Copy the data of each node of a linked list to another, adding more
+ *        nodes to the other as neccesary.
+ */
+void llcopy(LinkedList *src, LinkedList *dst);
+
+/**
+ * @brief Link the end of the first list to the start of the other, and
+ *        deallocate the other.
+ */
+void lljoin(LinkedList *list, LinkedList *other);
+
+/**
+ * @brief Creat a sublist of length new nodes from start (inclusive).
+ */
+LinkedList *llnsublist(LinkedList *list, llsize_t start, llsize_t length);
+
+/**
+ * @brief Create a sublist of new nodes from start (inclusive) to end (exclusive).
+ */
+LinkedList *llsublist(LinkedList *list, llsize_t start, llsize_t end);
+
+/**
  * @brief Print a representation of a linked list to stdout.
  */
 void llprint(LinkedList *list);
@@ -128,9 +158,15 @@ void llprint(LinkedList *list);
 /**
  * @brief Mergesort a LinkedList in place.
  */
-void llmergesort(LinkedList *list);
+void llmergesort(LinkedList *list, llcmpfunc cmp);
 
 /**
  * @brief Quicksort a LinkedList in place.
  */
-void llquicksort(LinkedList *list);
+void llquicksort(LinkedList *list, llcmpfunc cmp);
+
+/**
+ * @brief Search a sorted LinkedList for a given key,
+ *        and return its node, or NULL.
+ */
+LLNode *llbinarysearch(LinkedList *list, const void *key, llcmpfunc cmp);

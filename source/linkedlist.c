@@ -30,13 +30,11 @@ static inline void *delnode(LLNode *node) {
 }
 
 /// @brief return node at given index
-/// @return nevernull | noreturn
-static inline LLNode *nodeat(LinkedList *list, llsize_t idx){
-    LLFOREACHINDEXED(i, cur, list){
-        printf("idx : %d\n", i);
-if (i == idx) return cur;
-}
-LLERROR("nodeat index higher than list length")
+/// @returns nevernull | noreturn
+static inline LLNode *nodeat(LinkedList *list, llsize_t idx) {
+    LLFOREACHINDEXED(i, cur, list)
+    if (i == idx) return cur;
+    LLERROR("nodeat index higher than list length")
 }
 
 /* public */
@@ -166,19 +164,106 @@ void llreverse(LinkedList *list) {
     if (tmp != NULL) list->first = tmp->prev;
 }
 
-void llprint(LinkedList *list) {
-    printf("Linked List of %d length at %p\n", list->length, list);
-    int i;
-    LLNode *cur;
-    for (cur = list->first, i = 0; cur != NULL; cur = cur->next, i++)
-        printf("%d\t%p\n", i, cur->data);
+void llcopy(LinkedList *src, LinkedList *dst) {
+    LLFOREACHINDEXED(i, cur, src) {
+        if (dst->length == i) {
+            llappend(dst, cur->data);
+        } else {
+            llset(dst, i, cur->data);
+        }
+    }
+    while (dst->length > src->length) {
+        llpop(dst);
+    }
 }
 
-void llmergesort(LinkedList* list) {
+void lljoin(LinkedList *list, LinkedList *other) {
+    if (list->last != NULL) list->last->next = other->first;
+    if (other->first != NULL) other->first->prev = list->last;
+    list->length += other->length;
+    free(other);
+}
+
+LinkedList *llnsublist(LinkedList *list, llsize_t start, llsize_t length) {
+#if BOUND_CHECK
+    if (!(start <= list->length && list->length < start + length)) LLERROR("nsublist range out of bounds")
+#endif
+    LinkedList *sub = llnew();
+    if (length == 0) return sub;
+    LLNode *cur = nodeat(list, start);
+    for (llsize_t i = 0; i < length; cur = cur->next, i++)
+        llappend(sub, cur->data);
+    return sub;
+}
+
+LinkedList *llsublist(LinkedList *list, llsize_t start, llsize_t end) {
+#if BOUND_CHECK
+    if (!(start <= list->length && list->length < end)) LLERROR("sublist range out of bounds")
+    if (end < start) LLERROR("sublist end larger than start")
+#endif
+    return llnsublist(list, start, end - start);
+}
+
+void llprint(LinkedList *list) {
+    printf("Linked List of %d length at %p\n", list->length, list);
+    LLFOREACHINDEXED(i, cur, list)
+    printf("%d\t%p\n", i, cur->data);
+}
+
+/* internal mergesort helpers */
+
+static LLNode *nodemerge(LLNode *left, LLNode *right, llcmpfunc cmp) {
+    if (left == NULL) return right;
+    if (right == NULL) return left;
+    if (cmp(left->data, right->data) < 0) {
+        left->next = nodemerge(left->next, right, cmp);
+        left->next->prev = left;
+        left->prev = NULL;
+        return left;
+    } else {
+        right->next = nodemerge(left, right->next, cmp);
+        right->next->prev = right;
+        right->prev = NULL;
+        return right;
+    }
+}
+
+static LLNode *split(LLNode *first) {
+    LLNode *fast = first;
+    LLNode *second = first;
+    while (fast->next != NULL && fast->next->next != NULL) {
+        fast = fast->next->next;
+        second = second->next;
+    }
+    LLNode *tmp = second->next;
+    second->next = NULL;
+    return tmp;
+}
+
+static LLNode *nodemergesort(LLNode *first, llcmpfunc cmp) {
+    if (first == NULL || first->next == NULL) return first;
+    LLNode *second = split(first);
+    first = nodemergesort(first, cmp);
+    second = nodemergesort(second, cmp);
+    return nodemerge(first, second, cmp);
+}
+
+void llmergesort(LinkedList *list, llcmpfunc cmp) {
+    if (list->length <= 1) return;
+    LLNode *left = list->first;
+    LLNode *right = split(list->first);
+
+    left = nodemergesort(left, cmp);
+    right = nodemergesort(right, cmp);
+    list->first = nodemerge(left, right, cmp);
+    while (list->last->next != NULL) list->last = list->last->next;
+}
+
+void llquicksort(LinkedList *list, llcmpfunc cmp) {
     // TODO
 }
 
-void llquicksort(LinkedList* list) {
+LLNode *llbinarysearch(LinkedList *list, const void *key, llcmpfunc cmp) {
     // TODO
 }
 
