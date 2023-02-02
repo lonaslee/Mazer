@@ -87,8 +87,3 @@ void draw_grid(Grid *grid, Cell *this_cell, Cell **other_cells) {
         }
     }
 }
-
-void display_grid(Grid *grid, Resources *res) {
-    int winwidth, winheight;
-    SDL_GetWindowSize(game->win, &winwidth, &winheight);
-}

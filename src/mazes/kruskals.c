@@ -2,11 +2,12 @@
 
 #include <stdlib.h>
 
-#include "collections.h"
 #include "common.h"
 #include "grid.h"
 #include "limits.h"
 #include "maze_common.h"
+#include "utils/stack.h"
+#include "utils/tree.h"
 
 static int cmp(const void *a, const void *b) {
     return rand() % 2;

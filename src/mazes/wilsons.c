@@ -2,10 +2,10 @@
 
 #include <stdlib.h>
 
-#include "collections.h"
 #include "common.h"
 #include "grid.h"
 #include "maze_common.h"
+#include "utils/stack.h"
 
 Grid *gen_wilsons(Grid *grid, MazeGenOptions *options) {
     grid->type = WILSONS;

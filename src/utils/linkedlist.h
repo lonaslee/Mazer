@@ -1,13 +1,14 @@
 #pragma once
 /**
  * @file linkedlist.c
- * @brief Doubly linked list implementation.
+ * @brief Doubly linked list implementation, providing access and modifying
+ *        functions ("ll" prefixed).
  */
 
 #include <limits.h>
 
 /** Whether functions should error out or segfault. */
-#define BOUND_CHECK 1
+#define LLBOUND_CHECK 1
 
 /// @brief Numeric type of linked list size and indices.
 typedef unsigned int llsize_t;
@@ -156,12 +157,20 @@ LinkedList *llsublist(LinkedList *list, llsize_t start, llsize_t end);
 void llprint(LinkedList *list);
 
 /**
+ * @brief Print a linked list, using a given function to print
+ *        values at each node.
+ *        The printer function must not advance a line.
+ */
+void llprintvalues(LinkedList *list, void (*printer)(const void *));
+
+/**
  * @brief Mergesort a LinkedList in place.
  */
 void llmergesort(LinkedList *list, llcmpfunc cmp);
 
 /**
- * @brief Quicksort a LinkedList in place.
+ * @brief Quicksort a LinkedList in place. Note that this swaps the values,
+ *        not the nodes themselves.
  */
 void llquicksort(LinkedList *list, llcmpfunc cmp);
 
@@ -169,4 +178,4 @@ void llquicksort(LinkedList *list, llcmpfunc cmp);
  * @brief Search a sorted LinkedList for a given key,
  *        and return its node, or NULL.
  */
-LLNode *llbinarysearch(LinkedList *list, const void *key, llcmpfunc cmp);
+LLNode *llfind(LinkedList *list, const void *key);

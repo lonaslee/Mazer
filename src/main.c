@@ -9,7 +9,6 @@
 #include "SDL_image.h"
 
 /* project headers */
-#include "collections.h"
 #include "common.h"
 #include "images.h"
 #include "maze.h"
@@ -24,6 +23,9 @@ int main(int argc_, char *argv_[]) {
     argc = argc_;
     argv = argv_;
 
+    if (SDL_InitSubSystem(SDL_INIT_EVERYTHING)) EXIT_ERR("Failed to init SDL.")
+    if (IMG_Init(IMG_INIT_PNG) < IMG_INIT_PNG) EXIT_ERR("Failed to init SDL image.")
+
     game = get_game();
 
     puts("Loading textures:");
@@ -33,13 +35,15 @@ int main(int argc_, char *argv_[]) {
     testfn();
     testfn2();
 
-    int quit = 0;
     SDL_Event event;
-    while (!quit) {
+    while (1) {
         while (SDL_PollEvent(&event)) {
             on_event(&event);
         }
+        SDL_RenderClear(game->renderer);
         draw_grid(game->stage->grid, NULL, NULL);
+        SDL_RenderPresent(game->renderer);
+        SDL_Delay(1);
     }
 
     return 0;
@@ -83,13 +87,13 @@ static void testfn() {
     parse_argv(&w, &h);
     Grid *grid = generate_grid(w, h);
     game->stage->grid = grid;
-    game->settings->step_interval = 0.001;
+    game->settings->step_interval = 1e-9;
 
     MazeGenOptions mgo = {.numof = 2};
     mgo.opts[0] = 100;
     mgo.opts[1] = 15;
 
-    gen_maze(grid, NULL, KRUSKALS);
+    gen_maze(grid, NULL, HUNT_AND_KILL);
 }
 
 static void testfn2(void) {
@@ -133,5 +137,8 @@ static void cleanup(void) {
 
     free(game->settings);
     free(game);
+
+    SDL_Quit();
+    IMG_Quit();
     puts(" Done.");
 }

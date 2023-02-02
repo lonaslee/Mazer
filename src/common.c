@@ -1,8 +1,10 @@
 #include "common.h"
 
 #include <stdlib.h>
+#include <string.h>
 
 #include "SDL.h"
+#include "images.h"
 
 Game *get_game(void) {
     static Game *game = NULL;

@@ -32,12 +32,12 @@ static inline void *delnode(LLNode *node) {
 /// @brief return node at given index
 /// @returns nevernull | noreturn
 static inline LLNode *nodeat(LinkedList *list, llsize_t idx) {
-#if BOUND_CHECK
+#if LLBOUND_CHECK
     if (list->length == 0) LLERROR("nodeat list has no elements")
 #endif
-
-    LLFOREACHINDEXED(i, cur, list)
-    if (i == idx) return cur;
+    LLFOREACHINDEXED(i, cur, list) {
+        if (i == idx) return cur;
+    }
     LLERROR("nodeat index higher than list length")
 }
 
@@ -61,14 +61,14 @@ void lldel(LinkedList *list) {
 }
 
 void *llget(LinkedList *list, llsize_t index) {
-#if BOUND_CHECK
+#if LLBOUND_CHECK
     if (index >= list->length) LLERROR("get index bigger than last index")
 #endif
     return nodeat(list, index)->data;
 }
 
 void llset(LinkedList *list, llsize_t index, void *data) {
-#if BOUND_CHECK
+#if LLBOUND_CHECK
     if (index >= list->length) LLERROR("set index bigger than last index")
 #endif
     nodeat(list, index)->data = data;
@@ -86,7 +86,7 @@ void llappend(LinkedList *list, void *data) {
 }
 
 void *llpop(LinkedList *list) {
-#if BOUND_CHECK
+#if LLBOUND_CHECK
     if (list->length == 0) LLERROR("pop list has no elements")
 #endif
     list->length--;
@@ -101,7 +101,7 @@ void *llpop(LinkedList *list) {
 }
 
 void llinsert(LinkedList *list, llsize_t index, void *data) {
-#if BOUND_CHECK
+#if LLBOUND_CHECK
     if (index > list->length) LLERROR("insert index higher than list length")
 #endif
     if (index == list->length) {
@@ -119,7 +119,7 @@ void llinsert(LinkedList *list, llsize_t index, void *data) {
 }
 
 void *llremove(LinkedList *list, llsize_t index) {
-#if BOUND_CHECK
+#if LLBOUND_CHECK
     if (index >= list->length) LLERROR("remove index higher than last index")
     if (list->last == 0) LLERROR("remove list has no elements")
 #endif
@@ -134,27 +134,31 @@ void *llremove(LinkedList *list, llsize_t index) {
 }
 
 void llclear(LinkedList *list) {
-    LLFOREACH(cur, list)
-    cur->data = NULL;
+    LLFOREACH(cur, list) {
+        cur->data = NULL;
+    }
 }
 
 llsize_t llcount(LinkedList *list, void *value) {
     llsize_t count = 0;
-    LLFOREACH(cur, list)
-    if (cur->data == value) count++;
+    LLFOREACH(cur, list) {
+        if (cur->data == value) count++;
+    }
     return count;
 }
 
 llsize_t llindex(LinkedList *list, void *value) {
     llsize_t i;
-    LLFOREACH(cur, list)
-    if (cur->data == value) return i;
+    LLFOREACH(cur, list) {
+        if (cur->data == value) return i;
+    }
     return llnpos;
 }
 
 llsize_t lllastindex(LinkedList *list, void *value) {
-    LLFORREACHINDEXED(i, cur, list)
-    if (cur->data == value) return i;
+    LLFORREACHINDEXED(i, cur, list) {
+        if (cur->data == value) return i;
+    }
     return llnpos;
 }
 
@@ -189,7 +193,7 @@ void lljoin(LinkedList *list, LinkedList *other) {
 }
 
 LinkedList *llnsublist(LinkedList *list, llsize_t start, llsize_t length) {
-#if BOUND_CHECK
+#if LLBOUND_CHECK
     if (start + length > list->length) LLERROR("nsublist range out of bounds")
 #endif
     LinkedList *sub = llnew();
@@ -201,7 +205,7 @@ LinkedList *llnsublist(LinkedList *list, llsize_t start, llsize_t length) {
 }
 
 LinkedList *llsublist(LinkedList *list, llsize_t start, llsize_t end) {
-#if BOUND_CHECK
+#if LLBOUND_CHECK
     if (end > list->length) LLERROR("sublist range out of bounds")
     if (end < start) LLERROR("sublist end larger than start")
 #endif
@@ -210,8 +214,18 @@ LinkedList *llsublist(LinkedList *list, llsize_t start, llsize_t end) {
 
 void llprint(LinkedList *list) {
     printf("Linked List of %d length at %p\n", list->length, list);
-    LLFOREACHINDEXED(i, cur, list)
-    printf("%d\t%p\n", i, cur->data);
+    LLFOREACHINDEXED(i, cur, list) {
+        printf("%d\t%p\n", i, cur->data);
+    }
+}
+
+void llprintvalues(LinkedList *list, void (*printer)(const void *)) {
+    printf("Linked List of %d length at %p\n", list->length, list);
+    LLFOREACHINDEXED(i, cur, list) {
+        printf("%d\t%p\t", i, cur->data);
+        printer(cur->data);
+        printf("\n");
+    }
 }
 
 /* internal mergesort helpers */
@@ -263,12 +277,61 @@ void llmergesort(LinkedList *list, llcmpfunc cmp) {
     while (list->last->next != NULL) list->last = list->last->next;
 }
 
-void llquicksort(LinkedList *list, llcmpfunc cmp) {
-    // TODO
+/* quicksort helpers */
+
+static LLNode *partition(LLNode *start, LLNode *end, llcmpfunc cmp) {
+    void *pivot = end->data;
+    LLNode *i = start->prev;
+    LLNode *j = start;
+
+    while (j != end) {
+        if (cmp(j->data, pivot) <= 0) {
+            if (i == NULL)
+                i = start;
+            else
+                i = i->next;
+
+            void *tmp = i->data;
+            i->data = j->data;
+            j->data = tmp;
+        }
+        j = j->next;
+    }
+    if (i == NULL)
+        i = start;
+    else
+        i = i->next;
+    void *tmp = i->data;
+    i->data = end->data;
+    end->data = tmp;
+    return i;
 }
 
-LLNode *llbinarysearch(LinkedList *list, const void *key, llcmpfunc cmp) {
-    // TODO
+static void subquicksort(LLNode *l, LLNode *h, llcmpfunc cmp) {
+    if (h != NULL && l != h && l != h->next) {
+        LLNode *j = partition(l, h, cmp);
+        subquicksort(l, j->prev, cmp);
+        subquicksort(j->next, h, cmp);
+    }
+}
+
+void llquicksort(LinkedList *list, llcmpfunc cmp) {
+    if (list->length <= 1) return;
+    subquicksort(list->first, list->last, cmp);
+}
+
+LLNode *llfind(LinkedList *list, const void *key) {
+    LLFOREACH(cur, list) {
+        if (cur->data == key) return cur;
+    }
+    return NULL;
+}
+
+LLNode *llfindlast(LinkedList *list, const void *key) {
+    LLFORREACH(cur, list) {
+        if (cur->data == key) return cur;
+    }
+    return NULL;
 }
 
 #undef LLERROR
