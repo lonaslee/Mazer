@@ -15,3 +15,4 @@ static void testfn(void);
 static void testfn2(void);
 static void load_all_textures(void);
 static void cleanup(void);
+static void parse_argv(int *w, int *h);

@@ -35,7 +35,6 @@ int is_surrounded(Cell *cell);
  * @param grid the grid where the maze is being generated
  * @param this_cell pointer to the current cell of the iteration of the algorithm
  * @param other_cells NULL terminated list of other cells to display
- * @param type the algorithm being used
  */
 void draw_grid_step(Grid *grid, Cell *this_cell, Cell **other_cells);
 

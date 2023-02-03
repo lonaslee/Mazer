@@ -5,11 +5,13 @@
  */
 #pragma once
 
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "SDL.h"
 #include "grid.h"
+#include "states/states.h"
 
 #define WIN_INIT_WIDTH 800
 #define WIN_INIT_HEIGHT 600
@@ -73,6 +75,15 @@ typedef struct {
     int opts[100];
 } MazeGenOptions;
 
+/**
+ * @brief Pair of Grid and MazeGenOptions, to be cast into a void* for
+ *        threading maze generation.
+ */
+typedef struct {
+    Grid *grid;
+    MazeGenOptions *options;
+} MazeGenArg;
+
 enum MazeType {
     ALDOUS_BRODER,
     WILSONS,
@@ -92,8 +103,6 @@ enum MazeType {
  * @brief The stage of the game.
  */
 typedef struct {
-    void (*keyevent_fn)(SDL_Event *event);
-    void (*mouseevent_fn)(SDL_Event *event);
     Grid *grid;
 } GameStage;
 
@@ -117,6 +126,8 @@ typedef struct {
     SDL_Window *win;
     SDL_Renderer *renderer;
     GameStage *stage;
+    _Atomic(State) state;
+    _Atomic(LoopState) loopstate;
     Resources *resources;
     Settings *settings;
 } Game;
@@ -169,6 +180,11 @@ int choicenz(int n, ...);
  * @return int - random integer from arguments
  */
 int choice(int n, ...);
+
+/**
+ * @brief Get a random number, usable across different threads.
+ */
+int getrand();
 
 /**
  * @brief Handle events.

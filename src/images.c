@@ -7,6 +7,7 @@
 #include "common.h"
 #include "destroy.h"
 #include "maze.h"
+#include "states/states.h"
 
 SDL_Texture *cache_resource(Resources *resources, SDL_Renderer *renderer, const char *fp) {
     SDL_Texture *texture = IMG_LoadTexture(renderer, fp);
@@ -28,6 +29,7 @@ void free_resources(Resources *resources) {
 }
 
 void draw_grid(Grid *grid, Cell *this_cell, Cell **other_cells) {
+    printf("S-");
     int winwidth, winheight, cellsize, wallsize, offsetx, offsety;
     SDL_GetWindowSize(game->win, &winwidth, &winheight);
     cellsize = (MIN(winwidth, winheight) * 0.95) / MAX(grid->width, grid->height);
@@ -86,4 +88,5 @@ void draw_grid(Grid *grid, Cell *this_cell, Cell **other_cells) {
             SDL_RenderCopy(game->renderer, grid->cells[x][y].rightwall->exists ? wall_img : cell_img, NULL, &vertical);
         }
     }
+    printf("E\n");
 }

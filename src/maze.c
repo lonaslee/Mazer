@@ -3,8 +3,9 @@
 #include "common.h"
 
 void gen_maze(Grid *grid, MazeGenOptions *options, enum MazeType type) {
+    MazeGenArg arg = {.grid = grid, .options = options};
     switch (type) {
-        case ALDOUS_BRODER:         gen_aldous_broder(grid, options);         break;
+        case ALDOUS_BRODER:         gen_aldous_broder(&arg);                  break;
         case BINARY_TREE:           gen_binary_tree(grid, options);           break;
         case ELLERS:                gen_ellers(grid, options);                break;
         case HUNT_AND_KILL:         gen_hunt_and_kill(grid, options);         break;

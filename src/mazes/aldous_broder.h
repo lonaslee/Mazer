@@ -10,4 +10,4 @@
  * @param options this algorithm has no customizeable options, this can be NULL
  * @return Grid* - same maze pointer passed
  */
-Grid *gen_aldous_broder(Grid *grid, MazeGenOptions *options);
+void *gen_aldous_broder(void *args);

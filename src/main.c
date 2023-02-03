@@ -1,5 +1,6 @@
 #include "main.h"
 
+#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -12,14 +13,15 @@
 #include "common.h"
 #include "images.h"
 #include "maze.h"
+#include "states/states.h"
 
 static int argc;
 static char **argv;
 
 int main(int argc_, char *argv_[]) {
     puts("Enter.\n");
-    srand(time(0));
     atexit(&cleanup);
+    srand(time(0));
     argc = argc_;
     argv = argv_;
 
@@ -32,16 +34,48 @@ int main(int argc_, char *argv_[]) {
     load_all_textures();
     puts("");
 
-    testfn();
-    testfn2();
+    int w = 10, h = 10;
+    parse_argv(&w, &h);
+    game->stage->grid = generate_grid(w, h);
+    game->settings->step_interval = 1;
+
+    pthread_t gen_thrd;
+    MazeGenArg arg = {.grid = game->stage->grid, .options = NULL};
+    pthread_create(&gen_thrd, NULL, gen_aldous_broder, &arg);
+    pthread_detach(gen_thrd);
 
     SDL_Event event;
     while (1) {
+        game->loopstate = LOOP_BEGIN;
+        printf("B-");
+        SDL_RenderClear(game->renderer);
+        printf("N\n");
+        game->loopstate = LOOP_MIDDLE;
+
         while (SDL_PollEvent(&event)) {
             on_event(&event);
         }
-        SDL_RenderClear(game->renderer);
-        draw_grid(game->stage->grid, NULL, NULL);
+
+        game->loopstate = LOOP_SWITCH;
+        switch (game->state) {
+            case STATE_IDLE:
+                draw_grid(game->stage->grid, NULL, NULL);
+                break;
+            case STATE_WAIT_INPUT:
+                break;
+            case STATE_GENERATING:
+                break;
+            case STATE_GEN_WAIT: {
+                while (game->state == STATE_GEN_WAIT)
+                    ;
+                break;
+            }
+            default:
+                break;
+        }
+
+        game->loopstate = LOOP_END;
+        puts("P");
         SDL_RenderPresent(game->renderer);
         SDL_Delay(1);
     }
@@ -79,25 +113,6 @@ static void parse_argv(int *w, int *h) {
             }
         }
     }
-}
-
-static void testfn() {
-    Game *game = get_game();
-    int w = 10, h = 10;
-    parse_argv(&w, &h);
-    Grid *grid = generate_grid(w, h);
-    game->stage->grid = grid;
-    game->settings->step_interval = 1e-9;
-
-    MazeGenOptions mgo = {.numof = 2};
-    mgo.opts[0] = 100;
-    mgo.opts[1] = 15;
-
-    gen_maze(grid, NULL, HUNT_AND_KILL);
-}
-
-static void testfn2(void) {
-    puts("EXIT testfn2");
 }
 
 static void load_all_textures(void) {
