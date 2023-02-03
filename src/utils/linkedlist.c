@@ -213,14 +213,14 @@ LinkedList *llsublist(LinkedList *list, llsize_t start, llsize_t end) {
 }
 
 void llprint(LinkedList *list) {
-    printf("Linked List of %d length at %p\n", list->length, list);
+    printf("Linked List of length %d at %p\n", list->length, list);
     LLFOREACHINDEXED(i, cur, list) {
         printf("%d\t%p\n", i, cur->data);
     }
 }
 
 void llprintvalues(LinkedList *list, void (*printer)(const void *)) {
-    printf("Linked List of %d length at %p\n", list->length, list);
+    printf("Linked List of length %d at %p\n", list->length, list);
     LLFOREACHINDEXED(i, cur, list) {
         printf("%d\t%p\t", i, cur->data);
         printer(cur->data);

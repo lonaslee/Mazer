@@ -7,8 +7,14 @@
 /** print an Array error and abort. this macro is undef'd at end */
 #define ARERROR(msg)                               \
     do {                                           \
-        puts("Linked List error: " msg ". abort"); \
+        puts("Array error: " msg ". abort"); \
         abort();                                   \
+    } while (0);
+
+#define GROW_ARRAY(array)                                                           \
+    do {                                                                            \
+        array->elems = realloc(array->elems, (array->_size *= 2) * sizeof(void *)); \
+        memset(&array->elems[array->len], 0, (array->_size / 2) * sizeof(void *));  \
     } while (0);
 
 Array *arnew(arsize_t size) {
@@ -26,17 +32,52 @@ void ardel(Array *array) {
     free(array);
 }
 
+void *arget(Array *array, arsize_t index) {
+#if ARBOUND_CHECK
+    if (index >= array->len) ARERROR("get index out of bounds")
+#endif
+    return array->elems[index];
+}
+
+void arset(Array *array, arsize_t index, void *value) {
+#if ARBOUND_CHECK
+    if (index >= array->len) ARERROR("set index out of bounds")
+#endif
+    array->elems[index] = value;
+}
+
 void arappend(Array *array, void *value) {
-    if (array->len >= array->_size) {
-        array->elems = realloc(array->elems, (array->_size *= 2) * sizeof(void *));
-        memset(&array->elems[array->len], 0, (array->_size / 2) * sizeof(void *));
-    }
+    if (array->len >= array->_size)
+        GROW_ARRAY(array);
     array->elems[array->len++] = value;
 }
 
 void *arpop(Array *array) {
     if (array->len == 0) return NULL;
     return array->elems[--array->len];
+}
+
+void arinsert(Array *array, arsize_t index, void *value) {
+#if ARBOUND_CHECK
+    if (index > array->len) ARERROR("insert out of bounds")
+#endif
+
+    if (array->len >= array->_size)
+        GROW_ARRAY(array);
+    if (array->len > 0)
+        for (int i = array->len - 1; i >= index && i >= 0; i--)
+            array->elems[i + 1] = array->elems[i];
+    array->elems[index] = value;
+    array->len++;
+}
+
+void *arremove(Array *array, arsize_t index) {
+}
+
+void arprint(Array *array) {
+    printf("Array of length %d, size %d at %p\n", array->len, array->_size, array);
+    for (int i = 0; i < array->len; i++)
+        printf("%d\t%p\n", i, array->elems[i]);
 }
 
 #undef ARERROR
