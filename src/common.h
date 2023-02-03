@@ -75,15 +75,6 @@ typedef struct {
     int opts[100];
 } MazeGenOptions;
 
-/**
- * @brief Pair of Grid and MazeGenOptions, to be cast into a void* for
- *        threading maze generation.
- */
-typedef struct {
-    Grid *grid;
-    MazeGenOptions *options;
-} MazeGenArg;
-
 enum MazeType {
     ALDOUS_BRODER,
     WILSONS,
@@ -127,10 +118,32 @@ typedef struct {
     SDL_Renderer *renderer;
     GameStage *stage;
     _Atomic(State) state;
-    _Atomic(LoopState) loopstate;
     Resources *resources;
     Settings *settings;
 } Game;
+
+/**
+ * @brief Lock for threading.
+ */
+typedef struct {
+    pthread_mutex_t mutex;
+    pthread_cond_t clear_cond;
+    pthread_cond_t present_cond;
+    pthread_cond_t render_cond;
+    int clear_flag;
+    int present_flag;
+    int render_flag;
+} ScreenLock;
+
+/**
+ * @brief Triple of Grid, MazeGenOptions, and Lock to be cast into a void* for
+ *        threading maze generation.
+ */
+typedef struct {
+    Grid *grid;
+    MazeGenOptions *options;
+    ScreenLock *lock;
+} MazeGenArg;
 
 /**
  * @brief The main game object.

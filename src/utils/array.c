@@ -5,10 +5,10 @@
 #include <string.h>
 
 /** print an Array error and abort. this macro is undef'd at end */
-#define ARERROR(msg)                               \
-    do {                                           \
+#define ARERROR(msg)                         \
+    do {                                     \
         puts("Array error: " msg ". abort"); \
-        abort();                                   \
+        abort();                             \
     } while (0);
 
 #define GROW_ARRAY(array)                                                           \
@@ -61,7 +61,6 @@ void arinsert(Array *array, arsize_t index, void *value) {
 #if ARBOUND_CHECK
     if (index > array->len) ARERROR("insert out of bounds")
 #endif
-
     if (array->len >= array->_size)
         GROW_ARRAY(array);
     if (array->len > 0)
@@ -72,6 +71,58 @@ void arinsert(Array *array, arsize_t index, void *value) {
 }
 
 void *arremove(Array *array, arsize_t index) {
+#if ARBOUND_CHECK
+    if (index >= array->len) ARERROR("remove out of bounds")
+#endif
+    void *data = array->elems[index];
+    for (int i = index; i < array->len - 1; i++)
+        array->elems[i] = array->elems[i + 1];
+    array->len--;
+    return data;
+}
+
+void arclear(Array *array) {
+    memset(array->elems, 0, array->_size * sizeof(void *));
+    array->len = 0;
+}
+
+arsize_t arcount(Array *array, void *value) {
+    arsize_t num = 0;
+    for (int i = 0; i < array->len; i++)
+        num += array->elems[i] == value;
+    return num;
+}
+
+arsize_t arindex(Array *array, void *value) {
+    for (int i = 0; i < array->len; i++)
+        if (array->elems[i] == value) return i;
+    return arnpos;
+}
+
+arsize_t arlastindex(Array *array, void *value) {
+    for (int i = array->len - 1; i >= 0; i--)
+        if (array->elems[i] == value) return i;
+    return arnpos;
+}
+
+void arcopy(Array *src, Array *dst) {
+    if (dst->_size < src->_size)
+        dst->elems = realloc(dst->elems, src->_size * sizeof(void *));
+    dst->_size = src->_size;
+    arclear(dst);
+    memcpy(dst->elems, src->elems, sizeof(void *) * src->len);
+    dst->len = src->len;
+}
+
+void arjoin(Array *array, Array *other) {
+    if (array->_size < array->len + other->len) {
+        size_t sz = (array->len + other->len);
+        array->elems = realloc(array->elems, sz * sizeof(void *));
+        array->_size = sz;
+    }
+    memmove(array->elems + array->len, other->elems, other->len * sizeof(void *));
+    array->len += other->len;
+    ardel(other);
 }
 
 void arprint(Array *array) {

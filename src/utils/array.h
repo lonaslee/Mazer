@@ -4,9 +4,13 @@
  */
 #pragma once
 
-typedef unsigned int arsize_t;  //< Numeric size of Array length and indices.
+#include <limits.h>
 
 #define ARBOUND_CHECK 1  //< Whether to do bound checking and exiting with an error message, or segfaulting.
+
+typedef unsigned int arsize_t;  //< Numeric size of Array length and indices.
+
+const arsize_t arnpos = UINT_MAX;  //< Number returned when array find functions fail.
 
 /**
  * @brief Array of unfixed size. Access and modifications are provided by
@@ -60,6 +64,36 @@ void arinsert(Array *array, arsize_t index, void *value);
  * @brief Remove and return the element at a specified index.
  */
 void *arremove(Array *array, arsize_t index);
+
+/**
+ * @brief Set all elements to NULL and length to 0.
+ */
+void arclear(Array *array);
+
+/**
+ * @brief Count the number of occurrences of a value.
+ */
+arsize_t arcount(Array *array, void *value);
+
+/**
+ * @brief Return the first index of an occurence of value, or arnpos.
+ */
+arsize_t arindex(Array *array, void *value);
+
+/**
+ * @brief Return the last index of an occurence of value, or arnpos.
+ */
+arsize_t arlastindex(Array *array, void *value);
+
+/**
+ * @brief Copy all data from src to dst.
+ */
+void arcopy(Array *src, Array *dst);
+
+/**
+ * @brief Join other's elements to array, and deallocate other.
+ */
+void arjoin(Array *array, Array *other);
 
 /**
  * @brief Display a representation of an array to stdout.

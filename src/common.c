@@ -27,7 +27,6 @@ Game *get_game(void) {
 
         game->stage = calloc(1, sizeof(GameStage));
         game->state = STATE_IDLE;
-        game->loopstate = LOOP_BEGIN;
 
         game->settings = calloc(1, sizeof(Settings));
         game->settings->step_interval = 0;

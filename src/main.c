@@ -37,47 +37,54 @@ int main(int argc_, char *argv_[]) {
     int w = 10, h = 10;
     parse_argv(&w, &h);
     game->stage->grid = generate_grid(w, h);
-    game->settings->step_interval = 1;
+    game->settings->step_interval = 5;
 
+    ScreenLock scrnlock = {.mutex = PTHREAD_MUTEX_INITIALIZER,
+                           .clear_cond = PTHREAD_COND_INITIALIZER,
+                           .present_cond = PTHREAD_COND_INITIALIZER,
+                           .render_cond = PTHREAD_COND_INITIALIZER,
+                           .clear_flag = 0,
+                           .present_flag = 0,
+                           .render_flag = 0};
     pthread_t gen_thrd;
-    MazeGenArg arg = {.grid = game->stage->grid, .options = NULL};
+    MazeGenArg arg = {.grid = game->stage->grid, .options = NULL, .lock = &scrnlock};
     pthread_create(&gen_thrd, NULL, gen_aldous_broder, &arg);
     pthread_detach(gen_thrd);
 
     SDL_Event event;
     while (1) {
-        game->loopstate = LOOP_BEGIN;
-        printf("B-");
+        pthread_mutex_lock(&scrnlock.mutex);
         SDL_RenderClear(game->renderer);
-        printf("N\n");
-        game->loopstate = LOOP_MIDDLE;
+        scrnlock.clear_flag = 1;
+        pthread_cond_signal(&scrnlock.clear_cond);
+        pthread_mutex_unlock(&scrnlock.mutex);
 
         while (SDL_PollEvent(&event)) {
             on_event(&event);
         }
 
-        game->loopstate = LOOP_SWITCH;
         switch (game->state) {
             case STATE_IDLE:
                 draw_grid(game->stage->grid, NULL, NULL);
                 break;
-            case STATE_WAIT_INPUT:
-                break;
+
             case STATE_GENERATING:
+                pthread_mutex_lock(&scrnlock.mutex);
+                while (!scrnlock.render_flag) pthread_cond_wait(&scrnlock.render_cond, &scrnlock.mutex);
+                scrnlock.render_flag = 0;
+                pthread_mutex_unlock(&scrnlock.mutex);
                 break;
-            case STATE_GEN_WAIT: {
-                while (game->state == STATE_GEN_WAIT)
-                    ;
-                break;
-            }
+
             default:
                 break;
         }
 
-        game->loopstate = LOOP_END;
-        puts("P");
+        pthread_mutex_lock(&scrnlock.mutex);
         SDL_RenderPresent(game->renderer);
         SDL_Delay(1);
+        scrnlock.present_flag = 1;
+        pthread_cond_signal(&scrnlock.present_cond);
+        pthread_mutex_unlock(&scrnlock.mutex);
     }
 
     return 0;
