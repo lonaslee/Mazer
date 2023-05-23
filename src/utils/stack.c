@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 Stack *sknew(int size) {
     Stack *stack = calloc(1, sizeof(Stack));

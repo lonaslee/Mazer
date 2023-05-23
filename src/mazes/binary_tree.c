@@ -6,8 +6,18 @@
 #include "grid.h"
 #include "maze_common.h"
 
-Grid *gen_binary_tree(Grid *grid, MazeGenOptions *options) {
+void *gen_binary_tree(void *args) {
+    MazeGenArg *arg = args;
+    Grid *grid = arg->grid;
     grid->type = BINARY_TREE;
+
+    Lock *statelock = get_state_lock();
+    pthread_mutex_lock(statelock->mutex);
+    game->state = STATE_GENERATING;
+    statelock->flag = 1;
+    pthread_cond_signal(statelock->cond);
+    pthread_mutex_unlock(statelock->mutex);
+
     for (int y = grid->height - 1; y >= 0; y--) {
         for (int x = 0; x < grid->width; x++) {
             draw_grid_step(grid, &grid->cells[x][y], NULL);
@@ -31,5 +41,7 @@ Grid *gen_binary_tree(Grid *grid, MazeGenOptions *options) {
         grid->cells[0][y].upperwall->exists = 0;
     }
     grid->cells[0][grid->height - 1].upperwall->exists = 1;
+    draw_grid_step(grid, NULL, NULL);
+    game->state = STATE_FIN_GEN;
     return grid;
 }

@@ -7,11 +7,15 @@
 #include "limits.h"
 #include "maze_common.h"
 
-Grid *gen_ellers(Grid *grid, MazeGenOptions *options) {
+void *gen_ellers(void *args) {
+    MazeGenArg *arg = args;
+    Grid *grid = arg->grid;
     grid->type = ELLERS;
-    const int setsize_max = options != NULL ? (options->opts[0] != 0 ? options->opts[0] : INT_MAX) : INT_MAX;
-    const int rrandmod = options != NULL ? (options->opts[1] != 0 ? options->opts[1] : 3) : 3;
-    const int drandmod = options != NULL ? (options->opts[2] != 0 ? options->opts[2] : 5) : 5;
+
+    const int setsize_max = arg->options != NULL ? (arg->options[0] != 0 ? arg->options[0] : INT_MAX) : INT_MAX;
+    const int rrandmod = arg->options != NULL ? (arg->options[1] != 0 ? arg->options[1] : 3) : 3;
+    const int drandmod = arg->options != NULL ? (arg->options[2] != 0 ? arg->options[2] : 5) : 5;
+
     for (int x = 0; x < grid->width; x++)
         for (int y = 0; y < grid->height; y++)
             grid->cells[x][y].upperwall->exists = grid->cells[x][y].lowerwall->exists = grid->cells[x][y].left_wall->exists = grid->cells[x][y].rightwall->exists = 1;

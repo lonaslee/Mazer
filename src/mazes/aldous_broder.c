@@ -8,10 +8,13 @@
 #include "maze_common.h"
 
 void *gen_aldous_broder(void *args) {
-    game->state = STATE_GENERATING;
     MazeGenArg *mga = args;
     Grid *grid = mga->grid;
-    ScreenLock *lock = mga->lock;
+    ScreenLock *scrnlock = get_screen_lock();
+    Lock *statelock = get_state_lock();
+    pthread_mutex_lock(&statelock->mutex);
+    game->state = STATE_GENERATING;
+    pthread_mutex_unlock(&statelock->mutex);
 
     grid->type = ALDOUS_BRODER;
     int cx = rand() % grid->width;
@@ -24,22 +27,7 @@ void *gen_aldous_broder(void *args) {
     grid->cells[cx][cy].data = 1;
 
     while (visited < grid->width * grid->height - 1) {
-        for (int i = 0; i < game->settings->step_interval; i++) {
-            pthread_mutex_lock(&lock->mutex);
-            // wait for render clear
-            while (!lock->clear_flag) pthread_cond_wait(&lock->clear_cond, &lock->mutex);
-            lock->clear_flag = 0;
-
-            draw_grid(game->stage->grid, &grid->cells[cx][cy], NULL);
-            lock->render_flag = 1;
-            pthread_cond_signal(&lock->render_cond);
-
-            // wait for render present
-            while (!lock->present_flag) pthread_cond_wait(&lock->present_cond, &lock->mutex);
-            lock->present_flag = 0;
-
-            pthread_mutex_unlock(&lock->mutex);
-        }
+        draw_grid_step(grid, &grid->cells[cx][cy], NULL);
 
         enum DIRECTION dir = choicenz(4, UP * (cy != (grid->height - 1)),
                                       DOWN * (cy != 0),
@@ -55,6 +43,8 @@ void *gen_aldous_broder(void *args) {
         grid->cells[cx][cy].left_wall->exists = dir != RIGHT;
         grid->cells[cx][cy].rightwall->exists = dir != LEFT;
     }
-    game->state = STATE_IDLE;
+    pthread_mutex_lock(&statelock->mutex);
+    game->state = STATE_FIN_GEN;
+    pthread_mutex_unlock(&statelock->mutex);
     return grid;
 }

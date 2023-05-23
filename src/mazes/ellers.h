@@ -10,4 +10,4 @@
  * @param options this algorithm has 2 options: max group size and rand mod number
  * @return Grid* - same maze pointer passed
  */
-Grid *gen_ellers(Grid *grid, MazeGenOptions *options);
+void *gen_ellers(void *args);

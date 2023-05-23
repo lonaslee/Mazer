@@ -6,10 +6,14 @@
 #include "grid.h"
 #include "maze_common.h"
 
-Grid *gen_sidewinder(Grid *grid, MazeGenOptions *options) {
+void *gen_sidewinder(void *args) {
+    MazeGenArg *arg = args;
+    Grid *grid = arg->grid;
     grid->type = SIDEWINDER;
-    const int group_size_max = options != NULL ? (options->opts[0] != 0 ? options->opts[0] : 5) : 5;
-    const int randmod = options != NULL ? (options->opts[1] != 0 ? options->opts[1] : 3) : 3;
+
+    const int group_size_max = arg->options != NULL ? (arg->options[0] != 0 ? arg->options[0] : 5) : 5;
+    const int randmod = arg->options != NULL ? (arg->options[1] != 0 ? arg->options[1] : 3) : 3;
+
     int group = 0;
     for (int x = 0; x < grid->width; x++) {
         for (int y = 0; y < grid->height; y++) {

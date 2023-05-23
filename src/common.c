@@ -7,6 +7,26 @@
 #include "SDL.h"
 #include "images.h"
 
+ScreenLock *get_screen_lock(void) {
+    static ScreenLock screenlock = {
+        .mutex = PTHREAD_MUTEX_INITIALIZER,
+        .clear_cond = PTHREAD_COND_INITIALIZER,
+        .present_cond = PTHREAD_COND_INITIALIZER,
+        .render_cond = PTHREAD_COND_INITIALIZER,
+        .clear_flag = 0,
+        .render_flag = 0,
+        .present_flag = 0};
+    return &screenlock;
+}
+
+Lock *get_state_lock(void) {
+    static Lock statelock = {
+        .mutex = PTHREAD_MUTEX_INITIALIZER,
+        .cond = PTHREAD_COND_INITIALIZER,
+        .flag = 0};
+    return &statelock;
+}
+
 Game *get_game(void) {
     static Game *game = NULL;
     if (game == NULL) {

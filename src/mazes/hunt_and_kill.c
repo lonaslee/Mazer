@@ -6,12 +6,16 @@
 #include "grid.h"
 #include "maze_common.h"
 
-Grid *gen_hunt_and_kill(Grid *grid, MazeGenOptions *options) {
+void *gen_hunt_and_kill(void *args) {
+    MazeGenArg *arg = args;
+    Grid *grid = arg->grid;
     grid->type = HUNT_AND_KILL;
+
     int cx = rand() % grid->width;
     int cy = rand() % grid->height;
     grid->cells[cx][cy].data = 1;
     grid->cells[cx][cy].upperwall->exists = grid->cells[cx][cy].lowerwall->exists = grid->cells[cx][cy].left_wall->exists = grid->cells[cx][cy].rightwall->exists = 1;
+
     while (cx != -1) {
         while (!is_stuck(&grid->cells[cx][cy])) {
             grid->cells[cx][cy].data = 1;

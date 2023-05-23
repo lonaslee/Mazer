@@ -7,8 +7,11 @@
 #include "maze_common.h"
 #include "utils/stack.h"
 
-Grid *gen_recursive_backtracker(Grid *grid, MazeGenOptions *options) {
+void *gen_recursive_backtracker(void *args) {
+    MazeGenArg *arg = args;
+    Grid *grid = arg->grid;
     grid->type = RECURSIVE_BACKTRACKER;
+
     Cell *cc = &grid->cells[rand() % grid->width][rand() % grid->height];
     cc->upperwall->exists = cc->lowerwall->exists = cc->left_wall->exists = cc->rightwall->exists = 1;
     cc->data = 1;

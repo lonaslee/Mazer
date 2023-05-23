@@ -9,18 +9,22 @@
 #include "images.h"
 
 void draw_grid_step(Grid *grid, Cell *this_cell, Cell **other_cells) {
-    if (game->settings->step_interval == 0) return;
-    Game *game = get_game();
-    clock_t start = clock();
-    SDL_Event event;
-    while ((double)(clock() - start) / (double)CLOCKS_PER_SEC < game->settings->step_interval) {
-        while (SDL_PollEvent(&event)) {
-            on_event(&event);
-        }
-        SDL_SetRenderDrawColor(game->renderer, 0, 0, 0, 255);
-        SDL_RenderClear(game->renderer);
-        draw_grid(grid, this_cell, other_cells);
-        SDL_RenderPresent(game->renderer);
+    ScreenLock *scrnlock = get_screen_lock();
+    for (int i = 0; i < game->settings->step_interval; i++) {
+        pthread_mutex_lock(&scrnlock->mutex);
+        // wait for render clear
+        while (!scrnlock->clear_flag) pthread_cond_wait(&scrnlock->clear_cond, &scrnlock->mutex);
+        scrnlock->clear_flag = 0;
+
+        draw_grid(game->stage->grid, this_cell, other_cells);
+        scrnlock->render_flag = 1;
+        pthread_cond_signal(&scrnlock->render_cond);
+
+        // wait for render present
+        while (!scrnlock->present_flag) pthread_cond_wait(&scrnlock->present_cond, &scrnlock->mutex);
+        scrnlock->present_flag = 0;
+
+        pthread_mutex_unlock(&scrnlock->mutex);
     }
 }
 

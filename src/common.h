@@ -24,6 +24,8 @@
 #define HALF(a) ((a) / 2)
 #define YESNO (rand() % 2)
 
+#define is_null(p) ((p) == NULL)
+
 #define SETARR(arr, len, val)           \
     do {                                \
         for (int i = 0; i < len; i++) { \
@@ -65,15 +67,6 @@
  * @param stop end of the range, non-inclusive
  */
 #define nincchoicerange(start, stop) choicerange(((start) + 1), (stop))
-
-/**
- * @brief A structure to hold data on a custom maze generation options for an algorithm.
- *        Algorithms expect all arguments to be in order inside the opts field.
- */
-typedef struct {
-    int numof;
-    int opts[100];
-} MazeGenOptions;
 
 enum MazeType {
     ALDOUS_BRODER,
@@ -117,13 +110,13 @@ typedef struct {
     SDL_Window *win;
     SDL_Renderer *renderer;
     GameStage *stage;
-    _Atomic(State) state;
+    State state;
     Resources *resources;
     Settings *settings;
 } Game;
 
 /**
- * @brief Lock for threading.
+ * @brief Lock for threading screen modifications.
  */
 typedef struct {
     pthread_mutex_t mutex;
@@ -136,14 +129,38 @@ typedef struct {
 } ScreenLock;
 
 /**
- * @brief Triple of Grid, MazeGenOptions, and Lock to be cast into a void* for
+ * @brief Lazy get the screen lock.
+ */
+ScreenLock *get_screen_lock(void);
+
+/**
+ * @brief Lock for threading.
+ */
+typedef struct {
+    pthread_mutex_t mutex;
+    pthread_cond_t cond;
+    int flag;
+} Lock;
+
+/**
+ * @brief Lazy get the state lock.
+ */
+Lock *get_state_lock(void);
+
+/**
+ * @brief Grid and options to be cast into a void* for
  *        threading maze generation.
  */
 typedef struct {
     Grid *grid;
-    MazeGenOptions *options;
-    ScreenLock *lock;
+    int numof;
+    int options[100];
 } MazeGenArg;
+
+typedef struct {
+    int numof;
+    int opts[100];
+} MazeGenOptions;
 
 /**
  * @brief The main game object.

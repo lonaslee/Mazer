@@ -13,10 +13,14 @@ static int cmp(const void *a, const void *b) {
     return rand() % 2;
 }
 
-Grid *gen_kruskals(Grid *grid, MazeGenOptions *options) {
+void *gen_kruskals(void *args) {
+    MazeGenArg *arg = args;
+    Grid *grid = arg->grid;
     grid->type = KRUSKALS;
+
     Stack *walls = sknew(grid->width * grid->height * 2 + grid->width + grid->height);
     TNode *sets[grid->width * grid->height];
+
     int idx = 0;
     for (int x = 0; x < grid->width; x++) {
         for (int y = 0; y < grid->height; y++) {
