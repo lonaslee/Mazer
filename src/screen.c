@@ -40,7 +40,7 @@ void draw_graph(Graph *g) {
                 SDL_RenderCopy(game->renderer, cell_img3, NULL, &sr);
             }
 
-            if (y != 0 && *(n->wpy)) {
+            if (y != 0 && *(n->wny)) {
                 hr.x = sr.x;
                 hr.y = sr.y;
                 SDL_RenderCopy(game->renderer, wall_img, NULL, &hr);

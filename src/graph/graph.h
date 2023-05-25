@@ -3,8 +3,8 @@
 #include <stdbool.h>
 
 typedef struct Node {
-    struct Node *u, *l, *d, *r;
-    bool *wpy, *wnx, *wny, *wpx;
+    struct Node *nny, *nnx, *npy, *npx;
+    bool *wny, *wnx, *wpy, *wpx;
     int x, y;
     long data;
 } Node;

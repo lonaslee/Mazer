@@ -24,14 +24,14 @@ Graph *new_graph(int nr, int nc) {
         for (int x = 0; x < g->nc; x++) {
             Node *n = g->nodes[y][x];
             if (y != 0) {
-                n->u = g->nodes[y - 1][x];
-                n->u->d = n;
-                n->wpy = n->u->wny = calloc(1, sizeof(bool));
+                n->nny = g->nodes[y - 1][x];
+                n->nny->npy = n;
+                n->wny = n->nny->wpy = calloc(1, sizeof(bool));
             }
             if (x != 0) {
-                n->l = g->nodes[y][x - 1];
-                n->l->r = n;
-                n->wnx = n->l->wpx = calloc(1, sizeof(bool));
+                n->nnx = g->nodes[y][x - 1];
+                n->nnx->npx = n;
+                n->wnx = n->nnx->wpx = calloc(1, sizeof(bool));
             }
         }
     }
@@ -42,7 +42,7 @@ void del_graph(Graph *g) {
     for (int y = 0; y < g->nr; y++) {
         for (int x = 0; x < g->nc; x++) {
             Node *n = g->nodes[y][x];
-            if (y != 0) free(n->wpy);
+            if (y != 0) free(n->wny);
             if (x != 0) free(n->wnx);
         }
         for (int x = 0; x < g->nc; x++) {
@@ -58,7 +58,7 @@ Graph *connect_all(Graph *g) {
     for (int y = 0; y < g->nr; y++) {
         for (int x = 0; x < g->nc; x++) {
             Node *n = get(g, x, y);
-            if (y != 0) *(n->wpy) = true;
+            if (y != 0) *(n->wny) = true;
             if (x != 0) *(n->wnx) = true;
         }
     }
@@ -69,7 +69,7 @@ Graph *disconnect_all(Graph *g) {
     for (int y = 0; y < g->nr; y++) {
         for (int x = 0; x < g->nc; x++) {
             Node *n = get(g, x, y);
-            if (y != 0) *(n->wpy) = false;
+            if (y != 0) *(n->wny) = false;
             if (x != 0) *(n->wnx) = false;
         }
     }
@@ -77,13 +77,13 @@ Graph *disconnect_all(Graph *g) {
 }
 
 void connect(Node *a, Node *b) {
-    if (a->u == b) {
-        *(a->wpy) = false;
-    } else if (a->l == b) {
-        *(a->wnx) = false;
-    } else if (a->d == b) {
+    if (a->nny == b) {
         *(a->wny) = false;
-    } else if (a->r == b) {
+    } else if (a->nnx == b) {
+        *(a->wnx) = false;
+    } else if (a->npy == b) {
+        *(a->wpy) = false;
+    } else if (a->npx == b) {
         *(a->wpx) = false;
     } else {
         printf("Not able to connect nodes (%d, %d) & (%d, %d).", a->x, a->y, b->x, b->y);
@@ -92,8 +92,8 @@ void connect(Node *a, Node *b) {
 }
 
 void surround(Node *n) {
-    ifnn(n->wpy) * (n->wpy) = true;
-    ifnn(n->wnx) * (n->wnx) = true;
     ifnn(n->wny) * (n->wny) = true;
+    ifnn(n->wnx) * (n->wnx) = true;
+    ifnn(n->wpy) * (n->wpy) = true;
     ifnn(n->wpx) * (n->wpx) = true;
 }

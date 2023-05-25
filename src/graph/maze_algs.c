@@ -39,9 +39,9 @@ void *alduous_broder(Graph *g, void *state) {
     lflip(n->data, 0);
     s->visited++;
 
-    ifnn(n->wpy) { *(n->wpy) = dir != POS_Y; }
+    ifnn(n->wny) { *(n->wny) = dir != POS_Y; }
     ifnn(n->wnx) { *(n->wnx) = dir != POS_X; }
-    ifnn(n->wny) { *(n->wny) = dir != NEG_Y; }
+    ifnn(n->wpy) { *(n->wpy) = dir != NEG_Y; }
     ifnn(n->wpx) { *(n->wpx) = dir != NEG_X; }
     return s;
 }
