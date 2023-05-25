@@ -6,7 +6,8 @@
 #include "graph.h"
 
 typedef struct AlduousBroderState {
-    int cx, cy;
+    int cx;
+    int cy;
     int visited;
 } AlduousBroderState;
 
@@ -19,22 +20,28 @@ void *alduous_broder(Graph *g, void *state) {
         s->visited = 0;
         surround(get(g, s->cx, s->cy));
     }
-    if (s->visited == g->nr * g->nc - 1) return NULL;
 
-    printf("\r(%d, %d) - %d", s->cx, s->cy, s->visited);
-
-    Direction dir = choicenz(4,
-                             UP * (s->cy != g->nr - 1),
-                             LEFT * (s->cx != 0),
-                             DOWN * (s->cy != 0),
-                             RIGHT * (s->cx != g->nc - 1));
     Node *p = get(g, s->cx, s->cy);
+    lunflip(p->data, 31);
+    if (s->visited == g->nr * g->nc) return NULL;
+
+    AxisDirection dir = choicenz(4,
+                                 POS_Y * (s->cy != g->nr - 1),
+                                 NEG_X * (s->cx != 0),
+                                 NEG_Y * (s->cy != 0),
+                                 POS_X * (s->cx != g->nc - 1));
     s->cx += MOVEX(dir);
     s->cy += MOVEY(dir);
     Node *n = get(g, s->cx, s->cy);
-    if (n->data == 1) return s;
-    n->data = 1;
+    lflip(n->data, 31);
+    if (lisflipped(n->data, 0)) return s;
+    lflip(n->data, 30);
+    lflip(n->data, 0);
     s->visited++;
-    connect(p, n);
+
+    ifnn(n->wpy) { *(n->wpy) = dir != POS_Y; }
+    ifnn(n->wnx) { *(n->wnx) = dir != POS_X; }
+    ifnn(n->wny) { *(n->wny) = dir != NEG_Y; }
+    ifnn(n->wpx) { *(n->wpx) = dir != NEG_X; }
     return s;
 }

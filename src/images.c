@@ -7,7 +7,6 @@
 #include "common.h"
 #include "destroy.h"
 #include "maze.h"
-#include "states/states.h"
 
 SDL_Texture *cache_resource(Resources *resources, SDL_Renderer *renderer, const char *fp) {
     SDL_Texture *texture = IMG_LoadTexture(renderer, fp);

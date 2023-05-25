@@ -11,20 +11,32 @@
 
 #include "SDL.h"
 #include "grid.h"
-#include "states/states.h"
 
 #define WIN_INIT_WIDTH 800
 #define WIN_INIT_HEIGHT 600
 
 #define oputc(char) putc((char), stdout)
 
-#define MIN(a, b) (((a) <= (b)) ? (a) : (b))
-#define MAX(a, b) (((a) >= (b)) ? (a) : (b))
+#define MIN(a, b) \
+    ({ __typeof__ (a) _a = (a); \
+       __typeof__ (b) _b = (b); \
+     _a < _b ? _a : _b; })
+#define MAX(a, b) \
+    ({ __typeof__ (a) _a = (a); \
+       __typeof__ (b) _b = (b); \
+     _a > _b ? _a : _b; })
 #define AVG(a, b) (((a) + (b)) / 2)
 #define HALF(a) ((a) / 2)
 #define YESNO (rand() % 2)
 
+#define lflip(n, p) ((n) |= (1L << (p)))
+#define lunflip(n, p) ((n) &= ~(1L << (p)))
+#define ltoggle(n, p) ((n) ^= (1L << (p)))
+#define lisflipped(n, p) ((n & (1L << (p))) != 0)
+
 #define is_null(p) ((p) == NULL)
+#define ifnn(p) if ((p) != NULL)
+#define ifn(p) if ((p) == NULL)
 
 #define SETARR(arr, len, val)           \
     do {                                \
@@ -68,7 +80,7 @@
  */
 #define nincchoicerange(start, stop) choicerange(((start) + 1), (stop))
 
-enum MazeType {
+typedef enum MazeType {
     ALDOUS_BRODER,
     WILSONS,
     BINARY_TREE,
@@ -81,7 +93,7 @@ enum MazeType {
     PRIMS,
     GROWING_TREE,
     GROWING_BINARY_TREE
-};
+} MazeType;
 
 /**
  * @brief The stage of the game.
@@ -110,7 +122,6 @@ typedef struct {
     SDL_Window *win;
     SDL_Renderer *renderer;
     GameStage *stage;
-    State state;
     Resources *resources;
     Settings *settings;
 } Game;

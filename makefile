@@ -39,4 +39,5 @@ cutils:
 
 link:
 	@echo linking
-	$(CC) $(wildcard $(ODIR)*.o) -o a.exe $(LARGS)
+	$(CC) $(wildcard $(ODIR)*.o) -o mazer.exe $(LARGS)
+	./mazer.exe

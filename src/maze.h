@@ -21,4 +21,4 @@
 /**
  * @brief Generate a maze on a grid.
  */
-void gen_maze( MazeGenArg *args, enum MazeType type);
+void gen_maze(Grid *grid, MazeGenOptions *args, MazeType type);

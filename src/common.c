@@ -46,7 +46,6 @@ Game *get_game(void) {
         game->renderer = renderer;
 
         game->stage = calloc(1, sizeof(GameStage));
-        game->state = STATE_IDLE;
 
         game->settings = calloc(1, sizeof(Settings));
         game->settings->step_interval = 0;

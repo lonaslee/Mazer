@@ -1,6 +1,5 @@
 #include "main.h"
 
-#include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -14,11 +13,15 @@
 #include "graph/graph.h"
 #include "graph/maze_algs.h"
 #include "images.h"
-#include "maze.h"
-#include "states/states.h"
+#include "screen.h"
 
 static int argc;
 static char **argv;
+
+// test
+int tmain(int argc_, char *argv_[]) {
+    return 0;
+}
 
 int main(int argc_, char *argv_[]) {
     puts("Enter.\n");
@@ -41,6 +44,8 @@ int main(int argc_, char *argv_[]) {
 
     Graph *graph = new_graph(w, h);
     void *state = NULL;
+    bool done = false;
+    long long loops = 0;
 
     SDL_Event event;
     while (1) {
@@ -50,10 +55,16 @@ int main(int argc_, char *argv_[]) {
             on_event(&event);
         }
 
-        state = alduous_broder(graph, state);
+        draw_graph(graph);
+
+        if (!done)
+            state = alduous_broder(graph, state);
+        if (state == NULL)
+            done = true;
 
         SDL_RenderPresent(game->renderer);
         SDL_Delay(1);
+        loops++;
     }
 
     return 0;

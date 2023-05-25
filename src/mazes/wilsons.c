@@ -7,11 +7,8 @@
 #include "maze_common.h"
 #include "utils/stack.h"
 
-void *gen_wilsons(void *args) {
-    MazeGenArg *arg = args;
-    Grid *grid = arg->grid;
+Grid *gen_wilsons(Grid *grid, MazeGenOptions *options) {
     grid->type = WILSONS;
-
     int x1 = rand() % grid->width;
     int y1 = rand() % grid->height;
     grid->cells[x1][y1].data = 5;

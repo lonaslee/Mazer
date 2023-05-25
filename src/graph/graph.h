@@ -4,33 +4,32 @@
 
 typedef struct Node {
     struct Node *u, *l, *d, *r;
-    bool *uw, *lw, *dw, *rw;
+    bool *wpy, *wnx, *wny, *wpx;
     int x, y;
     long data;
 } Node;
 
 typedef struct Graph {
     Node ***nodes;
-    int nr;
-    int nc;
+    int nr, nc;
     long data;
 } Graph;
 
 Graph *new_graph(int nr, int nc);
 void del_graph(Graph *g);
 
-typedef enum Direction {
-    STAY,
-    UP,
-    LEFT,
-    DOWN,
-    RIGHT
-} Direction;
+typedef enum AxisDirection {
+    NONE,
+    POS_Y,
+    NEG_X,
+    NEG_Y,
+    POS_X
+} AxisDirection;
 
-#define MOVEX(dir) ((dir) == RIGHT ? 1 : (dir) == LEFT ? -1 \
-                                                       : 0)
-#define MOVEY(dir) ((dir) == UP ? 1 : (dir) == DOWN ? -1 \
-                                                    : 0)
+#define MOVEX(dir) ((dir) == POS_X ? 1 : (dir) == NEG_X ? -1 \
+                                                        : 0)
+#define MOVEY(dir) ((dir) == POS_Y ? 1 : (dir) == NEG_Y ? -1 \
+                                                        : 0)
 
 #define get(g, x, y) g->nodes[(y)][(x)]
 
