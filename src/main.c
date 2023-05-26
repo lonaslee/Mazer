@@ -56,7 +56,7 @@ int main(int argc_, char *argv_[]) {
         }
 
         draw_graph(graph);
-        if (loops % 5 == 0) {
+        if (loops % 5 || true) {
             if (!done)
                 state = alduous_broder(graph, state);
             if (state == NULL)

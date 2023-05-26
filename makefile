@@ -9,7 +9,7 @@ LARGS := -LD:/c/mazer/SDL2/x86_64-w64-mingw32/lib -lmingw32 -lSDL2main -lSDL2 -L
 CFLAGS := -c $(IARGS) -g
 
 
-all: cmazes cgraph compile link
+all: cgraph compile link
 	@echo done
 
 z: cmazes link

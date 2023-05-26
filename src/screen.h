@@ -5,4 +5,6 @@
 #define CELL1 31
 #define CELL2 30
 
+#define BM 4
+
 void draw_graph(Graph *g);
