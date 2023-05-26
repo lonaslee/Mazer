@@ -5,6 +5,7 @@
 #include "common.h"
 #include "graph.h"
 #include "screen.h"
+#include "utils/stack.h"
 
 typedef struct {
     Coord c;
@@ -79,5 +80,65 @@ void *binary_tree(Graph *g, void *state) {
         if (s->c.y == g->nr) return NULL;
     }
     lflip(get(g, s->c.x, s->c.y)->data, CELL1);
+    return s;
+}
+
+typedef struct {
+    Node *c;
+    Stack *stack;
+} RecursiveBacktrackerState;
+
+void *recursive_backtracker(Graph *g, void *state) {
+    RecursiveBacktrackerState *s = state;
+    ifn(s) {
+        s = calloc(1, sizeof(RecursiveBacktrackerState));
+        s->stack = sknew(g->nc);
+        s->c = get(g, rand() % g->nc, rand() % g->nr);
+        surround(s->c);
+    }
+
+    AxisDirection dir = choicenz(4, NEG_Y * (s->c->nny && !lisflipped(s->c->nny->data, 0)),
+                                 POS_Y * (s->c->npy && !lisflipped(s->c->npy->data, 0)),
+                                 NEG_X * (s->c->nnx && !lisflipped(s->c->nnx->data, 0)),
+                                 POS_X * (s->c->npx && !lisflipped(s->c->npx->data, 0)));
+
+    if (dir == NONE) {
+        Node *t;
+        skpop(s->stack, (void **)&t);
+        lunflip(t->data, CELL2);
+        if (s->stack->len) {
+            s->c = s->stack->elements[s->stack->len - 1];
+            return s;
+        } else {
+            return NULL;
+        }
+    }
+
+    Node *n;
+    switch (dir) {
+        case NEG_Y:
+            n = s->c->nny;
+            break;
+        case POS_Y:
+            n = s->c->npy;
+            break;
+        case NEG_X:
+            n = s->c->nnx;
+            break;
+        case POS_X:
+            n = s->c->npx;
+            break;
+    }
+
+    ifnn(n->wny) { *(n->wny) = dir != POS_Y; }
+    ifnn(n->wnx) { *(n->wnx) = dir != POS_X; }
+    ifnn(n->wpy) { *(n->wpy) = dir != NEG_Y; }
+    ifnn(n->wpx) { *(n->wpx) = dir != NEG_X; }
+
+    s->c = n;
+
+    lflip(s->c->data, 0);
+    skpush(s->stack, s->c);
+    lflip(s->c->data, CELL2);
     return s;
 }

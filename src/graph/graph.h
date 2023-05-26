@@ -26,6 +26,8 @@ typedef enum AxisDirection {
     POS_X
 } AxisDirection;
 
+void dir2str(AxisDirection dir, char *buf);
+
 #define MOVEX(dir) ((dir) == POS_X ? 1 : (dir) == NEG_X ? -1 \
                                                         : 0)
 #define MOVEY(dir) ((dir) == POS_Y ? 1 : (dir) == NEG_Y ? -1 \

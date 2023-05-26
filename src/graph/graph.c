@@ -54,6 +54,14 @@ void del_graph(Graph *g) {
     free(g);
 }
 
+void dir2str(AxisDirection dir, char *buf) {
+    memcpy(buf, ((dir) == NEG_Y) ? "NEG_Y" : ((dir) == POS_Y) ? "POS_Y"
+                                         : ((dir) == NEG_X)   ? "NEG_X"
+                                         : ((dir) == POS_X)   ? "POS_X"
+                                                              : "NONE ",
+           6);
+}
+
 Graph *connect_all(Graph *g) {
     for (int y = 0; y < g->nr; y++) {
         for (int x = 0; x < g->nc; x++) {

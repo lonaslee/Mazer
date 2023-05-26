@@ -8,8 +8,8 @@ void draw_graph(Graph *g) {
     SDL_GetWindowSize(game->win, &ww, &wh);
 
     int s = round(MIN((ww * 0.95) / g->nc, (wh * 0.95) / g->nr));
-    int w = s * 0.05;
-    s *= 0.9;
+    int w = s * WM;
+    s *= SM;
 
     int ox = HALF(ww - (s + w) * g->nc) + HALF(w);
     int oy = HALF(wh - (s + w) * g->nr) + HALF(w);
@@ -21,17 +21,19 @@ void draw_graph(Graph *g) {
     SDL_Texture *cell_img3 = game->resources->textures[CLR_LORANGE];
     SDL_Texture *wall_img = game->resources->textures[CLR_BLACK];
 
-    SDL_Rect hb = {.x = ox, .y = oy - HALF(w * BM), .w = s * g->nc, .h = w * BM};
-    SDL_Rect vb = {.x = ox - HALF(w * BM), .y = oy, .w = w * BM, .h = s * g->nr};
-    SDL_RenderCopy(game->renderer, wall_img, NULL, &hb);
-    SDL_RenderCopy(game->renderer, wall_img, NULL, &vb);
-    hb.y += s * g->nr;
-    vb.x += s * g->nc;
-    SDL_RenderCopy(game->renderer, wall_img, NULL, &hb);
-    SDL_RenderCopy(game->renderer, wall_img, NULL, &vb);
-
     SDL_Rect ss = {.x = ox, .y = oy, .w = s * g->nc, .h = s * g->nr};
     SDL_RenderCopy(game->renderer, cell_img, NULL, &ss);
+
+    int bw = w * BM;
+
+    SDL_Rect hb = {.x = ox, .y = oy - bw, .w = s * g->nc, .h = bw};
+    SDL_Rect vb = {.x = ox - bw, .y = oy, .w = bw, .h = s * g->nr};
+    SDL_RenderCopy(game->renderer, wall_img, NULL, &hb);
+    SDL_RenderCopy(game->renderer, wall_img, NULL, &vb);
+    hb.y += s * g->nr + bw;
+    vb.x += s * g->nc + bw;
+    SDL_RenderCopy(game->renderer, wall_img, NULL, &hb);
+    SDL_RenderCopy(game->renderer, wall_img, NULL, &vb);
 
     SDL_Rect sr = {.w = s, .h = s};
     SDL_Rect hr = {.w = s, .h = w};

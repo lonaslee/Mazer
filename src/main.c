@@ -56,9 +56,9 @@ int main(int argc_, char *argv_[]) {
         }
 
         draw_graph(graph);
-        if (loops % 5 || true) {
+        if (loops % 10 == 0 || true) {
             if (!done)
-                state = alduous_broder(graph, state);
+                state = recursive_backtracker(graph, state);
             if (state == NULL)
                 done = true;
         }
