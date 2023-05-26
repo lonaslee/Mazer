@@ -34,9 +34,9 @@ void draw_graph(Graph *g) {
             sr.x = ox + (x * s);
             sr.y = oy + (y * s);
 
-            if (lisflipped(n->data, 31)) {
+            if (lisflipped(n->data, CELL1)) {
                 SDL_RenderCopy(game->renderer, cell_img2, NULL, &sr);
-            } else if (lisflipped(n->data, 30)) {
+            } else if (lisflipped(n->data, CELL2)) {
                 SDL_RenderCopy(game->renderer, cell_img3, NULL, &sr);
             }
 

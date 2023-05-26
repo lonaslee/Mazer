@@ -56,11 +56,12 @@ int main(int argc_, char *argv_[]) {
         }
 
         draw_graph(graph);
-
-        if (!done)
-            state = alduous_broder(graph, state);
-        if (state == NULL)
-            done = true;
+        if (loops % 5 == 0) {
+            if (!done)
+                state = alduous_broder(graph, state);
+            if (state == NULL)
+                done = true;
+        }
 
         SDL_RenderPresent(game->renderer);
         SDL_Delay(1);

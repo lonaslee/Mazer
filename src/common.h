@@ -126,6 +126,10 @@ typedef struct {
     Settings *settings;
 } Game;
 
+typedef struct Coord {
+    int x, y;
+} Coord;
+
 /**
  * @brief Lock for threading screen modifications.
  */
