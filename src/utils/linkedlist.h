@@ -14,7 +14,7 @@
 typedef unsigned int llsize_t;
 
 /// @brief Number returned when linked list functions fail.
-const llsize_t llnpos = UINT_MAX;
+extern const llsize_t llnpos;
 
 /// @brief Give a raw name (no need to declare) and a LinkedList pointer, and
 ///        follow with a block, using name to access each element.

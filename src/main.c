@@ -53,12 +53,15 @@ int main(int argc_, char *argv_[]) {
 
         while (SDL_PollEvent(&event)) {
             on_event(&event);
+            if (event.type == SDL_KEYDOWN) {
+                done = false;
+            }
         }
 
         draw_graph(graph);
-        if (loops % 10 == 0 || true) {
+        if (true || loops % 10 == 0) {
             if (!done)
-                state = recursive_backtracker(graph, state);
+                state = sidewinder(graph, state);
             if (state == NULL)
                 done = true;
         }

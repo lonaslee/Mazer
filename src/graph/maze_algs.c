@@ -5,6 +5,7 @@
 #include "common.h"
 #include "graph.h"
 #include "screen.h"
+#include "utils/array.h"
 #include "utils/stack.h"
 
 typedef struct {
@@ -23,7 +24,7 @@ void *alduous_broder(Graph *g, void *state) {
     }
 
     Node *p = get(g, s->c.x, s->c.y);
-    lunflip(p->data, CELL1);
+    lunflip(p->data, PRIMARY_CELL);
     if (s->visited == g->nr * g->nc) return NULL;
 
     AxisDirection dir = choicenz(4,
@@ -34,9 +35,9 @@ void *alduous_broder(Graph *g, void *state) {
     s->c.x += MOVEX(dir);
     s->c.y += MOVEY(dir);
     Node *n = get(g, s->c.x, s->c.y);
-    lflip(n->data, CELL1);
+    lflip(n->data, PRIMARY_CELL);
     if (lisflipped(n->data, 0)) return s;
-    lflip(n->data, CELL2);
+    lflip(n->data, SECONDARY_CELL);
     lflip(n->data, 0);
     s->visited++;
 
@@ -61,8 +62,8 @@ void *binary_tree(Graph *g, void *state) {
     }
 
     Node *n = get(g, s->c.x, s->c.y);
-    lunflip(n->data, CELL1);
-    lflip(n->data, CELL2);
+    lunflip(n->data, PRIMARY_CELL);
+    lflip(n->data, SECONDARY_CELL);
     if (rand() % 2) {
         ifnn(n->wny) * (n->wny) = false;
         else ifnn(n->wnx) * (n->wnx) = false;
@@ -79,7 +80,7 @@ void *binary_tree(Graph *g, void *state) {
         s->c.y++;
         if (s->c.y == g->nr) return NULL;
     }
-    lflip(get(g, s->c.x, s->c.y)->data, CELL1);
+    lflip(get(g, s->c.x, s->c.y)->data, PRIMARY_CELL);
     return s;
 }
 
@@ -105,7 +106,7 @@ void *recursive_backtracker(Graph *g, void *state) {
     if (dir == NONE) {
         Node *t;
         skpop(s->stack, (void **)&t);
-        lunflip(t->data, CELL2);
+        lunflip(t->data, SECONDARY_CELL);
         if (s->stack->len) {
             s->c = s->stack->elements[s->stack->len - 1];
             return s;
@@ -139,6 +140,63 @@ void *recursive_backtracker(Graph *g, void *state) {
 
     lflip(s->c->data, 0);
     skpush(s->stack, s->c);
-    lflip(s->c->data, CELL2);
+    lflip(s->c->data, SECONDARY_CELL);
+    return s;
+}
+
+typedef struct {
+    Coord c;
+    Array *a;
+    int sz;
+} SidewinderState;
+
+void *sidewinder(Graph *g, void *state) {
+    SidewinderState *s = state;
+    ifn(s) {
+        s = calloc(1, sizeof(SidewinderState));
+        s->a = arnew(5);
+        s->c.x = 0;
+        s->c.y = 1;
+        s->sz = 0;
+        connect_all(g);
+    }
+
+    int MAX_GROUP_SIZE = AVG(g->nc, g->nr);
+    int RAND_WEIGHT = HALF(MAX_GROUP_SIZE);
+
+    for (int x = 0; x < g->nc - 1; x++) {
+        *(get(g, x, 0)->wpx) = false;
+    }
+
+    printf("sz=%d\n", s->sz);
+    if (rand() % RAND_WEIGHT == 0 || s->sz == MAX_GROUP_SIZE || s->c.x == g->nc - 1) {
+        if (s->sz == 0) {
+            Node *n = get(g, s->c.x, s->c.y);
+            ifnn(n->wny) * (n->wny) = false;
+        } else {
+            int i = rand() % s->sz;
+            Node *n = arget(s->a, i);
+            ifnn(n->wny) * (n->wny) = false;
+        }
+        for (int j = 0; j < s->sz; j++)
+            lunflip(((Node *)arget(s->a, j))->data, SECONDARY_CELL);
+        arclear(s->a);
+
+        s->sz = 0;
+    } else {
+        Node *t = get(g, s->c.x, s->c.y);
+        *(t->wpx) = false;
+        lflip(t->data, SECONDARY_CELL);
+        arappend(s->a, t);
+        s->sz++;
+    }
+    puts("");
+
+    lunflip(get(g, s->c.x, s->c.y)->data, PRIMARY_CELL);
+    if (++s->c.x == g->nc) {
+        s->c.x = 0;
+        if (++s->c.y == g->nr) return NULL;
+    }
+    lflip(get(g, s->c.x, s->c.y)->data, PRIMARY_CELL);
     return s;
 }

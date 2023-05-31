@@ -10,7 +10,7 @@
 
 typedef unsigned int arsize_t;  //< Numeric size of Array length and indices.
 
-const arsize_t arnpos = UINT_MAX;  //< Number returned when array find functions fail.
+extern const arsize_t arnpos;  //< Number returned when array find functions fail.
 
 /**
  * @brief Array of unfixed size. Access and modifications are provided by
@@ -40,7 +40,7 @@ void *arget(Array *array, arsize_t index);
 
 /**
  * @brief Set the value of an array at a specific index, performing bound
- *        checkign if ARBOUND_CHECK is 1.
+ *        checking if ARBOUND_CHECK is 1.
  */
 void arset(Array *array, arsize_t index, void *value);
 

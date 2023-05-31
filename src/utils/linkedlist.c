@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+const llsize_t llnpos = UINT_MAX;
+
 /* internal */
 
 /** print a linked list error and abort. this macro is undef'd at end */

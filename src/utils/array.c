@@ -17,6 +17,8 @@
         memset(&array->elems[array->len], 0, (array->_size / 2) * sizeof(void *));  \
     } while (0);
 
+const arsize_t arnpos = UINT_MAX;
+
 Array *arnew(arsize_t size) {
     if (size == 0) ARERROR("new size is 0")
     Array *array = calloc(1, sizeof(Array));
@@ -41,7 +43,10 @@ void *arget(Array *array, arsize_t index) {
 
 void arset(Array *array, arsize_t index, void *value) {
 #if ARBOUND_CHECK
-    if (index >= array->len) ARERROR("set index out of bounds")
+    if (index >= array->len) {
+        printf("index=%d ", index);
+        ARERROR("set index out of bounds")
+    }
 #endif
     array->elems[index] = value;
 }
@@ -59,7 +64,10 @@ void *arpop(Array *array) {
 
 void arinsert(Array *array, arsize_t index, void *value) {
 #if ARBOUND_CHECK
-    if (index > array->len) ARERROR("insert out of bounds")
+    if (index > array->len) {
+        printf("index=%d ", index);
+        ARERROR("insert out of bounds")
+    }
 #endif
     if (array->len >= array->_size)
         GROW_ARRAY(array);

@@ -16,24 +16,24 @@ void draw_graph(Graph *g) {
 
     SDL_RenderCopy(game->renderer, game->resources->textures[BG_GREEN], NULL, NULL);
 
-    SDL_Texture *cell_img = game->resources->textures[CLR_LYELLOW];
-    SDL_Texture *cell_img2 = game->resources->textures[CLR_DBLUE];
-    SDL_Texture *cell_img3 = game->resources->textures[CLR_LORANGE];
-    SDL_Texture *wall_img = game->resources->textures[CLR_BLACK];
+    SDL_Texture *generic_cell = game->resources->textures[CLR_LYELLOW];
+    SDL_Texture *primary_cell = game->resources->textures[CLR_DBLUE];
+    SDL_Texture *secondary_cell = game->resources->textures[CLR_LORANGE];
+    SDL_Texture *wall = game->resources->textures[CLR_BLACK];
 
     SDL_Rect ss = {.x = ox, .y = oy, .w = s * g->nc, .h = s * g->nr};
-    SDL_RenderCopy(game->renderer, cell_img, NULL, &ss);
+    SDL_RenderCopy(game->renderer, generic_cell, NULL, &ss);
 
     int bw = w * BM;
 
     SDL_Rect hb = {.x = ox, .y = oy - bw, .w = s * g->nc, .h = bw};
     SDL_Rect vb = {.x = ox - bw, .y = oy, .w = bw, .h = s * g->nr};
-    SDL_RenderCopy(game->renderer, wall_img, NULL, &hb);
-    SDL_RenderCopy(game->renderer, wall_img, NULL, &vb);
+    SDL_RenderCopy(game->renderer, wall, NULL, &hb);
+    SDL_RenderCopy(game->renderer, wall, NULL, &vb);
     hb.y += s * g->nr + bw;
     vb.x += s * g->nc + bw;
-    SDL_RenderCopy(game->renderer, wall_img, NULL, &hb);
-    SDL_RenderCopy(game->renderer, wall_img, NULL, &vb);
+    SDL_RenderCopy(game->renderer, wall, NULL, &hb);
+    SDL_RenderCopy(game->renderer, wall, NULL, &vb);
 
     SDL_Rect sr = {.w = s, .h = s};
     SDL_Rect hr = {.w = s, .h = w};
@@ -45,22 +45,22 @@ void draw_graph(Graph *g) {
             sr.x = ox + (x * s);
             sr.y = oy + (y * s);
 
-            if (lisflipped(n->data, CELL1)) {
-                SDL_RenderCopy(game->renderer, cell_img2, NULL, &sr);
-            } else if (lisflipped(n->data, CELL2)) {
-                SDL_RenderCopy(game->renderer, cell_img3, NULL, &sr);
+            if (lisflipped(n->data, PRIMARY_CELL)) {
+                SDL_RenderCopy(game->renderer, primary_cell, NULL, &sr);
+            } else if (lisflipped(n->data, SECONDARY_CELL)) {
+                SDL_RenderCopy(game->renderer, secondary_cell, NULL, &sr);
             }
 
             if (y != 0 && *(n->wny)) {
                 hr.x = sr.x;
                 hr.y = sr.y;
-                SDL_RenderCopy(game->renderer, wall_img, NULL, &hr);
+                SDL_RenderCopy(game->renderer, wall, NULL, &hr);
             }
 
             if (x != 0 && *(n->wnx)) {
                 vr.x = sr.x - HALF(w);
                 vr.y = sr.y;
-                SDL_RenderCopy(game->renderer, wall_img, NULL, &vr);
+                SDL_RenderCopy(game->renderer, wall, NULL, &vr);
             }
         }
     }

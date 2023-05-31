@@ -12,6 +12,9 @@ CFLAGS := -c $(IARGS) -g
 all: cgraph compile link
 	@echo done
 
+a: cutils cmazes cgraph compile link
+	@echo done
+
 z: cmazes link
 	@echo done
 
