@@ -6,13 +6,13 @@ typedef struct Node {
     struct Node *nny, *nnx, *npy, *npx;
     bool *wny, *wnx, *wpy, *wpx;
     int x, y;
-    long data;
+    long long data;
 } Node;
 
 typedef struct Graph {
     Node ***nodes;
     int nr, nc;
-    long data;
+    long long data;
 } Graph;
 
 Graph *new_graph(int nr, int nc);

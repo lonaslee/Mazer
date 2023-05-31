@@ -55,13 +55,15 @@ int main(int argc_, char *argv_[]) {
             on_event(&event);
             if (event.type == SDL_KEYDOWN) {
                 done = false;
+                del_graph(graph);
+                graph = new_graph(w, h);
             }
         }
 
         draw_graph(graph);
-        if (true || loops % 10 == 0) {
+        if (true || loops % 30 == 0) {
             if (!done)
-                state = sidewinder(graph, state);
+                state = ellers(graph, state);
             if (state == NULL)
                 done = true;
         }

@@ -29,10 +29,12 @@
 #define HALF(a) ((a) / 2)
 #define YESNO (rand() % 2)
 
-#define lflip(n, p) ((n) |= (1L << (p)))
-#define lunflip(n, p) ((n) &= ~(1L << (p)))
-#define ltoggle(n, p) ((n) ^= (1L << (p)))
-#define lisflipped(n, p) ((n & (1L << (p))) != 0)
+#define llflip(n, p) ((n) |= (1LL << (p)))
+#define llunflip(n, p) ((n) &= ~(1LL << (p)))
+#define lltoggle(n, p) ((n) ^= (1LL << (p)))
+#define llisflipped(n, p) ((n & (1LL << (p))) != 0)
+#define llsetint(n, i) ((n) = ((n)&0xFFFFFFFF00000000) | (long long)i)
+#define llgetint(n) ((int)((n)&0xFFFFFFFF))
 
 #define is_null(p) ((p) == NULL)
 #define ifnn(p) if ((p) != NULL)
@@ -54,6 +56,7 @@
         PRINT_ERR(__VA_ARGS__); \
         exit(EXIT_FAILURE);     \
     } while (0);
+#define WTF EXIT_ERR("Impossible failure!")
 
 /**
  * @brief Select a random element from array of n length.

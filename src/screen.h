@@ -2,8 +2,8 @@
 
 #include "graph/graph.h"
 
-#define PRIMARY_CELL 31
-#define SECONDARY_CELL 30
+#define PRIMARY_CELL 63
+#define SECONDARY_CELL 62
 
 #define BM 4
 #define WM 0.05
