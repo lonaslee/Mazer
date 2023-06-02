@@ -14,9 +14,9 @@ enum DIRECTION {
     RIGHT
 };
 
-#define MOVEX(dir) ((dir) == RIGHT ? 1 : (dir) == LEFT ? -1 \
+#define MOVEX_(dir) ((dir) == RIGHT ? 1 : (dir) == LEFT ? -1 \
                                                        : 0)
-#define MOVEY(dir) ((dir) == UP ? 1 : (dir) == DOWN ? -1 \
+#define MOVEY_(dir) ((dir) == UP ? 1 : (dir) == DOWN ? -1 \
                                                     : 0)
 
 /**

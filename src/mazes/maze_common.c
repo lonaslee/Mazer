@@ -9,11 +9,11 @@
 #include "images.h"
 
 void draw_grid_step(Grid *grid, Cell *this_cell, Cell **other_cells) {
-    if (game->settings->step_interval == 0) return;
+    if (game->settings->gen_interval == 0) return;
     Game *game = get_game();
     clock_t start = clock();
     SDL_Event event;
-    while ((double)(clock() - start) / (double)CLOCKS_PER_SEC < game->settings->step_interval) {
+    while ((double)(clock() - start) / (double)CLOCKS_PER_SEC < game->settings->gen_interval) {
         while (SDL_PollEvent(&event)) {
             on_event(&event);
         }

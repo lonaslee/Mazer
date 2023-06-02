@@ -26,7 +26,7 @@ int tmain(int argc_, char *argv_[]) {
 int main(int argc_, char *argv_[]) {
     puts("Enter.\n");
     atexit(&cleanup);
-    srand(time(0));
+    srand(time(NULL));
     argc = argc_;
     argv = argv_;
 
@@ -39,16 +39,18 @@ int main(int argc_, char *argv_[]) {
     load_all_textures();
     puts("");
 
-    int w = 5, h = 5;
-    parse_argv(&w, &h);
+    int opts[3] = {5, 5, 0};
+    parse_argv(opts);
+    game->settings->gen_interval = opts[2];
 
-    game->stage->g = new_graph(h, w);
+    game->stage->g = new_graph(opts[1], opts[0]);
     void *state = NULL;
     bool done = false;
     long long loops = 0;
 
     SDL_Event event;
     while (++loops) {
+        printf("\rloops: %lld", loops);
         SDL_RenderClear(game->renderer);
 
         while (SDL_PollEvent(&event)) {
@@ -56,17 +58,27 @@ int main(int argc_, char *argv_[]) {
         }
 
         draw_graph(game->stage->g);
-        if (loops % game->settings->gen_interval == 0) {
-            if (!done)
-                state = hunt_and_kill(game->stage->g, state);
-            if (state == NULL)
-                done = true;
+        if (game->settings->gen_interval != 0) {
+            if (loops % game->settings->gen_interval == 0) {
+                if (!done)
+                    state = alduous_broder(game->stage->g, state);
+                if (state == NULL)
+                    done = true;
+            }
+        } else {
+            clock_t start = clock();
+            while ((double)(clock() - start) / (double)CLOCKS_PER_SEC < 1 / 30.0) {
+                if (!done)
+                    state = alduous_broder(game->stage->g, state);
+                if (state == NULL)
+                    done = true;
+            }
         }
 
         if (llisflipped(game->stage->flags, NEW_GRAPH)) {
             llunflip(game->stage->flags, NEW_GRAPH);
             del_graph(game->stage->g);
-            game->stage->g = new_graph(h, w);
+            game->stage->g = new_graph(opts[1], opts[0]);
             done = false;
         }
 
@@ -77,7 +89,7 @@ int main(int argc_, char *argv_[]) {
     return 0;
 }
 
-static void parse_argv(int *w, int *h) {
+static void parse_argv(int *is) {
     for (int i = 0; i < argc; i++) {
         printf("%d: %s\n", i, argv[i]);
     }
@@ -88,19 +100,24 @@ static void parse_argv(int *w, int *h) {
                 case 'w':
                 case 'W': {
                     if (strlen(argv[i]) == 2)
-                        *w = atoi(argv[++i]);
+                        is[0] = atoi(argv[++i]);
                     else
-                        *w = atoi(&argv[i][2]);
-                    break;
-                }
+                        is[0] = atoi(&argv[i][2]);
+                } break;
                 case 'h':
                 case 'H': {
                     if (strlen(argv[i]) == 2)
-                        *h = atoi(argv[++i]);
+                        is[1] = atoi(argv[++i]);
                     else
-                        *h = atoi(&argv[i][2]);
-                    break;
-                }
+                        is[1] = atoi(&argv[i][2]);
+                } break;
+                case 'i':
+                case 'I': {
+                    if (strlen(argv[i]) == 2)
+                        is[2] = atoi(argv[++i]);
+                    else
+                        is[2] = atoi(&argv[i][2]);
+                } break;
                 default:
                     EXIT_ERR("Unrecognised option '-%c'. Exit.\n", argv[i][1]);
                     break;

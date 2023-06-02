@@ -27,7 +27,10 @@ void *alduous_broder(Graph *g, void *state) {
 
     Node *p = get(g, s->c.x, s->c.y);
     llunflip(p->data, PRIMARY_CELL);
-    if (s->visited == g->nr * g->nc) return NULL;
+    if (s->visited == g->nr * g->nc) {
+        free(s);
+        return NULL;
+    }
 
     AxisDirection dir = choicenz(4,
                                  POS_Y * (s->c.y != g->nr - 1),
@@ -39,7 +42,6 @@ void *alduous_broder(Graph *g, void *state) {
     Node *n = get(g, s->c.x, s->c.y);
     llflip(n->data, PRIMARY_CELL);
     if (llisflipped(n->data, AB_VISITED)) return s;
-    llflip(n->data, SECONDARY_CELL);
     llflip(n->data, AB_VISITED);
     s->visited++;
 
@@ -79,7 +81,10 @@ void *binary_tree(Graph *g, void *state) {
     } else {
         s->c.x = 0;
         s->c.y++;
-        if (s->c.y == g->nr) return NULL;
+        if (s->c.y == g->nr) {
+            free(s);
+            return NULL;
+        }
     }
     llflip(get(g, s->c.x, s->c.y)->data, PRIMARY_CELL);
     return s;
@@ -112,6 +117,8 @@ void *recursive_backtracker(Graph *g, void *state) {
             s->c = s->stack->elements[s->stack->len - 1];
             return s;
         } else {
+            skdel(s->stack);
+            free(s);
             return NULL;
         }
     }
@@ -192,6 +199,7 @@ void *sidewinder(Graph *g, void *state) {
         s->c.x = 0;
         if (++s->c.y == g->nr) {
             ardel(s->a);
+            free(s);
             return NULL;
         }
     }
@@ -284,7 +292,7 @@ void *ellers(Graph *g, void *state) {
                             }
                         }
                     }
-
+                    free(s);
                     return NULL;
                 }
                 return s;
@@ -387,6 +395,7 @@ void *hunt_and_kill(Graph *g, void *state) {
                 }
             }
         }
+        free(s);
         return NULL;
     }
     return s;
