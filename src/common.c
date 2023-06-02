@@ -48,7 +48,7 @@ Game *get_game(void) {
         game->stage = calloc(1, sizeof(GameStage));
 
         game->settings = calloc(1, sizeof(Settings));
-        game->settings->step_interval = 0;
+        game->settings->gen_interval = 1;
 
         game->resources = calloc(1, sizeof(Resources));
         game->resources->texture_count = 0;

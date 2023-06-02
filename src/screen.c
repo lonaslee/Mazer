@@ -7,13 +7,11 @@ void draw_graph(Graph *g) {
     int ww, wh;
     SDL_GetWindowSize(game->win, &ww, &wh);
 
-    int s = round(MIN((ww * 0.95) / g->nc, (wh * 0.95) / g->nr));
-    int w = s * WM;
-    s *= SM;
-    w = MAX(w, 1);
+    int s = round(SM * MIN((ww * 0.95) / g->nc, (wh * 0.95) / g->nr));
+    int w = MAX(1, round(WM * s));
 
-    int ox = HALF(ww - (s + w) * g->nc) + HALF(w);
-    int oy = HALF(wh - (s + w) * g->nr) + HALF(w);
+    int ox = round(HALF(ww - s * g->nc));
+    int oy = round(HALF(wh - s * g->nr));
 
     SDL_RenderCopy(game->renderer, game->resources->textures[BG_GREEN], NULL, NULL);
 

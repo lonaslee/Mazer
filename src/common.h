@@ -10,6 +10,7 @@
 #include <stdlib.h>
 
 #include "SDL.h"
+#include "graph/graph.h"
 #include "grid.h"
 
 #define WIN_INIT_WIDTH 800
@@ -104,7 +105,13 @@ typedef enum MazeType {
  */
 typedef struct {
     Grid *grid;
+    Graph *g;
+    long long flags;
 } GameStage;
+
+typedef enum {
+    NEW_GRAPH
+} StageFlags;
 
 /**
  * @brief Cached resources.
@@ -116,7 +123,7 @@ typedef struct {
 } Resources;
 
 typedef struct {
-    double step_interval;
+    int gen_interval;  //< in loops
 } Settings;
 
 /**

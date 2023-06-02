@@ -42,35 +42,36 @@ int main(int argc_, char *argv_[]) {
     int w = 5, h = 5;
     parse_argv(&w, &h);
 
-    Graph *graph = new_graph(w, h);
+    game->stage->g = new_graph(h, w);
     void *state = NULL;
     bool done = false;
     long long loops = 0;
 
     SDL_Event event;
-    while (1) {
+    while (++loops) {
         SDL_RenderClear(game->renderer);
 
         while (SDL_PollEvent(&event)) {
             on_event(&event);
-            if (event.type == SDL_KEYDOWN) {
-                done = false;
-                del_graph(graph);
-                graph = new_graph(w, h);
-            }
         }
 
-        draw_graph(graph);
-        if (false || loops % 5 == 0) {
+        draw_graph(game->stage->g);
+        if (loops % game->settings->gen_interval == 0) {
             if (!done)
-                state = hunt_and_kill(graph, state);
+                state = hunt_and_kill(game->stage->g, state);
             if (state == NULL)
                 done = true;
         }
 
+        if (llisflipped(game->stage->flags, NEW_GRAPH)) {
+            llunflip(game->stage->flags, NEW_GRAPH);
+            del_graph(game->stage->g);
+            game->stage->g = new_graph(h, w);
+            done = false;
+        }
+
         SDL_RenderPresent(game->renderer);
         SDL_Delay(1);
-        loops++;
     }
 
     return 0;
@@ -118,11 +119,36 @@ static void load_all_textures(void) {
     }
 }
 
+void on_mousedown(SDL_MouseButtonEvent b) {
+}
+
+void on_keydown(SDL_KeyboardEvent k) {
+    switch (k.keysym.sym) {
+        case SDLK_F11: {
+            bool is_fullscreen = SDL_GetWindowFlags(game->win) & SDL_WINDOW_FULLSCREEN_DESKTOP;
+            SDL_SetWindowFullscreen(game->win, is_fullscreen ? 0 : SDL_WINDOW_FULLSCREEN_DESKTOP);
+        } break;
+
+        case SDLK_r: {
+            llflip(game->stage->flags, NEW_GRAPH);
+        } break;
+
+        default:
+            break;
+    }
+}
+
 void on_event(SDL_Event *event) {
     switch (event->type) {
         case SDL_QUIT:
             puts("User exit.");
             exit(EXIT_SUCCESS);
+            break;
+        case SDL_KEYDOWN:
+            on_keydown(event->key);
+            break;
+        case SDL_MOUSEBUTTONDOWN:
+            on_mousedown(event->button);
             break;
 
         default:
