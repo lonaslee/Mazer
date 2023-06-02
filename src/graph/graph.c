@@ -105,3 +105,10 @@ void surround(Node *n) {
     ifnn(n->wpy) * (n->wpy) = true;
     ifnn(n->wpx) * (n->wpx) = true;
 }
+
+void extrude_to(Node *n, AxisDirection dir) {
+    ifnn(n->wny) { *(n->wny) = dir != POS_Y; }
+    ifnn(n->wnx) { *(n->wnx) = dir != POS_X; }
+    ifnn(n->wpy) { *(n->wpy) = dir != NEG_Y; }
+    ifnn(n->wpx) { *(n->wpx) = dir != NEG_X; }
+}

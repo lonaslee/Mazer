@@ -10,6 +10,7 @@ void draw_graph(Graph *g) {
     int s = round(MIN((ww * 0.95) / g->nc, (wh * 0.95) / g->nr));
     int w = s * WM;
     s *= SM;
+    w = MAX(w, 1);
 
     int ox = HALF(ww - (s + w) * g->nc) + HALF(w);
     int oy = HALF(wh - (s + w) * g->nr) + HALF(w);

@@ -36,9 +36,10 @@
 #define llsetint(n, i) ((n) = ((n)&0xFFFFFFFF00000000) | (long long)i)
 #define llgetint(n) ((int)((n)&0xFFFFFFFF))
 
-#define is_null(p) ((p) == NULL)
-#define ifnn(p) if ((p) != NULL)
-#define ifn(p) if ((p) == NULL)
+#define isn(p) ((p) == NULL)
+#define isnn(p) ((p) != NULL)
+#define ifn(p) if (isn(p))
+#define ifnn(p) if (isnn(p))
 
 #define SETARR(arr, len, val)           \
     do {                                \

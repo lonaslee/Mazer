@@ -43,10 +43,7 @@ void *alduous_broder(Graph *g, void *state) {
     llflip(n->data, AB_VISITED);
     s->visited++;
 
-    ifnn(n->wny) { *(n->wny) = dir != POS_Y; }
-    ifnn(n->wnx) { *(n->wnx) = dir != POS_X; }
-    ifnn(n->wpy) { *(n->wpy) = dir != NEG_Y; }
-    ifnn(n->wpx) { *(n->wpx) = dir != NEG_X; }
+    extrude_to(n, dir);
     return s;
 }
 
@@ -135,11 +132,7 @@ void *recursive_backtracker(Graph *g, void *state) {
             break;
     }
 
-    ifnn(n->wny) { *(n->wny) = dir != POS_Y; }
-    ifnn(n->wnx) { *(n->wnx) = dir != POS_X; }
-    ifnn(n->wpy) { *(n->wpy) = dir != NEG_Y; }
-    ifnn(n->wpx) { *(n->wpx) = dir != NEG_X; }
-
+    extrude_to(n, dir);
     s->c = n;
 
     llflip(s->c->data, 0);
@@ -328,3 +321,75 @@ void *ellers(Graph *g, void *state) {
 
     return s;
 }
+
+#define HK_VISITED 0
+
+typedef struct {
+    Coord c;
+    bool killing;
+} HuntAndKillState;
+
+void *hunt_and_kill(Graph *g, void *state) {
+    HuntAndKillState *s = state;
+    ifn(s) {
+        s = calloc(1, sizeof(HuntAndKillState));
+        s->c.x = rand() % g->nc;
+        s->c.y = rand() % g->nr;
+        Node *f = get(g, s->c.x, s->c.y);
+        surround(f);
+        llflip(f->data, PRIMARY_CELL);
+        llflip(f->data, HK_VISITED);
+        s->killing = true;
+        return s;
+    }
+
+    if (s->killing) {
+        llunflip(get(g, s->c.x, s->c.y)->data, PRIMARY_CELL);
+        Node *p = get(g, s->c.x, s->c.y);
+        AxisDirection dir = choicenz(4,
+                                     POS_Y * (p->npy && !llisflipped(p->npy->data, HK_VISITED)),
+                                     NEG_X * (p->nnx && !llisflipped(p->nnx->data, HK_VISITED)),
+                                     NEG_Y * (p->nny && !llisflipped(p->nny->data, HK_VISITED)),
+                                     POS_X * (p->npx && !llisflipped(p->npx->data, HK_VISITED)));
+        if (dir == NONE) {
+            s->killing = false;
+            return s;
+        }
+
+        s->c.x += MOVEX(dir);
+        s->c.y += MOVEY(dir);
+        Node *n = get(g, s->c.x, s->c.y);
+        llflip(n->data, PRIMARY_CELL);
+        llflip(n->data, HK_VISITED);
+
+        extrude_to(n, dir);
+    } else {
+        for (int y = 0; y < g->nr; y++) {
+            for (int x = 0; x < g->nc; x++) {
+                Node *n = get(g, x, y);
+                if (!llisflipped(n->data, HK_VISITED)) {
+                    if (n->nnx && llisflipped(n->nnx->data, HK_VISITED))
+                        extrude_to(n, POS_X);
+                    else if (n->npx && llisflipped(n->npx->data, HK_VISITED))
+                        extrude_to(n, NEG_X);
+                    else if (n->nny && llisflipped(n->nny->data, HK_VISITED))
+                        extrude_to(n, POS_Y);
+                    else if (n->npy && llisflipped(n->npy->data, HK_VISITED))
+                        extrude_to(n, NEG_Y);
+                    else
+                        continue;
+                    llflip(n->data, PRIMARY_CELL);
+                    llflip(n->data, HK_VISITED);
+                    s->c.x = x;
+                    s->c.y = y;
+                    s->killing = true;
+                    return s;
+                }
+            }
+        }
+        return NULL;
+    }
+    return s;
+}
+
+#undef HK_VISITED

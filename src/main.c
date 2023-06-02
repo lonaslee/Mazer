@@ -61,9 +61,9 @@ int main(int argc_, char *argv_[]) {
         }
 
         draw_graph(graph);
-        if (true || loops % 30 == 0) {
+        if (false || loops % 5 == 0) {
             if (!done)
-                state = ellers(graph, state);
+                state = hunt_and_kill(graph, state);
             if (state == NULL)
                 done = true;
         }
