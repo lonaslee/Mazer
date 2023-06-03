@@ -7,7 +7,6 @@
 #include <SDL.h>
 
 #include "common.h"
-#include "maze.h"
 
 /**
  * @brief Sets the pre-declared variable texture pointer to a texture struct.
