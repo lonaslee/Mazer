@@ -61,7 +61,7 @@ int main(int argc_, char *argv_[]) {
         if (game->settings->gen_interval != 0) {
             if (loops % game->settings->gen_interval == 0) {
                 if (!done)
-                    state = alduous_broder(game->stage->g, state);
+                    state = kruskals(game->stage->g, state);
                 if (state == NULL)
                     done = true;
             }
@@ -69,7 +69,7 @@ int main(int argc_, char *argv_[]) {
             clock_t start = clock();
             while ((double)(clock() - start) / (double)CLOCKS_PER_SEC < 1 / 30.0) {
                 if (!done)
-                    state = alduous_broder(game->stage->g, state);
+                    state = hunt_and_kill(game->stage->g, state);
                 if (state == NULL)
                     done = true;
             }
@@ -78,6 +78,7 @@ int main(int argc_, char *argv_[]) {
         if (llisflipped(game->stage->flags, NEW_GRAPH)) {
             llunflip(game->stage->flags, NEW_GRAPH);
             del_graph(game->stage->g);
+            state = NULL;
             game->stage->g = new_graph(opts[1], opts[0]);
             done = false;
         }

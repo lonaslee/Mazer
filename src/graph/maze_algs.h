@@ -8,3 +8,4 @@ void *recursive_backtracker(Graph *g, void *state);
 void *sidewinder(Graph *g, void *state);
 void *ellers(Graph *g, void *state);
 void *hunt_and_kill(Graph *g, void *state);
+void *kruskals(Graph *g, void *state);

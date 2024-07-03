@@ -7,6 +7,7 @@
 #include "screen.h"
 #include "utils/array.h"
 #include "utils/stack.h"
+#include "utils/tree.h"
 
 typedef struct {
     Coord c;
@@ -402,3 +403,53 @@ void *hunt_and_kill(Graph *g, void *state) {
 }
 
 #undef HK_VISITED
+
+typedef struct {
+    Stack *stack;
+    TNode **sets;
+} KruskalState;
+
+static int cmp_by_rand(const void *a, const void *b) {
+    return rand() % 2;
+}
+
+void *kruskals(Graph *g, void *state) {
+    KruskalState *s = state;
+    ifn(s) {
+        s = calloc(1, sizeof(KruskalState));
+        s->stack = sknew(g->nc * g->nr * 2 + g->nc + g->nr);
+        s->sets = calloc(g->nc * g->nr, sizeof(TNode));
+        int idx = 0;
+
+        for (int x = 0; x < g->nc; x++) {
+            for (int y = 0; y < g->nr; y++) {
+                Node *n = get(g, x, y);
+                s->sets[idx] = trnew(n);
+                llsetint(n->data, idx);
+                idx++;
+
+                if (y != g->nr - 1)
+                    skpush(s->stack, n->wny);
+                else
+                    *(n->wny) = true;
+                if (x != g->nc - 1)
+                    skpush(s->stack, n->wpx);
+                else;
+                    // *(n->wpx) = true;
+            }
+        }
+        for (int x = 0; x < g->nc; x++) *(get(g, x, 0)->wpy) = true;
+        for (int y = 0; y < g->nr; y++) *(get(g, 0, y)->wnx) = true;
+        for (int i = 0; i < s->stack->len; i++) *((bool *)s->stack->elements[i]) = true;
+        qsort(s->stack->elements, s->stack->len, sizeof(Node *), cmp_by_rand);
+    }
+
+    if (s->stack->len == 0) {
+        skdel(s->stack);
+        trdel(s->sets);
+        free(s);
+        return NULL;
+    }
+
+    return s;
+}

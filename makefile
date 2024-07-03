@@ -8,9 +8,12 @@ IARGS := -Isrc/ -Isrc/mazes/ -Isrc/graph -ISDL2/x86_64-w64-mingw32/include/SDL2 
 LARGS := -LD:/c/mazer/SDL2/x86_64-w64-mingw32/lib -lmingw32 -lSDL2main -lSDL2 -LD:/c/mazer/SDL2_image/x86_64-w64-mingw32/lib -lSDL2_image -g #-mwindows
 CFLAGS := -c $(IARGS) -g
 
-NAME := m2.exe
+NAME := mazer.exe
 
 all: cgraph compile link
+	@echo done
+
+r: cgraph compile link run
 	@echo done
 
 a: cutils cmazes cgraph compile link
@@ -44,4 +47,6 @@ cutils:
 link:
 	@echo linking
 	$(CC) $(wildcard $(ODIR)*.o) -o $(NAME) $(LARGS)
+
+run:
 	./$(NAME)
