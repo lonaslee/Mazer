@@ -46,6 +46,7 @@ Game *get_game(void) {
         game->renderer = renderer;
 
         game->stage = calloc(1, sizeof(GameStage));
+        game->stage->page = TITLE_PAGE;
 
         game->settings = calloc(1, sizeof(Settings));
         game->settings->gen_interval = 1;
@@ -63,8 +64,8 @@ Resources *get_grid_resources(void) {
     if (grid_resources == NULL) {
         grid_resources = calloc(1, sizeof(Resources));
         grid_resources->texture_count = 5;
-        grid_resources->texture_size = 5 * sizeof(SDL_Texture *);
-        grid_resources->textures = calloc(5, sizeof(SDL_Texture *));
+        grid_resources->texture_size = grid_resources->texture_count * sizeof(SDL_Texture *);
+        grid_resources->textures = calloc(grid_resources->texture_count, sizeof(SDL_Texture *));
         grid_resources->textures[0] = game->resources->textures[BG_GREEN];
         grid_resources->textures[1] = game->resources->textures[CLR_LYELLOW];
         grid_resources->textures[2] = game->resources->textures[CLR_DBLUE];

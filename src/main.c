@@ -50,25 +50,28 @@ int main(int argc_, char *argv_[]) {
 
     SDL_Event event;
     while (++loops) {
-        printf("\rloops: %lld", loops);
         SDL_RenderClear(game->renderer);
 
         while (SDL_PollEvent(&event)) {
             on_event(&event);
         }
 
-        draw_graph(game->stage->g);
-        state = kruskals(game->stage->g, state);
-        if (state == NULL) {
-            done = true;
-        }
+        if (game->stage->page == TITLE_PAGE) {
+            draw_title();
+        } else {
+            draw_graph(game->stage->g);
+            state = ellers(game->stage->g, state);
+            if (state == NULL) {
+                done = true;
+            }
 
-        if (llisflipped(game->stage->flags, NEW_GRAPH)) {
-            llunflip(game->stage->flags, NEW_GRAPH);
-            del_graph(game->stage->g);
-            state = NULL;
-            game->stage->g = new_graph(opts[1], opts[0]);
-            done = false;
+            if (llisflipped(game->stage->flags, NEW_GRAPH)) {
+                llunflip(game->stage->flags, NEW_GRAPH);
+                del_graph(game->stage->g);
+                state = NULL;
+                game->stage->g = new_graph(opts[1], opts[0]);
+                done = false;
+            }
         }
 
         SDL_RenderPresent(game->renderer);
@@ -117,7 +120,7 @@ static void parse_argv(int *is) {
 
 static void load_all_textures(void) {
     char *fps[] = {"clr-black.png", "clr-dblue.png", "clr-lorange.png", "clr-lyellow.png",
-                   "clr-lgreen.png", "bg-green.png", "clr-white.png", NULL};
+                   "clr-lgreen.png", "bg-green.png", "clr-white.png", "title.png", NULL};
     for (int i = 0; fps[i] != NULL; ++i) {
         char ffp[50] = "resources/";
         cache_resource(game->resources, game->renderer, strncat(ffp, fps[i], 38));

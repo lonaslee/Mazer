@@ -26,6 +26,14 @@ void free_resources(Resources *resources) {
     free(resources);
 }
 
+void draw_title() {
+    int winwidth, winheight;
+    SDL_GetWindowSize(game->win, &winwidth, &winheight);
+
+    SDL_Texture *base = game->resources->textures[TITLE_SVG];
+    SDL_RenderCopy(game->renderer, base, NULL, NULL);
+}
+
 void draw_grid(Grid *grid, Cell *this_cell, Cell **other_cells) {
     int winwidth, winheight, cellsize, wallsize, offsetx, offsety;
     SDL_GetWindowSize(game->win, &winwidth, &winheight);

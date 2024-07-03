@@ -38,6 +38,11 @@
     } while (0);
 
 /**
+ * @brief Render the title page.
+ */
+void draw_title();
+
+/**
  * @brief Draw a grid / maze on the screen using resources and renderer.
  *
  * @param grid grid to draw

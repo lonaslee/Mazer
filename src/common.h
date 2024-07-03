@@ -34,8 +34,8 @@
 #define llunflip(n, p) ((n) &= ~(1LL << (p)))
 #define lltoggle(n, p) ((n) ^= (1LL << (p)))
 #define llisflipped(n, p) ((n & (1LL << (p))) != 0)
-#define llsetint(n, i) ((n) = ((n)&0xFFFFFFFF00000000) | (long long)i)
-#define llgetint(n) ((int)((n)&0xFFFFFFFF))
+#define llsetint(n, i) ((n) = ((n) & 0xFFFFFFFF00000000) | (long long)i)
+#define llgetint(n) ((int)((n) & 0xFFFFFFFF))
 
 #define isn(p) ((p) == NULL)
 #define isnn(p) ((p) != NULL)
@@ -100,12 +100,17 @@ typedef enum MazeType {
     GROWING_BINARY_TREE
 } MazeType;
 
+typedef enum {
+    TITLE_PAGE
+} Page;
+
 /**
  * @brief The stage of the game.
  */
 typedef struct {
     Grid *grid;
     Graph *g;
+    Page page;
     long long flags;
 } GameStage;
 
@@ -201,6 +206,7 @@ enum FileNames {
     CLR_LGREEN,
     BG_GREEN,
     CLR_WHITE,
+    TITLE_SVG,
 };
 
 /**
