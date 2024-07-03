@@ -58,21 +58,9 @@ int main(int argc_, char *argv_[]) {
         }
 
         draw_graph(game->stage->g);
-        if (game->settings->gen_interval != 0) {
-            if (loops % game->settings->gen_interval == 0) {
-                if (!done)
-                    state = kruskals(game->stage->g, state);
-                if (state == NULL)
-                    done = true;
-            }
-        } else {
-            clock_t start = clock();
-            while ((double)(clock() - start) / (double)CLOCKS_PER_SEC < 1 / 30.0) {
-                if (!done)
-                    state = hunt_and_kill(game->stage->g, state);
-                if (state == NULL)
-                    done = true;
-            }
+        state = kruskals(game->stage->g, state);
+        if (state == NULL) {
+            done = true;
         }
 
         if (llisflipped(game->stage->flags, NEW_GRAPH)) {

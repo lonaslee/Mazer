@@ -409,6 +409,11 @@ typedef struct {
     TNode **sets;
 } KruskalState;
 
+typedef struct {
+    bool **wall;
+    int idx;
+} WallIndexPair;
+
 static int cmp_by_rand(const void *a, const void *b) {
     return rand() % 2;
 }
@@ -428,21 +433,23 @@ void *kruskals(Graph *g, void *state) {
                 llsetint(n->data, idx);
                 idx++;
 
-                if (y != g->nr - 1)
+                if (y != 0 && y != g->nr)
                     skpush(s->stack, n->wny);
-                else
-                    *(n->wny) = true;
                 if (x != g->nc - 1)
                     skpush(s->stack, n->wpx);
-                else
-                    ;
-                // *(n->wpx) = true;
             }
         }
-        for (int x = 0; x < g->nc; x++) *(get(g, x, 0)->wpy) = true;
-        for (int y = 0; y < g->nr; y++) *(get(g, 0, y)->wnx) = true;
+        // for (int x = 0; x < g->nc; x++) *(get(g, x, 0)->wpy) = true;
+        // for (int y = 0; y < g->nr; y++) *(get(g, 0, y)->wnx) = true;
         for (int i = 0; i < s->stack->len; i++) *((bool *)s->stack->elements[i]) = true;
         qsort(s->stack->elements, s->stack->len, sizeof(Node *), cmp_by_rand);
+    }
+
+    while (s->stack->len) {
+        bool **wall;
+        skpop(s->stack, wall);
+        // if (trgetroot(s->sets[])) {
+        // }
     }
 
     if (s->stack->len == 0) {
