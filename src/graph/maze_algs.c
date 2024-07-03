@@ -434,8 +434,9 @@ void *kruskals(Graph *g, void *state) {
                     *(n->wny) = true;
                 if (x != g->nc - 1)
                     skpush(s->stack, n->wpx);
-                else;
-                    // *(n->wpx) = true;
+                else
+                    ;
+                // *(n->wpx) = true;
             }
         }
         for (int x = 0; x < g->nc; x++) *(get(g, x, 0)->wpy) = true;
@@ -446,7 +447,9 @@ void *kruskals(Graph *g, void *state) {
 
     if (s->stack->len == 0) {
         skdel(s->stack);
-        trdel(s->sets);
+        for (int idx = 0; idx < g->nc * g->nr; idx++) {
+            trdel(s->sets[idx]);
+        }
         free(s);
         return NULL;
     }
