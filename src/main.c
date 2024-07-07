@@ -48,6 +48,8 @@ int main(int argc_, char *argv_[]) {
     bool done = false;
     long long loops = 0;
 
+    Button *b = create_button(.3, .3, .2, .2, "Text!", CLR_LGREEN);
+
     SDL_Event event;
     while (++loops) {
         SDL_RenderClear(game->renderer);
@@ -55,6 +57,8 @@ int main(int argc_, char *argv_[]) {
         while (SDL_PollEvent(&event)) {
             on_event(&event);
         }
+
+        draw_buttons();
 
         if (game->stage->page == TITLE_PAGE) {
             draw_title();

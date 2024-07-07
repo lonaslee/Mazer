@@ -6,7 +6,7 @@
 
 #include "SDL.h"
 #include "images.h"
-#include "utils/array.h"
+#include "utils/linkedlist.h"
 
 typedef struct {
     SDL_Rect *rect; /** As percentages of the window size. */
@@ -18,7 +18,7 @@ typedef struct {
 } Button;
 
 typedef struct {
-    Array *all;
+    LinkedList *all;
 } ButtonManager;
 
 ButtonManager *button_manager;
@@ -28,7 +28,14 @@ ButtonManager *button_manager;
  */
 ButtonManager *get_button_manager(void);
 
+/**
+ * @brief Free the manager and all buttons.
+ */
+void free_button_manager(void);
+
 Button *create_button(int x, int y, int w, int h, char *text, FileName background);
+
+void delete_button(Button *b);
 
 void draw_button(Button *b);
 
