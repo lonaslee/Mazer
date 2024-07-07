@@ -9,11 +9,12 @@
 #include "utils/linkedlist.h"
 
 typedef struct {
-    SDL_Rect *rect; /** As percentages of the window size. */
-    bool clicked;   /** Was it clicked this frame. */
-    bool released;  /** Was it released this frame. */
-    long held;      /** Length it has been held in seconds, or 0 for released. */
-    char *text;     /** Maximum of 49 letters. */
+    double x, y, w, h;
+    bool clicked;               /** Was it clicked this frame. */
+    bool released;              /** Was it released this frame. */
+    long held;                  /** Length it has been held in seconds, or 0 for released. */
+    char *text;                 /** Maximum of 49 letters, or NULL */
+    int text_r, text_g, text_b; /** Text color RGB */
     FileName background;
 } Button;
 
@@ -33,7 +34,7 @@ ButtonManager *get_button_manager(void);
  */
 void free_button_manager(void);
 
-Button *create_button(int x, int y, int w, int h, char *text, FileName background);
+Button *create_button(double x, double y, double w, double h, char *text, int text_r, int text_g, int text_b, FileName background);
 
 void delete_button(Button *b);
 

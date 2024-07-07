@@ -1,5 +1,6 @@
 #include "button.h"
 
+#include "SDL_ttf.h"
 #include "common.h"
 
 ButtonManager* get_button_manager(void) {
@@ -19,19 +20,23 @@ void free_button_manager(void) {
     free(button_manager);
 }
 
-Button* create_button(int x, int y, int w, int h, char* text, FileName background) {
+Button* create_button(double x, double y, double w, double h, char* text, int text_r, int text_g, int text_b, FileName background) {
     Button* b = calloc(1, sizeof(Button));
-    SDL_Rect* r = calloc(1, sizeof(SDL_Rect));
-    r->x = x;
-    r->y = y;
-    r->w = w;
-    r->h = h;
-    b->rect = r;
+    b->x = x;
+    b->y = y;
+    b->w = w;
+    b->h = h;
     b->clicked = false;
     b->released = false;
     b->held = 0;
-    b->text = calloc(50, sizeof(char));
-    strcpy(b->text, text);
+    if (text != NULL) {
+        b->text = calloc(50, sizeof(char));
+        strcpy(b->text, text);
+        b->text_r = text_r;
+        b->text_g = text_g;
+        b->text_b = text_b;
+    }
+    b->background = background;
 
     llappend(button_manager->all, b);
     return b;
@@ -44,6 +49,8 @@ void delete_button(Button* b) {
     llsize_t i = llindex(button_manager->all, b);
     llremove(button_manager->all, i);
 
+    logd("Deleting button %s at %p\n", b->text, b);
+    free(b->text);
     free(b);
 }
 
@@ -51,12 +58,15 @@ void draw_button(Button* b) {
     int winwidth, winheight;
     SDL_GetWindowSize(game->win, &winwidth, &winheight);
 
-    SDL_Rect r = {.x = winwidth * b->rect->x, .y = winheight * b->rect->y, .w = winwidth * b->rect->w, .h = winheight * b->rect->h};
+    SDL_Rect r = {.x = winwidth * b->x, .y = winheight * b->y, .w = winwidth * b->w, .h = winheight * b->h};
+    SDL_Rect border = {.x = winwidth * b->x - 5, .y = winheight * b->y - 5, .w = winwidth * b->w + 10, .h = winheight * b->h + 10};
+    border.x = MAX(border.x, 0);
+    border.y = MAX(border.y, 0);
 
-    SDL_Texture* bg = game->resources->textures[b->background];
-    SDL_RenderCopy(game->renderer, bg, NULL, &r);
+    SDL_RenderCopy(game->renderer, game->resources->textures[CLR_BLACK], NULL, &border);
+    SDL_RenderCopy(game->renderer, game->resources->textures[b->background], NULL, &r);
 
-    printf("Draw button %s\n", b->text);
+    SDL_Color text_color = {b->text_r, b->text_g, b->text_b};
 }
 
 void draw_buttons() {

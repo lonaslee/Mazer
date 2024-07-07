@@ -18,6 +18,12 @@
 
 #define oputc(char) putc((char), stdout)
 
+#define LOGD 1
+#define logd(fmt, ...)                                \
+    do {                                              \
+        if (LOGD) fprintf(stderr, fmt, __VA_ARGS__); \
+    } while (0)
+
 #define MIN(a, b) \
     ({ __typeof__ (a) _a = (a); \
        __typeof__ (b) _b = (b); \
