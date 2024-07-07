@@ -51,16 +51,11 @@ int main(int argc_, char *argv_[]) {
 
         if (game->stage->page == TITLE_PAGE) {
             draw_background(TITLE_SVG);
-        } else {
-            state = ellers(game->stage->graph, state);
-            if (state == NULL) {
-            }
-
-            if (llisflipped(game->stage->flags, NEW_GRAPH)) {
-                llunflip(game->stage->flags, NEW_GRAPH);
-                del_graph(game->stage->graph);
-                state = NULL;
-                game->stage->graph = new_graph(10, 10);
+        } else if (game->stage->page == MAZE_PAGE) {
+            if (!game->stage->generated) {
+                state = ellers(game->stage->graph, state);
+                if (state == NULL)
+                    game->stage->generated = true;
             }
             draw_graph(game->stage->graph);
         }

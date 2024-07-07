@@ -8,62 +8,73 @@ ButtonManager* get_button_manager(void) {
     static ButtonManager* button_manager = NULL;
     if (button_manager == NULL) {
         button_manager = calloc(1, sizeof(ButtonManager));
-        button_manager->all = llnew();
+        button_manager->title = arnew(10);
+        button_manager->maze = arnew(10);
     }
     return button_manager;
 }
 
 void free_button_manager(void) {
-    LLFOREACH(n, button_manager->all) {
-        free(n->data);
-    }
-    lldel(button_manager->all);
+    for (arsize_t i = 0; i < button_manager->title->len; i++)
+        free(arget(button_manager->title, i));
+    for (arsize_t i = 0; i < button_manager->maze->len; i++)
+        free(arget(button_manager->maze, i));
+    ardel(button_manager->title);
+    ardel(button_manager->maze);
     free(button_manager);
 }
 
-void title_enter_maze(void) {
+void title_enter_maze(Button* b) {
     logd("title_enter_maze %c", '\n');
-    // game->stage->page
+    if (game->stage->page == TITLE_PAGE) {
+        game->stage->page = MAZE_PAGE;
+        b->enabled = false;
+    }
 }
 
 void create_all_buttons(void) {
-    create_button(.25, .5, .5, .1, "Enter Maze", 255, 255, 255, CLR_LGREEN, &title_enter_maze)->enabled = true;
+    create_button(TITLE_PAGE, .25, .5, .5, .1,
+                  "Enter Maze", 255, 255, 255, CLR_LGREEN, &title_enter_maze, NULL)
+        ->enabled = true;
 }
 
 void update_buttons(SDL_MouseButtonEvent e) {
     logd("Update button (%i, %i)\n", e.x, e.y);
-    if (e.type == SDL_MOUSEBUTTONDOWN) {
-        LLFOREACH(n, button_manager->all) {
-            Button* b = n->data;
-            if (e.x > b->true_rect.x && e.y > b->true_rect.y && e.x < b->true_rect.x + b->true_rect.w && e.y < b->true_rect.y + b->true_rect.h) {
+    arsize_t len;
+    if (game->stage->page == TITLE_PAGE)
+        len = button_manager->title->len;
+    else if (game->stage->page == MAZE_PAGE)
+        len = button_manager->maze->len;
+
+    for (arsize_t i = 0; i < len; i++) {
+        Button* b;
+        if (game->stage->page == TITLE_PAGE)
+            b = arget(button_manager->title, i);
+        else if (game->stage->page == MAZE_PAGE)
+            b = arget(button_manager->maze, i);
+
+        if (!b->enabled) continue;
+        if (e.x > b->true_rect.x && e.y > b->true_rect.y && e.x < b->true_rect.x + b->true_rect.w && e.y < b->true_rect.y + b->true_rect.h) {
+            if (e.type = SDL_MOUSEBUTTONDOWN) {
                 logd("Button %s clicked\n", b->text);
-                b->clicked = true;
                 b->held = e.timestamp;
-                b->on_click();
-                break;
-            }
-        }
-    } else {
-        LLFOREACH(n, button_manager->all) {
-            Button* b = n->data;
-            if (e.x > b->true_rect.x && e.y > b->true_rect.y && e.x < b->true_rect.x + b->true_rect.w && e.y < b->true_rect.y + b->true_rect.h) {
-                b->released = true;
+                if (b->on_click != NULL) b->on_click(b);
+            } else {
                 logd("Button %s released\n", b->text);
                 b->held = 0;
-                break;
+                if (b->on_release != NULL) b->on_release(b);
             }
+            break;
         }
     }
 }
 
-Button* create_button(double x, double y, double w, double h, char* text, int text_r, int text_g, int text_b, FileName background, void (*on_click)(void)) {
+Button* create_button(Page page, double x, double y, double w, double h, char* text, int text_r, int text_g, int text_b, FileName background, void (*on_click)(void*), void (*on_release)(void*)) {
     Button* b = calloc(1, sizeof(Button));
     b->x = x;
     b->y = y;
     b->w = w;
     b->h = h;
-    b->clicked = false;
-    b->released = false;
     b->held = 0;
     if (text != NULL) {
         b->text = calloc(50, sizeof(char));
@@ -75,21 +86,13 @@ Button* create_button(double x, double y, double w, double h, char* text, int te
     b->background = background;
     b->enabled = false;
     b->on_click = on_click;
+    b->on_release = on_release;
 
-    llappend(button_manager->all, b);
+    if (page == TITLE_PAGE)
+        arappend(button_manager->title, b);
+    else if (page == MAZE_PAGE)
+        arappend(button_manager->maze, b);
     return b;
-}
-
-/**
- * @brief Free a button and remove it from the manager.
- */
-void delete_button(Button* b) {
-    llsize_t i = llindex(button_manager->all, b);
-    llremove(button_manager->all, i);
-
-    logd("Deleting button %s at %p\n", b->text, b);
-    free(b->text);
-    free(b);
 }
 
 void draw_button(Button* b) {
@@ -119,9 +122,11 @@ void draw_button(Button* b) {
 }
 
 void draw_enabled_buttons() {
-    LLFOREACH(n, button_manager->all) {
-        Button* b = n->data;
-        if (b->enabled)
-            draw_button(b);
-    }
+    Array* ar;
+    if (game->stage->page == TITLE_PAGE)
+        ar = button_manager->title;
+    else if (game->stage->page == MAZE_PAGE)
+        ar = button_manager->maze;
+    for (arsize_t i = 0; i < ar->len; i++)
+        draw_button(arget(ar, i));
 }

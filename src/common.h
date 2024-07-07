@@ -19,8 +19,8 @@
 #define oputc(char) putc((char), stdout)
 
 #define LOGD 1
-#define logd(fmt, ...)                                \
-    do {                                              \
+#define logd(fmt, ...)                               \
+    do {                                             \
         if (LOGD) fprintf(stderr, fmt, __VA_ARGS__); \
     } while (0)
 
@@ -107,7 +107,8 @@ typedef enum MazeType {
 } MazeType;
 
 typedef enum {
-    TITLE_PAGE
+    TITLE_PAGE,
+    MAZE_PAGE,
 } Page;
 
 /**
@@ -115,6 +116,7 @@ typedef enum {
  */
 typedef struct {
     Graph *graph;
+    bool generated;
     Page page;
     long long flags;
 } GameStage;

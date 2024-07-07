@@ -6,23 +6,23 @@
 
 #include "SDL.h"
 #include "images.h"
-#include "utils/linkedlist.h"
+#include "utils/array.h"
 
-typedef struct {
+typedef struct Button {
     double x, y, w, h;
     SDL_Rect true_rect;         /** Rect last drawn to screen, always updating. */
-    bool clicked;               /** Was it clicked this frame. */
-    bool released;              /** Was it released this frame. */
     Uint32 held;                /** Length it has been held in seconds, or 0 for released. */
     char *text;                 /** Maximum of 49 letters, or NULL */
     int text_r, text_g, text_b; /** Text color RGB */
     FileName background;
-    void (*on_click)(void);
+    void (*on_click)(void *);
+    void (*on_release)(void *);
     bool enabled;
 } Button;
 
 typedef struct {
-    LinkedList *all;
+    Array *title;
+    Array *maze;
 } ButtonManager;
 
 ButtonManager *button_manager;
@@ -41,9 +41,9 @@ void create_all_buttons(void);
 
 void update_buttons(SDL_MouseButtonEvent e);
 
-Button *create_button(double x, double y, double w, double h, char *text, int text_r, int text_g, int text_b, FileName background, void (*on_click)(void));
-
-void delete_button(Button *b);
+Button *create_button(Page page, double x, double y, double w, double h,
+                      char *text, int text_r, int text_g, int text_b, FileName background,
+                      void (*on_click)(void *), void (*on_release)(void *));
 
 void draw_button(Button *b);
 
