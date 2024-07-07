@@ -11,7 +11,7 @@
 
 #include "SDL.h"
 #include "graph/graph.h"
-#include "grid.h"
+#include "images.h"
 
 #define WIN_INIT_WIDTH 800
 #define WIN_INIT_HEIGHT 600
@@ -108,7 +108,6 @@ typedef enum {
  * @brief The stage of the game.
  */
 typedef struct {
-    Grid *grid;
     Graph *g;
     Page page;
     long long flags;
@@ -117,15 +116,6 @@ typedef struct {
 typedef enum {
     NEW_GRAPH
 } StageFlags;
-
-/**
- * @brief Cached resources.
- */
-typedef struct {
-    int texture_count;
-    size_t texture_size;
-    SDL_Texture **textures;
-} Resources;
 
 typedef struct {
     int gen_interval;  //< in loops
@@ -145,21 +135,6 @@ typedef struct {
 typedef struct Coord {
     int x, y;
 } Coord;
-
-/**
- * @brief Grid and options to be cast into a void* for
- *        threading maze generation.
- */
-typedef struct {
-    Grid *grid;
-    int numof;
-    int options[100];
-} MazeGenArg;
-
-typedef struct {
-    int numof;
-    int opts[100];
-} MazeGenOptions;
 
 /**
  * @brief The main game object.

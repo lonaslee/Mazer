@@ -2,6 +2,15 @@
 
 #include <stdbool.h>
 
+#include "images.h"
+
+#define PRIMARY_CELL 63
+#define SECONDARY_CELL 62
+
+#define BM 4
+#define WM 0.05
+#define SM 0.9
+
 typedef struct Node {
     struct Node *nny, *nnx, *npy, *npx;
     bool *wny, *wnx, *wpy, *wpx;
@@ -17,6 +26,8 @@ typedef struct Graph {
 
 Graph *new_graph(int nr, int nc);
 void del_graph(Graph *g);
+
+void draw_graph(Graph *g);
 
 typedef enum AxisDirection {
     NONE,

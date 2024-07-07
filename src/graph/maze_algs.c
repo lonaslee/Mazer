@@ -4,7 +4,6 @@
 
 #include "common.h"
 #include "graph.h"
-#include "screen.h"
 #include "utils/array.h"
 #include "utils/stack.h"
 #include "utils/tree.h"

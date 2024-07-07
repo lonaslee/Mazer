@@ -31,6 +31,12 @@ g: cgraph link
 i: cinput link
 	@echo done
 
+j: cinput link run
+	@echo done
+
+clean:
+	rm -f *.o mazer
+
 compile:
 	@echo compiling
 	$(foreach sf, $(wildcard $(SRCDIR)*.c), $(CC) $(sf) $(CFLAGS) -o $(ODIR)$(notdir $(basename $(sf))).o $(CMDSEP))

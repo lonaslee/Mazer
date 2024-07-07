@@ -14,7 +14,6 @@
 #include "graph/maze_algs.h"
 #include "images.h"
 #include "input/button.h"
-#include "screen.h"
 
 static int argc;
 static char **argv;
@@ -174,7 +173,6 @@ static void cleanup(void) {
     SDL_DestroyRenderer(game->renderer);
     oputc('.');
 
-    free_grid(game->stage->grid);
     free(game->stage);
     oputc('.');
 

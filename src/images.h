@@ -6,8 +6,6 @@
 
 #include <SDL.h>
 
-#include "common.h"
-
 /**
  * @brief Sets the pre-declared variable texture pointer to a texture struct.
  *
@@ -37,7 +35,6 @@
         SDL_RenderCopy(renderer, texture, NULL, &rect);                          \
     } while (0);
 
-
 typedef enum {
     CLR_BLACK,
     CLR_DBLUE,
@@ -48,6 +45,15 @@ typedef enum {
     CLR_WHITE,
     TITLE_SVG,
 } FileName;
+
+/**
+ * @brief Cached resources.
+ */
+typedef struct {
+    int texture_count;
+    size_t texture_size;
+    SDL_Texture **textures;
+} Resources;
 
 /**
  * @brief Render the title page.
