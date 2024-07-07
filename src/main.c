@@ -16,9 +16,6 @@
 #include "images.h"
 #include "input/button.h"
 
-static int argc;
-static char **argv;
-
 // test
 int tmain(int argc_, char *argv_[]) {
     return 0;
@@ -28,8 +25,6 @@ int main(int argc_, char *argv_[]) {
     puts("Enter.\n");
     atexit(&cleanup);
     srand(time(NULL));
-    argc = argc_;
-    argv = argv_;
 
     if (SDL_InitSubSystem(SDL_INIT_EVERYTHING)) EXIT_ERR("Failed to init SDL.")
     if (IMG_Init(IMG_INIT_PNG) < IMG_INIT_PNG) EXIT_ERR("Failed to init SDL image.")
@@ -40,16 +35,14 @@ int main(int argc_, char *argv_[]) {
 
     button_manager = get_button_manager();
 
-    int opts[3] = {5, 5, 0};
-    parse_argv(opts);
-    game->settings->gen_interval = opts[2];
+    game->settings->gen_interval = 1;
 
-    game->stage->g = new_graph(opts[1], opts[0]);
+    game->stage->g = new_graph(10, 10);
     void *state = NULL;
     bool done = false;
     long long loops = 0;
 
-    Button *b = create_button(.3, .3, .2, .2, "Text!", 255, 255, 255, CLR_LGREEN);
+    Button *b = create_button(.25, .5, .5, .1, "Enter Maze", 255, 255, 255, CLR_LGREEN);
 
     SDL_Event event;
     while (++loops) {
@@ -72,7 +65,7 @@ int main(int argc_, char *argv_[]) {
                 llunflip(game->stage->flags, NEW_GRAPH);
                 del_graph(game->stage->g);
                 state = NULL;
-                game->stage->g = new_graph(opts[1], opts[0]);
+                game->stage->g = new_graph(10, 10);
                 done = false;
             }
         }
@@ -85,44 +78,8 @@ int main(int argc_, char *argv_[]) {
     return 0;
 }
 
-static void parse_argv(int *is) {
-    for (int i = 0; i < argc; i++) {
-        printf("%d: %s\n", i, argv[i]);
-    }
-
-    for (int i = 0; i < argc; i++) {
-        if (argv[i][0] == '-') {
-            switch (argv[i][1]) {
-                case 'w':
-                case 'W': {
-                    if (strlen(argv[i]) == 2)
-                        is[0] = atoi(argv[++i]);
-                    else
-                        is[0] = atoi(&argv[i][2]);
-                } break;
-                case 'h':
-                case 'H': {
-                    if (strlen(argv[i]) == 2)
-                        is[1] = atoi(argv[++i]);
-                    else
-                        is[1] = atoi(&argv[i][2]);
-                } break;
-                case 'i':
-                case 'I': {
-                    if (strlen(argv[i]) == 2)
-                        is[2] = atoi(argv[++i]);
-                    else
-                        is[2] = atoi(&argv[i][2]);
-                } break;
-                default:
-                    EXIT_ERR("Unrecognised option '-%c'. Exit.\n", argv[i][1]);
-                    break;
-            }
-        }
-    }
-}
-
 void on_mousedown(SDL_MouseButtonEvent b) {
+    
 }
 
 void on_keydown(SDL_KeyboardEvent k) {

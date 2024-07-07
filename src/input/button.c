@@ -1,5 +1,6 @@
 #include "button.h"
 
+#include "SDL.h"
 #include "SDL_ttf.h"
 #include "common.h"
 
@@ -18,6 +19,20 @@ void free_button_manager(void) {
     }
     lldel(button_manager->all);
     free(button_manager);
+}
+
+void update_buttons(SDL_MouseButtonEvent e) {
+    if (e.type == SDL_MOUSEBUTTONDOWN) {
+        LLFOREACH(n, button_manager->all) {
+            Button* b = n->data;
+            if (e.x > b->true_rect.x && e.y > b->true_rect.y)
+            {
+                /* code */
+            }
+            
+        }
+    } else {
+    }
 }
 
 Button* create_button(double x, double y, double w, double h, char* text, int text_r, int text_g, int text_b, FileName background) {
@@ -63,11 +78,21 @@ void draw_button(Button* b) {
     border.x = MAX(border.x, 0);
     border.y = MAX(border.y, 0);
 
+    b->true_rect.x = r.x;
+    b->true_rect.y = r.y;
+    b->true_rect.w = r.w;
+    b->true_rect.h = r.h;
+
     SDL_RenderCopy(game->renderer, arget(game->resources->textures, CLR_BLACK), NULL, &border);
     SDL_RenderCopy(game->renderer, arget(game->resources->textures, b->background), NULL, &r);
 
-    SDL_Color text_color = {b->text_r, b->text_g, b->text_b};
-    SDL_Surface* surface_msg = TTF_RenderText_Solid(arget(game->resources->fonts, SERIF), b->text, text_color);
+    if (b->text != NULL) {
+        SDL_Color text_color = {b->text_r, b->text_g, b->text_b};
+        SDL_Surface* surface_msg = TTF_RenderText_Solid(arget(game->resources->fonts, SERIF), b->text, text_color);
+        SDL_Texture* msg = SDL_CreateTextureFromSurface(game->renderer, surface_msg);
+
+        SDL_RenderCopy(game->renderer, msg, NULL, &r);
+    }
 }
 
 void draw_buttons() {
