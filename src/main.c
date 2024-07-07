@@ -79,7 +79,7 @@ int main(int argc_, char *argv_[]) {
 }
 
 void on_mousedown(SDL_MouseButtonEvent b) {
-    
+    update_buttons(b);
 }
 
 void on_keydown(SDL_KeyboardEvent k) {

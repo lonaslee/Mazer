@@ -25,13 +25,23 @@ void update_buttons(SDL_MouseButtonEvent e) {
     if (e.type == SDL_MOUSEBUTTONDOWN) {
         LLFOREACH(n, button_manager->all) {
             Button* b = n->data;
-            if (e.x > b->true_rect.x && e.y > b->true_rect.y)
-            {
-                /* code */
+            if (e.x > b->true_rect.x && e.y > b->true_rect.y && e.x < b->true_rect.x + b->true_rect.w && e.y < b->true_rect.y + b->true_rect.h) {
+                b->clicked = true;
+                b->held = e.timestamp;
+                logd("Button %s clicked.", b->text);
+                break;
             }
-            
         }
     } else {
+        LLFOREACH(n, button_manager->all) {
+            Button* b = n->data;
+            if (e.x > b->true_rect.x && e.y > b->true_rect.y && e.x < b->true_rect.x + b->true_rect.w && e.y < b->true_rect.y + b->true_rect.h) {
+                b->released = true;
+                logd("Button %s released.", b->text);
+                b->held = 0;
+                break;
+            }
+        }
     }
 }
 
