@@ -35,6 +35,17 @@
         SDL_RenderCopy(renderer, texture, NULL, &rect);                          \
     } while (0);
 
+#define DESTROY(type, fn)               \
+    do {                                \
+        va_list vargs;                  \
+        va_start(vargs, num);           \
+        for (int i = 0; i < num; i++) { \
+            fn(va_arg(vargs, type *));  \
+        }                               \
+        va_end(vargs);                  \
+        return;                         \
+    } while (0);
+
 typedef enum {
     CLR_BLACK,
     CLR_DBLUE,
@@ -76,3 +87,12 @@ SDL_Texture *cache_resource(Resources *resources, SDL_Renderer *renderer, const 
  * @param resources resources object to free
  */
 void free_resources(Resources *resources);
+
+/**
+ * @brief Destroy a number of resources of the same type.
+ *
+ * @param type type of the resource being destroyed, is the string full name of the resource
+ * @param num  how many items are being passed
+ * @param ...  va args of resource pointers to be destroyed
+ */
+void destroy_resources(char *type, int num, ...);
