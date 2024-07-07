@@ -10,6 +10,7 @@ ButtonManager* get_button_manager(void) {
     if (button_manager == NULL) {
         button_manager = calloc(1, sizeof(ButtonManager));
         button_manager->title = arnew(10);
+        button_manager->settings = arnew(10);
         button_manager->maze = arnew(10);
     }
     return button_manager;
@@ -18,9 +19,12 @@ ButtonManager* get_button_manager(void) {
 void free_button_manager(void) {
     for (arsize_t i = 0; i < button_manager->title->len; i++)
         free(arget(button_manager->title, i));
+    for (arsize_t i = 0; i < button_manager->settings->len; i++)
+        free(arget(button_manager->settings, i));
     for (arsize_t i = 0; i < button_manager->maze->len; i++)
         free(arget(button_manager->maze, i));
     ardel(button_manager->title);
+    ardel(button_manager->settings);
     ardel(button_manager->maze);
     free(button_manager);
 }
@@ -32,11 +36,20 @@ void title_enter_maze(Button* b) {
 
 void title_settings(Button* b) {
     logd("title_settings %c", '\n');
+    switch_page(SETTINGS_PAGE);
 }
 
 void title_quit(Button* b) {
     logd("title_quit %c", '\n');
     exit(EXIT_SUCCESS);
+}
+
+void settings_maze_type(Button* b) {
+    logd("settings_maze_type %c", '\n');
+    game->stage->maze_type++;
+    if (game->stage->maze_type == NUM_MAZE_TYPES)
+        game->stage->maze_type = 0;
+    strcpy(b->text, MAZE_TYPE_NAMES[game->stage->maze_type]);
 }
 
 void maze_back(Button* b) {
@@ -51,26 +64,31 @@ void create_all_buttons(void) {
         ->enabled = true;
     create_button(TITLE_PAGE, .25, .74, .5, .1, "Quit Game ", 255, 255, 255, CLR_LGREEN, &title_quit, NULL)
         ->enabled = true;
+
+    create_button(SETTINGS_PAGE, .2, .2, .6, .1, "Alduous Broder", 255, 255, 255, CLR_DBLUE, &settings_maze_type, NULL);
+
     create_button(MAZE_PAGE, .05, .05, .05, .05,
                   "Back", 255, 255, 255, CLR_DBLUE, &maze_back, NULL);
 }
 
 void update_buttons(SDL_MouseButtonEvent e) {
     logd("Update button (%i, %i)\n", e.x, e.y);
-    arsize_t len;
+    Array* ar;
+
     if (game->stage->page == TITLE_PAGE)
-        len = button_manager->title->len;
+        ar = button_manager->title;
+    else if (game->stage->page == SETTINGS_PAGE)
+        ar = button_manager->settings;
     else if (game->stage->page == MAZE_PAGE)
-        len = button_manager->maze->len;
+        ar = button_manager->maze;
 
-    for (arsize_t i = 0; i < len; i++) {
-        Button* b;
-        if (game->stage->page == TITLE_PAGE)
-            b = arget(button_manager->title, i);
-        else if (game->stage->page == MAZE_PAGE)
-            b = arget(button_manager->maze, i);
+    for (arsize_t i = 0; i < ar->len; i++) {
+        Button* b = arget(ar, i);
 
-        if (!b->enabled) continue;
+        if (!b->enabled) {
+            logd("cont %s %c", b->text, '\n');
+            continue;
+        }
         if (e.x > b->true_rect.x && e.y > b->true_rect.y && e.x < b->true_rect.x + b->true_rect.w && e.y < b->true_rect.y + b->true_rect.h) {
             if (e.type = SDL_MOUSEBUTTONDOWN) {
                 logd("Button %s clicked\n", b->text);
@@ -92,16 +110,22 @@ void enable_buttons(Page page, bool enable) {
         case TITLE_PAGE:
             ar = button_manager->title;
             break;
+        case SETTINGS_PAGE:
+            ar = button_manager->settings;
+            break;
         case MAZE_PAGE:
             ar = button_manager->maze;
             break;
     }
-    for (arsize_t i = 0; i < ar->len; i++)
+    for (arsize_t i = 0; i < ar->len; i++) {
         ((Button*)arget(ar, i))->enabled = enable;
+        Button* b = ((Button*)arget(ar, i));
+        logd("%s enabled: %i\n", b->text, b->enabled);
+    }
 }
 
 Button* create_button(Page page, double x, double y, double w, double h,
-                      char* text, int text_r, int text_g, int text_b, FileName background,
+                      const char* text, int text_r, int text_g, int text_b, FileName background,
                       void (*on_click)(Button*), void (*on_release)(Button*)) {
     Button* b = calloc(1, sizeof(Button));
     b->x = x;
@@ -123,6 +147,8 @@ Button* create_button(Page page, double x, double y, double w, double h,
 
     if (page == TITLE_PAGE)
         arappend(button_manager->title, b);
+    else if (page == SETTINGS_PAGE)
+        arappend(button_manager->settings, b);
     else if (page == MAZE_PAGE)
         arappend(button_manager->maze, b);
     return b;
@@ -158,6 +184,8 @@ void draw_enabled_buttons() {
     Array* ar;
     if (game->stage->page == TITLE_PAGE)
         ar = button_manager->title;
+    else if (game->stage->page == SETTINGS_PAGE)
+        ar = button_manager->settings;
     else if (game->stage->page == MAZE_PAGE)
         ar = button_manager->maze;
     for (arsize_t i = 0; i < ar->len; i++)

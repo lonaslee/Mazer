@@ -37,8 +37,8 @@ void on_keydown(SDL_KeyboardEvent k) {
         case SDLK_ESCAPE: {
             if (SDL_GetWindowFlags(game->win) & SDL_WINDOW_FULLSCREEN_DESKTOP)
                 SDL_SetWindowFullscreen(game->win, 0);
-            else if (true)
-                ;
+            else if (game->stage->page == SETTINGS_PAGE)
+                switch_page(TITLE_PAGE);
         } break;
 
         case SDLK_F11: {
@@ -63,4 +63,5 @@ void switch_page(Page to) {
     game->stage->page = to;
     enable_buttons(from, false);
     enable_buttons(to, true);
+    logd("switched %i to %i\n", from, to);
 }

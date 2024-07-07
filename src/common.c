@@ -7,6 +7,11 @@
 #include "SDL.h"
 #include "images.h"
 
+const int NUM_MAZE_TYPES = 6;
+
+const char *MAZE_TYPE_NAMES[] = {"    Alduous Broder    ", "     Binary Tree      ", "Recursive Backtracker ",
+                                 "      Sidewinder      ", "       Eller's        ", "     Hunt & Kill      "};
+
 Game *get_game(void) {
     static Game *game = NULL;
     if (game == NULL) {

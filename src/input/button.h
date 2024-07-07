@@ -10,9 +10,9 @@
 #include "utils/array.h"
 
 typedef struct Button {
-    double x, y, w, h;
+    double x, y, w, h;          /** Percentages of the screen */
     SDL_Rect true_rect;         /** Rect last drawn to screen, always updating. */
-    Uint32 held;                /** Length it has been held in seconds, or 0 for released. */
+    Uint32 held;                /** Length it has been held in millis, or 0 for released. */
     char *text;                 /** Maximum of 49 letters, or NULL */
     int text_r, text_g, text_b; /** Text color RGB */
     FileName background;
@@ -23,6 +23,7 @@ typedef struct Button {
 
 typedef struct {
     Array *title;
+    Array *settings;
     Array *maze;
 } ButtonManager;
 
@@ -45,7 +46,7 @@ void update_buttons(SDL_MouseButtonEvent e);
 void enable_buttons(Page page, bool enable);
 
 Button *create_button(Page page, double x, double y, double w, double h,
-                      char *text, int text_r, int text_g, int text_b, FileName background,
+                      const char *text, int text_r, int text_g, int text_b, FileName background,
                       void (*on_click)(Button *), void (*on_release)(Button *));
 
 void draw_button(Button *b);

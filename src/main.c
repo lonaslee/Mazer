@@ -51,6 +51,8 @@ int main(int argc_, char *argv_[]) {
 
         if (game->stage->page == TITLE_PAGE) {
             draw_background(TITLE_SVG);
+        } else if (game->stage->page == SETTINGS_PAGE) {
+            draw_background(CLR_BLACK);
         } else if (game->stage->page == MAZE_PAGE) {
             if (!game->stage->generated) {
                 state = ellers(game->stage->graph, state);

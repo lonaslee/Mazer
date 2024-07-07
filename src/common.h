@@ -93,21 +93,26 @@
 
 typedef enum MazeType {
     ALDOUS_BRODER,
-    WILSONS,
     BINARY_TREE,
+    RECURSIVE_BACKTRACKER,
     SIDEWINDER,
     ELLERS,
     HUNT_AND_KILL,
-    RECURSIVE_BACKTRACKER,
-    RECURSIVE_DIVISION,
-    KRUSKALS,
-    PRIMS,
-    GROWING_TREE,
-    GROWING_BINARY_TREE
+    /* KRUSKALS, */
+    // WILSONS,
+    // RECURSIVE_DIVISION,
+    // PRIMS,
+    // GROWING_TREE,
+    // GROWING_BINARY_TREE
 } MazeType;
+
+extern const int NUM_MAZE_TYPES;
+
+extern const char *MAZE_TYPE_NAMES[6];
 
 typedef enum {
     TITLE_PAGE,
+    SETTINGS_PAGE,
     MAZE_PAGE,
 } Page;
 
@@ -116,6 +121,7 @@ typedef enum {
  */
 typedef struct {
     Graph *graph;
+    MazeType maze_type;
     bool generated;
     Page page;
     long long flags;
