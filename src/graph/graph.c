@@ -65,12 +65,12 @@ void draw_graph(Graph *g) {
     int ox = round(HALF(ww - s * g->nc));
     int oy = round(HALF(wh - s * g->nr));
 
-    SDL_RenderCopy(game->renderer, game->resources->textures[BG_GREEN], NULL, NULL);
+    SDL_RenderCopy(game->renderer, get_texture(BG_GREEN), NULL, NULL);
 
-    SDL_Texture *generic_cell = game->resources->textures[CLR_LYELLOW];
-    SDL_Texture *primary_cell = game->resources->textures[CLR_DBLUE];
-    SDL_Texture *secondary_cell = game->resources->textures[CLR_LORANGE];
-    SDL_Texture *wall = game->resources->textures[CLR_BLACK];
+    SDL_Texture *generic_cell = get_texture(CLR_LYELLOW);
+    SDL_Texture *primary_cell = get_texture(CLR_DBLUE);
+    SDL_Texture *secondary_cell = get_texture(CLR_LORANGE);
+    SDL_Texture *wall = get_texture(CLR_BLACK);
 
     SDL_Rect ss = {.x = ox, .y = oy, .w = s * g->nc, .h = s * g->nr};
     SDL_RenderCopy(game->renderer, generic_cell, NULL, &ss);

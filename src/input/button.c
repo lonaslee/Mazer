@@ -63,10 +63,11 @@ void draw_button(Button* b) {
     border.x = MAX(border.x, 0);
     border.y = MAX(border.y, 0);
 
-    SDL_RenderCopy(game->renderer, game->resources->textures[CLR_BLACK], NULL, &border);
-    SDL_RenderCopy(game->renderer, game->resources->textures[b->background], NULL, &r);
+    SDL_RenderCopy(game->renderer, arget(game->resources->textures, CLR_BLACK), NULL, &border);
+    SDL_RenderCopy(game->renderer, arget(game->resources->textures, b->background), NULL, &r);
 
     SDL_Color text_color = {b->text_r, b->text_g, b->text_b};
+    SDL_Surface* surface_msg = TTF_RenderText_Solid(arget(game->resources->fonts, SERIF), b->text, text_color);
 }
 
 void draw_buttons() {

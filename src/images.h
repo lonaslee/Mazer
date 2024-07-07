@@ -4,7 +4,9 @@
  */
 #pragma once
 
-#include <SDL.h>
+#include "SDL.h"
+#include "SDL_ttf.h"
+#include "utils/array.h"
 
 /**
  * @brief Sets the pre-declared variable texture pointer to a texture struct.
@@ -57,19 +59,36 @@ typedef enum {
     TITLE_SVG,
 } FileName;
 
+typedef enum {
+    SERIF
+} FontName;
+
 /**
  * @brief Cached resources.
  */
 typedef struct {
-    int texture_count;
-    size_t texture_size;
-    SDL_Texture **textures;
+    Array *textures;
+    Array *fonts;
 } Resources;
+
+/**
+ * @brief Get or create on first call
+ */
+Resources *get_resources(void);
+
+/**
+ * @brief Load all textures and fonts.
+ */
+void load_resources(void);
+
+SDL_Texture *get_texture(FileName n);
+
+TTF_Font *get_font(FontName n);
 
 /**
  * @brief Render the title page.
  */
-void draw_title();
+void draw_title(void);
 
 /**
  * @brief Cache a resource by reading from a filepath. This expands the resource object's array when needed.
@@ -79,7 +98,9 @@ void draw_title();
  * @param fp filepath to read from
  * @return SDL_Texture* - The texture that was read and cached.
  */
-SDL_Texture *cache_resource(Resources *resources, SDL_Renderer *renderer, const char *fp);
+SDL_Texture *cache_texture(Resources *resources, SDL_Renderer *renderer, const char *fp);
+
+TTF_Font *cache_font(Resources *r, const char *fp, int pt);
 
 /**
  * @brief Free a resources object. This frees the object itself and all cached resources within it.

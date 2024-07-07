@@ -31,10 +31,7 @@ Game *get_game(void) {
         game->settings = calloc(1, sizeof(Settings));
         game->settings->gen_interval = 1;
 
-        game->resources = calloc(1, sizeof(Resources));
-        game->resources->texture_count = 0;
-        game->resources->texture_size = 10 * sizeof(SDL_Texture *);
-        game->resources->textures = calloc(10, sizeof(SDL_Texture *));
+        game->resources = get_resources();
     }
     return game;
 }

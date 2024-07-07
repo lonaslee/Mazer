@@ -7,6 +7,7 @@
 
 #include "SDL.h"
 #include "SDL_image.h"
+#include "SDL_ttf.h"
 
 /* project headers */
 #include "common.h"
@@ -32,12 +33,12 @@ int main(int argc_, char *argv_[]) {
 
     if (SDL_InitSubSystem(SDL_INIT_EVERYTHING)) EXIT_ERR("Failed to init SDL.")
     if (IMG_Init(IMG_INIT_PNG) < IMG_INIT_PNG) EXIT_ERR("Failed to init SDL image.")
+    if (TTF_Init() == -1) EXIT_ERR("Failed to init SDL ttf.")
 
     game = get_game();
+    load_resources();
 
     button_manager = get_button_manager();
-
-    load_all_textures();
 
     int opts[3] = {5, 5, 0};
     parse_argv(opts);
@@ -119,18 +120,6 @@ static void parse_argv(int *is) {
             }
         }
     }
-}
-
-static void load_all_textures(void) {
-    char *fps[] = {"clr-black.png", "clr-dblue.png", "clr-lorange.png", "clr-lyellow.png",
-                   "clr-lgreen.png", "bg-green.png", "clr-white.png", "title.png", NULL};
-    puts("Loading textures:");
-    for (int i = 0; fps[i] != NULL; ++i) {
-        char ffp[50] = "resources/";
-        cache_resource(game->resources, game->renderer, strncat(ffp, fps[i], 38));
-        printf("    Loaded image from %s\n", ffp);
-    }
-    puts("Loading complete.");
 }
 
 void on_mousedown(SDL_MouseButtonEvent b) {
