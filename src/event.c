@@ -57,3 +57,10 @@ void on_keydown(SDL_KeyboardEvent k) {
 
 void on_keyup(SDL_KeyboardEvent k) {
 }
+
+void switch_page(Page to) {
+    Page from = game->stage->page;
+    game->stage->page = to;
+    enable_buttons(from, false);
+    enable_buttons(to, true);
+}

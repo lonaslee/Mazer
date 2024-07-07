@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "SDL.h"
+#include "common.h"
 #include "images.h"
 #include "utils/array.h"
 
@@ -15,8 +16,8 @@ typedef struct Button {
     char *text;                 /** Maximum of 49 letters, or NULL */
     int text_r, text_g, text_b; /** Text color RGB */
     FileName background;
-    void (*on_click)(void *);
-    void (*on_release)(void *);
+    void (*on_click)(struct Button *);
+    void (*on_release)(struct Button *);
     bool enabled;
 } Button;
 
@@ -41,9 +42,11 @@ void create_all_buttons(void);
 
 void update_buttons(SDL_MouseButtonEvent e);
 
+void enable_buttons(Page page, bool enable);
+
 Button *create_button(Page page, double x, double y, double w, double h,
                       char *text, int text_r, int text_g, int text_b, FileName background,
-                      void (*on_click)(void *), void (*on_release)(void *));
+                      void (*on_click)(Button *), void (*on_release)(Button *));
 
 void draw_button(Button *b);
 

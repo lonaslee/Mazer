@@ -3,6 +3,7 @@
 #include "SDL.h"
 #include "SDL_ttf.h"
 #include "common.h"
+#include "event.h"
 
 ButtonManager* get_button_manager(void) {
     static ButtonManager* button_manager = NULL;
@@ -26,16 +27,32 @@ void free_button_manager(void) {
 
 void title_enter_maze(Button* b) {
     logd("title_enter_maze %c", '\n');
-    if (game->stage->page == TITLE_PAGE) {
-        game->stage->page = MAZE_PAGE;
-        b->enabled = false;
-    }
+    switch_page(MAZE_PAGE);
+}
+
+void title_settings(Button* b) {
+    logd("title_settings %c", '\n');
+}
+
+void title_quit(Button* b) {
+    logd("title_quit %c", '\n');
+    exit(EXIT_SUCCESS);
+}
+
+void maze_back(Button* b) {
+    logd("maze_back %c", '\n');
+    switch_page(TITLE_PAGE);
 }
 
 void create_all_buttons(void) {
-    create_button(TITLE_PAGE, .25, .5, .5, .1,
-                  "Enter Maze", 255, 255, 255, CLR_LGREEN, &title_enter_maze, NULL)
+    create_button(TITLE_PAGE, .25, .5, .5, .1, "Enter Maze", 255, 255, 255, CLR_LGREEN, &title_enter_maze, NULL)
         ->enabled = true;
+    create_button(TITLE_PAGE, .25, .62, .5, .1, " Settings ", 255, 255, 255, CLR_LGREEN, &title_settings, NULL)
+        ->enabled = true;
+    create_button(TITLE_PAGE, .25, .74, .5, .1, "Quit Game ", 255, 255, 255, CLR_LGREEN, &title_quit, NULL)
+        ->enabled = true;
+    create_button(MAZE_PAGE, .05, .05, .05, .05,
+                  "Back", 255, 255, 255, CLR_DBLUE, &maze_back, NULL);
 }
 
 void update_buttons(SDL_MouseButtonEvent e) {
@@ -69,7 +86,23 @@ void update_buttons(SDL_MouseButtonEvent e) {
     }
 }
 
-Button* create_button(Page page, double x, double y, double w, double h, char* text, int text_r, int text_g, int text_b, FileName background, void (*on_click)(void*), void (*on_release)(void*)) {
+void enable_buttons(Page page, bool enable) {
+    Array* ar;
+    switch (page) {
+        case TITLE_PAGE:
+            ar = button_manager->title;
+            break;
+        case MAZE_PAGE:
+            ar = button_manager->maze;
+            break;
+    }
+    for (arsize_t i = 0; i < ar->len; i++)
+        ((Button*)arget(ar, i))->enabled = enable;
+}
+
+Button* create_button(Page page, double x, double y, double w, double h,
+                      char* text, int text_r, int text_g, int text_b, FileName background,
+                      void (*on_click)(Button*), void (*on_release)(Button*)) {
     Button* b = calloc(1, sizeof(Button));
     b->x = x;
     b->y = y;
