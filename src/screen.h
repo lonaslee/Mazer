@@ -1,6 +1,7 @@
 #pragma once
 
 #include "graph/graph.h"
+#include "images.h"
 
 #define PRIMARY_CELL 63
 #define SECONDARY_CELL 62

@@ -37,19 +37,22 @@
         SDL_RenderCopy(renderer, texture, NULL, &rect);                          \
     } while (0);
 
+
+typedef enum {
+    CLR_BLACK,
+    CLR_DBLUE,
+    CLR_LORANGE,
+    CLR_LYELLOW,
+    CLR_LGREEN,
+    BG_GREEN,
+    CLR_WHITE,
+    TITLE_SVG,
+} FileName;
+
 /**
  * @brief Render the title page.
  */
 void draw_title();
-
-/**
- * @brief Draw a grid / maze on the screen using resources and renderer.
- *
- * @param grid grid to draw
- * @param this_cell cell to highlight, or NULL
- * @param other_cells NULL terminated sequence of other cells to highlight, or NULL
- */
-void draw_grid(Grid *grid, Cell *this_cell, Cell **other_cells);
 
 /**
  * @brief Cache a resource by reading from a filepath. This expands the resource object's array when needed.

@@ -447,7 +447,7 @@ void *kruskals(Graph *g, void *state) {
 
     while (s->stack->len) {
         bool **wall;
-        skpop(s->stack, wall);
+        skpop(s->stack, (void **)wall);
         // if (trgetroot(s->sets[])) {
         // }
     }

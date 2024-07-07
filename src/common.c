@@ -7,26 +7,6 @@
 #include "SDL.h"
 #include "images.h"
 
-ScreenLock *get_screen_lock(void) {
-    static ScreenLock screenlock = {
-        .mutex = PTHREAD_MUTEX_INITIALIZER,
-        .clear_cond = PTHREAD_COND_INITIALIZER,
-        .present_cond = PTHREAD_COND_INITIALIZER,
-        .render_cond = PTHREAD_COND_INITIALIZER,
-        .clear_flag = 0,
-        .render_flag = 0,
-        .present_flag = 0};
-    return &screenlock;
-}
-
-Lock *get_state_lock(void) {
-    static Lock statelock = {
-        .mutex = PTHREAD_MUTEX_INITIALIZER,
-        .cond = PTHREAD_COND_INITIALIZER,
-        .flag = 0};
-    return &statelock;
-}
-
 Game *get_game(void) {
     static Game *game = NULL;
     if (game == NULL) {
@@ -57,22 +37,6 @@ Game *get_game(void) {
         game->resources->textures = calloc(10, sizeof(SDL_Texture *));
     }
     return game;
-}
-
-Resources *get_grid_resources(void) {
-    static Resources *grid_resources = NULL;
-    if (grid_resources == NULL) {
-        grid_resources = calloc(1, sizeof(Resources));
-        grid_resources->texture_count = 5;
-        grid_resources->texture_size = grid_resources->texture_count * sizeof(SDL_Texture *);
-        grid_resources->textures = calloc(grid_resources->texture_count, sizeof(SDL_Texture *));
-        grid_resources->textures[0] = game->resources->textures[BG_GREEN];
-        grid_resources->textures[1] = game->resources->textures[CLR_LYELLOW];
-        grid_resources->textures[2] = game->resources->textures[CLR_DBLUE];
-        grid_resources->textures[3] = game->resources->textures[CLR_LORANGE];
-        grid_resources->textures[4] = game->resources->textures[CLR_BLACK];
-    };
-    return grid_resources;
 }
 
 int choice(int n, ...) {

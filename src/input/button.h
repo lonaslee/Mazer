@@ -5,7 +5,7 @@
 #include <string.h>
 
 #include "SDL.h"
-#include "common.h"
+#include "images.h"
 #include "utils/array.h"
 
 typedef struct {

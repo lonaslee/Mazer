@@ -38,9 +38,7 @@ int main(int argc_, char *argv_[]) {
 
     button_manager = get_button_manager();
 
-    puts("Loading textures:");
     load_all_textures();
-    puts("");
 
     int opts[3] = {5, 5, 0};
     parse_argv(opts);
@@ -124,11 +122,13 @@ static void parse_argv(int *is) {
 static void load_all_textures(void) {
     char *fps[] = {"clr-black.png", "clr-dblue.png", "clr-lorange.png", "clr-lyellow.png",
                    "clr-lgreen.png", "bg-green.png", "clr-white.png", "title.png", NULL};
+    puts("Loading textures:");
     for (int i = 0; fps[i] != NULL; ++i) {
         char ffp[50] = "resources/";
         cache_resource(game->resources, game->renderer, strncat(ffp, fps[i], 38));
         printf("    Loaded image from %s\n", ffp);
     }
+    puts("Loading complete.");
 }
 
 void on_mousedown(SDL_MouseButtonEvent b) {

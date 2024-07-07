@@ -147,38 +147,6 @@ typedef struct Coord {
 } Coord;
 
 /**
- * @brief Lock for threading screen modifications.
- */
-typedef struct {
-    pthread_mutex_t mutex;
-    pthread_cond_t clear_cond;
-    pthread_cond_t present_cond;
-    pthread_cond_t render_cond;
-    int clear_flag;
-    int present_flag;
-    int render_flag;
-} ScreenLock;
-
-/**
- * @brief Lazy get the screen lock.
- */
-ScreenLock *get_screen_lock(void);
-
-/**
- * @brief Lock for threading.
- */
-typedef struct {
-    pthread_mutex_t mutex;
-    pthread_cond_t cond;
-    int flag;
-} Lock;
-
-/**
- * @brief Lazy get the state lock.
- */
-Lock *get_state_lock(void);
-
-/**
  * @brief Grid and options to be cast into a void* for
  *        threading maze generation.
  */
@@ -198,32 +166,12 @@ typedef struct {
  */
 Game *game;
 
-typedef enum {
-    CLR_BLACK,
-    CLR_DBLUE,
-    CLR_LORANGE,
-    CLR_LYELLOW,
-    CLR_LGREEN,
-    BG_GREEN,
-    CLR_WHITE,
-    TITLE_SVG,
-} FileName;
-
 /**
  * @brief Get the game object. Creates the game on first call, return the same pointer
  *        to it on subsequent calls.
  * @return Game* - The pointer to a game object.
  */
 Game *get_game(void);
-
-/**
- * @brief Get the grid resources object. The grid resources object contains textures used by print_grid and other
- *        functions to display a grid. This function creates the resource object on first call, return
- *        the same pointer to it on subsequent calls.
- *
- * @return Resources* - The pointer to a resources object.
- */
-Resources *get_grid_resources(void);
 
 /**
  * @brief Pick a random non-zero number out of the given arguments.
@@ -242,11 +190,6 @@ int choicenz(int n, ...);
  * @return int - random integer from arguments
  */
 int choice(int n, ...);
-
-/**
- * @brief Get a random number, usable across different threads.
- */
-int getrand();
 
 /**
  * @brief Handle events.
