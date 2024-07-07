@@ -34,86 +34,43 @@ int main(int argc_, char *argv_[]) {
     load_resources();
 
     button_manager = get_button_manager();
+    create_all_buttons();
 
     game->settings->gen_interval = 1;
 
-    game->stage->g = new_graph(10, 10);
+    game->stage->graph = new_graph(10, 10);
     void *state = NULL;
-    bool done = false;
     long long loops = 0;
 
-    Button *b = create_button(.25, .5, .5, .1, "Enter Maze", 255, 255, 255, CLR_LGREEN);
-
-    SDL_Event event;
     while (++loops) {
         SDL_RenderClear(game->renderer);
 
-        while (SDL_PollEvent(&event)) {
-            on_event(&event);
-        }
+        SDL_Event event;
+        while (SDL_PollEvent(&event))
+            handle_event(&event);
 
         if (game->stage->page == TITLE_PAGE) {
-            draw_title();
+            draw_background(TITLE_SVG);
         } else {
-            draw_graph(game->stage->g);
-            state = ellers(game->stage->g, state);
+            state = ellers(game->stage->graph, state);
             if (state == NULL) {
-                done = true;
             }
 
             if (llisflipped(game->stage->flags, NEW_GRAPH)) {
                 llunflip(game->stage->flags, NEW_GRAPH);
-                del_graph(game->stage->g);
+                del_graph(game->stage->graph);
                 state = NULL;
-                game->stage->g = new_graph(10, 10);
-                done = false;
+                game->stage->graph = new_graph(10, 10);
             }
+            draw_graph(game->stage->graph);
         }
-        draw_buttons();
+        draw_enabled_buttons();
 
         SDL_RenderPresent(game->renderer);
         SDL_Delay(1);
     }
 
     return 0;
-}
-
-void on_mousedown(SDL_MouseButtonEvent b) {
-    update_buttons(b);
-}
-
-void on_keydown(SDL_KeyboardEvent k) {
-    switch (k.keysym.sym) {
-        case SDLK_F11: {
-            bool is_fullscreen = SDL_GetWindowFlags(game->win) & SDL_WINDOW_FULLSCREEN_DESKTOP;
-            SDL_SetWindowFullscreen(game->win, is_fullscreen ? 0 : SDL_WINDOW_FULLSCREEN_DESKTOP);
-        } break;
-
-        case SDLK_r: {
-            llflip(game->stage->flags, NEW_GRAPH);
-        } break;
-
-        default:
-            break;
-    }
-}
-
-void on_event(SDL_Event *event) {
-    switch (event->type) {
-        case SDL_QUIT:
-            puts("User exit.");
-            exit(EXIT_SUCCESS);
-            break;
-        case SDL_KEYDOWN:
-            on_keydown(event->key);
-            break;
-        case SDL_MOUSEBUTTONDOWN:
-            on_mousedown(event->button);
-            break;
-
-        default:
-            break;
-    }
 }
 
 static void cleanup(void) {

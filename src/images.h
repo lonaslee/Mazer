@@ -86,9 +86,9 @@ SDL_Texture *get_texture(FileName n);
 TTF_Font *get_font(FontName n);
 
 /**
- * @brief Render the title page.
+ * @brief Draw the file as background.
  */
-void draw_title(void);
+void draw_background(FileName n);
 
 /**
  * @brief Cache a resource by reading from a filepath. This expands the resource object's array when needed.
@@ -108,12 +108,3 @@ TTF_Font *cache_font(Resources *r, const char *fp, int pt);
  * @param resources resources object to free
  */
 void free_resources(Resources *resources);
-
-/**
- * @brief Destroy a number of resources of the same type.
- *
- * @param type type of the resource being destroyed, is the string full name of the resource
- * @param num  how many items are being passed
- * @param ...  va args of resource pointers to be destroyed
- */
-void destroy_resources(char *type, int num, ...);

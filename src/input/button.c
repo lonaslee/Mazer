@@ -21,14 +21,25 @@ void free_button_manager(void) {
     free(button_manager);
 }
 
+void title_enter_maze(void) {
+    logd("title_enter_maze %c", '\n');
+    // game->stage->page
+}
+
+void create_all_buttons(void) {
+    create_button(.25, .5, .5, .1, "Enter Maze", 255, 255, 255, CLR_LGREEN, &title_enter_maze)->enabled = true;
+}
+
 void update_buttons(SDL_MouseButtonEvent e) {
+    logd("Update button (%i, %i)\n", e.x, e.y);
     if (e.type == SDL_MOUSEBUTTONDOWN) {
         LLFOREACH(n, button_manager->all) {
             Button* b = n->data;
             if (e.x > b->true_rect.x && e.y > b->true_rect.y && e.x < b->true_rect.x + b->true_rect.w && e.y < b->true_rect.y + b->true_rect.h) {
+                logd("Button %s clicked\n", b->text);
                 b->clicked = true;
                 b->held = e.timestamp;
-                logd("Button %s clicked.", b->text);
+                b->on_click();
                 break;
             }
         }
@@ -37,7 +48,7 @@ void update_buttons(SDL_MouseButtonEvent e) {
             Button* b = n->data;
             if (e.x > b->true_rect.x && e.y > b->true_rect.y && e.x < b->true_rect.x + b->true_rect.w && e.y < b->true_rect.y + b->true_rect.h) {
                 b->released = true;
-                logd("Button %s released.", b->text);
+                logd("Button %s released\n", b->text);
                 b->held = 0;
                 break;
             }
@@ -45,7 +56,7 @@ void update_buttons(SDL_MouseButtonEvent e) {
     }
 }
 
-Button* create_button(double x, double y, double w, double h, char* text, int text_r, int text_g, int text_b, FileName background) {
+Button* create_button(double x, double y, double w, double h, char* text, int text_r, int text_g, int text_b, FileName background, void (*on_click)(void)) {
     Button* b = calloc(1, sizeof(Button));
     b->x = x;
     b->y = y;
@@ -62,6 +73,8 @@ Button* create_button(double x, double y, double w, double h, char* text, int te
         b->text_b = text_b;
     }
     b->background = background;
+    b->enabled = false;
+    b->on_click = on_click;
 
     llappend(button_manager->all, b);
     return b;
@@ -105,8 +118,10 @@ void draw_button(Button* b) {
     }
 }
 
-void draw_buttons() {
+void draw_enabled_buttons() {
     LLFOREACH(n, button_manager->all) {
-        draw_button(n->data);
+        Button* b = n->data;
+        if (b->enabled)
+            draw_button(b);
     }
 }

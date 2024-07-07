@@ -17,6 +17,8 @@ typedef struct {
     char *text;                 /** Maximum of 49 letters, or NULL */
     int text_r, text_g, text_b; /** Text color RGB */
     FileName background;
+    void (*on_click)(void);
+    bool enabled;
 } Button;
 
 typedef struct {
@@ -35,9 +37,11 @@ ButtonManager *get_button_manager(void);
  */
 void free_button_manager(void);
 
+void create_all_buttons(void);
+
 void update_buttons(SDL_MouseButtonEvent e);
 
-Button *create_button(double x, double y, double w, double h, char *text, int text_r, int text_g, int text_b, FileName background);
+Button *create_button(double x, double y, double w, double h, char *text, int text_r, int text_g, int text_b, FileName background, void (*on_click)(void));
 
 void delete_button(Button *b);
 
@@ -46,4 +50,4 @@ void draw_button(Button *b);
 /**
  * @brief Render all current buttons.
  */
-void draw_buttons();
+void draw_enabled_buttons();

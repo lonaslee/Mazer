@@ -15,7 +15,7 @@ void draw_grid_step(Grid *grid, Cell *this_cell, Cell **other_cells) {
     SDL_Event event;
     while ((double)(clock() - start) / (double)CLOCKS_PER_SEC < game->settings->gen_interval) {
         while (SDL_PollEvent(&event)) {
-            on_event(&event);
+            handle_event(&event);
         }
         SDL_SetRenderDrawColor(game->renderer, 0, 0, 0, 255);
         SDL_RenderClear(game->renderer);

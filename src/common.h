@@ -114,7 +114,7 @@ typedef enum {
  * @brief The stage of the game.
  */
 typedef struct {
-    Graph *g;
+    Graph *graph;
     Page page;
     long long flags;
 } GameStage;
@@ -177,4 +177,4 @@ int choice(int n, ...);
  *
  * @param event event to handle
  */
-extern void on_event(SDL_Event *event);
+extern void handle_event(SDL_Event *event);
