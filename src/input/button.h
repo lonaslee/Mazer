@@ -9,11 +9,11 @@
 #include "utils/array.h"
 
 typedef struct {
-    SDL_Rect *rect;
-    bool clicked;  /** Was it clicked this frame. */
-    bool released; /** Was it released this frame. */
-    long held;     /** Length it has been held in seconds, or 0 for released. */
-    char *text;    /** Maximum of 49 letters. */
+    SDL_Rect *rect; /** As percentages of the window size. */
+    bool clicked;   /** Was it clicked this frame. */
+    bool released;  /** Was it released this frame. */
+    long held;      /** Length it has been held in seconds, or 0 for released. */
+    char *text;     /** Maximum of 49 letters. */
     FileName background;
 } Button;
 
@@ -29,3 +29,10 @@ ButtonManager *button_manager;
 ButtonManager *get_button_manager(void);
 
 Button *create_button(int x, int y, int w, int h, char *text, FileName background);
+
+void draw_button(Button *b);
+
+/**
+ * @brief Render all current buttons.
+ */
+void draw_buttons();
