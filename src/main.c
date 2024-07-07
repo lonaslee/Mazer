@@ -13,6 +13,7 @@
 #include "graph/graph.h"
 #include "graph/maze_algs.h"
 #include "images.h"
+#include "input/button.h"
 #include "screen.h"
 
 static int argc;
@@ -34,6 +35,8 @@ int main(int argc_, char *argv_[]) {
     if (IMG_Init(IMG_INIT_PNG) < IMG_INIT_PNG) EXIT_ERR("Failed to init SDL image.")
 
     game = get_game();
+
+    button_manager = get_button_manager();
 
     puts("Loading textures:");
     load_all_textures();

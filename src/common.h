@@ -198,7 +198,7 @@ typedef struct {
  */
 Game *game;
 
-enum FileNames {
+typedef enum {
     CLR_BLACK,
     CLR_DBLUE,
     CLR_LORANGE,
@@ -207,7 +207,7 @@ enum FileNames {
     BG_GREEN,
     CLR_WHITE,
     TITLE_SVG,
-};
+} FileName;
 
 /**
  * @brief Get the game object. Creates the game on first call, return the same pointer
