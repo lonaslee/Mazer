@@ -56,7 +56,8 @@ typedef enum {
     CLR_LGREEN,
     BG_GREEN,
     CLR_WHITE,
-    TITLE_SVG,
+    TITLE_PNG,
+    SETTINGS_PNG,
 } FileName;
 
 typedef enum {

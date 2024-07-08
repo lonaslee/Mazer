@@ -121,6 +121,7 @@ typedef enum {
  */
 typedef struct {
     Graph *graph;
+    int nc, nr;
     MazeType maze_type;
     bool generated;
     Page page;
@@ -131,10 +132,6 @@ typedef enum {
     NEW_GRAPH
 } StageFlags;
 
-typedef struct {
-    int gen_interval;  //< in loops
-} Settings;
-
 /**
  * @brief The main game structure.
  */
@@ -143,7 +140,6 @@ typedef struct {
     SDL_Renderer *renderer;
     GameStage *stage;
     Resources *resources;
-    Settings *settings;
 } Game;
 
 typedef struct Coord {

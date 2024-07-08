@@ -11,10 +11,10 @@
 
 /* project headers */
 #include "common.h"
+#include "element/button.h"
 #include "graph/graph.h"
 #include "graph/maze_algs.h"
 #include "images.h"
-#include "input/button.h"
 
 // test
 int tmain(int argc_, char *argv_[]) {
@@ -36,8 +36,6 @@ int main(int argc_, char *argv_[]) {
     button_manager = get_button_manager();
     create_all_buttons();
 
-    game->settings->gen_interval = 1;
-
     game->stage->graph = new_graph(10, 10);
     void *state = NULL;
     long long loops = 0;
@@ -50,12 +48,35 @@ int main(int argc_, char *argv_[]) {
             handle_event(&event);
 
         if (game->stage->page == TITLE_PAGE) {
-            draw_background(TITLE_SVG);
+            draw_background(TITLE_PNG);
         } else if (game->stage->page == SETTINGS_PAGE) {
-            draw_background(CLR_BLACK);
+            draw_background(SETTINGS_PNG);
         } else if (game->stage->page == MAZE_PAGE) {
             if (!game->stage->generated) {
-                state = ellers(game->stage->graph, state);
+                switch (game->stage->maze_type) {
+                    case ALDOUS_BRODER:
+                        state = alduous_broder(game->stage->graph, state);
+                        break;
+                    case BINARY_TREE:
+                        state = binary_tree(game->stage->graph, state);
+                        break;
+                    case RECURSIVE_BACKTRACKER:
+                        state = recursive_backtracker(game->stage->graph, state);
+                        break;
+                    case SIDEWINDER:
+                        state = sidewinder(game->stage->graph, state);
+                        break;
+                    case ELLERS:
+                        state = ellers(game->stage->graph, state);
+                        break;
+                    case HUNT_AND_KILL:
+                        state = hunt_and_kill(game->stage->graph, state);
+                        break;
+                    default:
+                        EXIT_ERR("Unknown maze type %i\n", game->stage->maze_type);
+                        break;
+                }
+
                 if (state == NULL)
                     game->stage->generated = true;
             }
@@ -82,7 +103,6 @@ static void cleanup(void) {
     free_resources(game->resources);
     oputc('.');
 
-    free(game->settings);
     free(game);
 
     SDL_Quit();

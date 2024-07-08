@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="297mm"
+   height="210mm"
+   viewBox="0 0 297 210"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25, custom)"
+   sodipodi:docname="settings.svg"
+   inkscape:export-filename="settings.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#a2ff76"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="0.72426347"
+     inkscape:cx="358.98538"
+     inkscape:cy="338.96505"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1">
+    <pattern
+       inkscape:collect="always"
+       xlink:href="#Tiles"
+       preserveAspectRatio="xMidYMid"
+       id="pattern20"
+       patternTransform="scale(0.231)"
+       x="50"
+       y="52" />
+    <rect
+       x="155.23353"
+       y="132.77837"
+       width="613.08998"
+       height="184.92728"
+       id="rect1" />
+    <pattern
+       patternUnits="userSpaceOnUse"
+       width="100"
+       height="100"
+       id="Tiles"
+       preserveAspectRatio="xMidYMid"
+       patternTransform="translate(0,0) scale(0.2,0.2)"
+       inkscape:collect="always"
+       style="fill:#d17b78"
+       inkscape:label="Tiles">
+      <g
+         id="g9422">
+        <rect
+           style="fill-opacity:1;stroke:none"
+           width="100"
+           height="100"
+           x="0"
+           y="0"
+           id="rect2996" />
+        <path
+           id="rect7383"
+           style="fill:#ffffff;fill-opacity:0.42487;stroke-width:0"
+           d="M 60,40 50,50 V 0 H 60 Z M 50,50 v 10 40 H 60 V 60 h 40 V 50 H 60 Z m 0,0 -10,10 H 0 V 50 Z" />
+        <path
+           id="rect7385"
+           style="fill:#000000;fill-opacity:0.300518;stroke-width:0"
+           d="M 40,60 50,50 v 50 H 40 Z M 100,40 V 50 H 50 L 60,40 Z M 40,0 V 40 H 0 V 50 H 40 50 V 40 0 Z" />
+      </g>
+    </pattern>
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="font-size:160px;white-space:pre;shape-inside:url(#rect1);fill:url(#pattern20);fill-opacity:1;stroke-width:0.264583"
+       id="rect19"
+       width="298.46124"
+       height="211.5166"
+       x="-7.91798e-09"
+       y="0.36531365"
+       inkscape:label="rect19" />
+    <text
+       xml:space="preserve"
+       transform="matrix(0.26458333,0,0,0.26458333,41.607196,3.6562861)"
+       id="text1"
+       style="font-size:96px;white-space:pre;shape-inside:url(#rect1);display:inline;fill:#000000;fill-opacity:1"><tspan
+         x="155.23438"
+         y="220.36301"
+         id="tspan4"><tspan
+           style="font-family:'Poor Richard';-inkscape-font-specification:'Poor Richard'"
+           id="tspan2">Configure Maze</tspan></tspan></text>
+    <g
+       id="g18"
+       transform="translate(-6.7162098,-42.622099)">
+      <g
+         id="g17"
+         transform="rotate(44.252665,-9.819073,83.300211)">
+        <path
+           style="fill:#cccccc;fill-opacity:1;stroke-width:0.228626"
+           d="m 29.042436,64.843172 5.45535,-43.472324 4.77343,44.020294 z"
+           id="path15" />
+        <path
+           style="fill:#7c4f06;fill-opacity:1;stroke-width:0.243363"
+           d="m 31.234318,66.739899 c 0,0 1.826567,27.506777 3.287821,13.444323 1.461257,-14.062453 1.461257,-14.062453 1.461257,-14.062453 z"
+           id="path16" />
+        <path
+           style="fill:#999999;fill-opacity:1;stroke-width:0.264583"
+           d="m 33.258154,65.160151 1.227,-43.397048 -0.516631,43.461625 z"
+           id="path17" />
+        <path
+           style="fill:#ffcc00;fill-opacity:1;stroke-width:0.239555"
+           d="m 24.21148,69.409593 c 20.663323,0.182658 18.567044,0.182658 18.567044,0.182658 0,0 2.246014,-4.201107 0,-4.201107 -2.246014,0 -0.898405,0 -2.246014,0 -1.347608,0 -15.871827,-0.730628 -15.871827,-0.730628 0,0 -1.497342,0 -0.449203,4.749077 z"
+           id="path10" />
+        <circle
+           id="path11"
+           style="fill:#7c4f06;stroke:#000000;stroke-width:0.264583"
+           cx="42.55904"
+           cy="65.025833"
+           r="0.024329713" />
+        <path
+           style="fill:#7c4f06;fill-opacity:1;stroke-width:0.264583"
+           d="M 43.472324,65.02583 38.723247,27.763837"
+           id="path14" />
+      </g>
+      <g
+         id="g17-1"
+         transform="matrix(-0.71626949,0.69782378,0.69782378,0.71626949,39.840041,29.606643)">
+        <path
+           style="fill:#cccccc;fill-opacity:1;stroke-width:0.228626"
+           d="m 29.042436,64.843172 5.45535,-43.472324 4.77343,44.020294 z"
+           id="path15-7" />
+        <path
+           style="fill:#7c4f06;fill-opacity:1;stroke-width:0.243363"
+           d="m 31.234318,66.739899 c 0,0 1.826567,27.506777 3.287821,13.444323 1.461257,-14.062453 1.461257,-14.062453 1.461257,-14.062453 z"
+           id="path16-8" />
+        <path
+           style="fill:#999999;fill-opacity:1;stroke-width:0.264583"
+           d="m 33.258154,65.160151 1.227,-43.397048 -0.516631,43.461625 z"
+           id="path17-5" />
+        <path
+           style="fill:#ffcc00;fill-opacity:1;stroke-width:0.239555"
+           d="m 24.21148,69.409593 c 20.663323,0.182658 18.567044,0.182658 18.567044,0.182658 0,0 2.246014,-4.201107 0,-4.201107 -2.246014,0 -0.898405,0 -2.246014,0 -1.347608,0 -15.871827,-0.730628 -15.871827,-0.730628 0,0 -1.497342,0 -0.449203,4.749077 z"
+           id="path10-7" />
+        <circle
+           id="path11-5"
+           style="fill:#7c4f06;stroke:#000000;stroke-width:0.264583"
+           cx="42.55904"
+           cy="65.025833"
+           r="0.024329713" />
+        <path
+           style="fill:#7c4f06;fill-opacity:1;stroke-width:0.264583"
+           d="M 43.472324,65.02583 38.723247,27.763837"
+           id="path14-7" />
+      </g>
+    </g>
+    <text
+       xml:space="preserve"
+       style="font-size:19.7556px;font-family:'Poor Richard';-inkscape-font-specification:'Poor Richard';writing-mode:tb-rl;fill:#000000;stroke-width:0.264583"
+       x="142.83763"
+       y="39.088562"
+       id="text2"><tspan
+         sodipodi:role="line"
+         id="tspan1"
+         style="stroke-width:0.264583"></tspan></text>
+  </g>
+</svg>

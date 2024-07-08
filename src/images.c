@@ -19,7 +19,7 @@ Resources *get_resources(void) {
 
 void load_resources(void) {
     char *fps[] = {"clr-black.png", "clr-dblue.png", "clr-lorange.png", "clr-lyellow.png",
-                   "clr-lgreen.png", "bg-green.png", "clr-white.png", "title.png", NULL};
+                   "clr-lgreen.png", "bg-green.png", "clr-white.png", "title.png", "settings.png", NULL};
     puts("Loading textures.");
     for (int i = 0; fps[i] != NULL; ++i) {
         char ffp[50] = "resources/";

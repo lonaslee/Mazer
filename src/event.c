@@ -3,8 +3,8 @@
 #include <stdbool.h>
 
 #include "SDL.h"
-#include "button.h"
 #include "common.h"
+#include "element/button.h"
 
 void handle_event(SDL_Event *event) {
     switch (event->type) {
@@ -64,4 +64,9 @@ void switch_page(Page to) {
     enable_buttons(from, false);
     enable_buttons(to, true);
     logd("switched %i to %i\n", from, to);
+
+    if (to == MAZE_PAGE) {
+        del_graph(game->stage->graph);
+        game->stage->graph = new_graph(game->stage->nc, game->stage->nr);
+    }
 }

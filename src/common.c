@@ -29,13 +29,11 @@ Game *get_game(void) {
         game = calloc(1, sizeof(Game));
         game->win = win;
         game->renderer = renderer;
-
         game->stage = calloc(1, sizeof(GameStage));
         game->stage->page = TITLE_PAGE;
-
-        game->settings = calloc(1, sizeof(Settings));
-        game->settings->gen_interval = 1;
-
+        game->stage->nr = 10;
+        game->stage->nc = 10;
+        game->stage->maze_type = ALDOUS_BRODER;
         game->resources = get_resources();
     }
     return game;

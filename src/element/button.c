@@ -52,8 +52,17 @@ void settings_maze_type(Button* b) {
     strcpy(b->text, MAZE_TYPE_NAMES[game->stage->maze_type]);
 }
 
-void maze_back(Button* b) {
-    logd("maze_back %c", '\n');
+static Button *row_label, *col_label;
+
+void settings_row_inc1(Button* b) {
+    
+}
+
+void settings_row_inc10(Button* b) {
+}
+
+void maze_settings_back(Button* b) {
+    logd("maze_settings_back %c", '\n');
     switch_page(TITLE_PAGE);
 }
 
@@ -65,10 +74,14 @@ void create_all_buttons(void) {
     create_button(TITLE_PAGE, .25, .74, .5, .1, "Quit Game ", 255, 255, 255, CLR_LGREEN, &title_quit, NULL)
         ->enabled = true;
 
-    create_button(SETTINGS_PAGE, .2, .2, .6, .1, "Alduous Broder", 255, 255, 255, CLR_DBLUE, &settings_maze_type, NULL);
+    create_button(SETTINGS_PAGE, .2, .4, .6, .1, MAZE_TYPE_NAMES[0], 255, 255, 255, CLR_DBLUE, &settings_maze_type, NULL);
+    row_label = create_button(SETTINGS_PAGE, .4, .55, .2, .1, "  10  ", 255, 255, 255, CLR_BLACK, NULL, NULL);
+    col_label = create_button(SETTINGS_PAGE, .4, .7, .2, .1, "  10  ", 255, 255, 255, CLR_BLACK, NULL, NULL);
+    create_button(SETTINGS_PAGE, .05, .05, .05, .05,
+                  "Back", 255, 255, 255, CLR_DBLUE, &maze_settings_back, NULL);
 
     create_button(MAZE_PAGE, .05, .05, .05, .05,
-                  "Back", 255, 255, 255, CLR_DBLUE, &maze_back, NULL);
+                  "Back", 255, 255, 255, CLR_DBLUE, &maze_settings_back, NULL);
 }
 
 void update_buttons(SDL_MouseButtonEvent e) {

@@ -4,19 +4,19 @@ CMDSEP := &
 SRCDIR := src/
 ODIR := output/
 
-IARGS := -Isrc/ -Isrc/mazes/ -Isrc/graph -Isrc/input -ISDL2/x86_64-w64-mingw32/include/SDL2 -ISDL2_image/x86_64-w64-mingw32/include/SDL2 -ISDL2_ttf\x86_64-w64-mingw32\include\SDL2
+IARGS := -Isrc/ -Isrc/mazes/ -Isrc/graph -Isrc/element -ISDL2/x86_64-w64-mingw32/include/SDL2 -ISDL2_image/x86_64-w64-mingw32/include/SDL2 -ISDL2_ttf\x86_64-w64-mingw32\include\SDL2
 LARGS := -LSDL2/x86_64-w64-mingw32/lib -lmingw32 -lSDL2main -lSDL2 -LSDL2_image/x86_64-w64-mingw32/lib -lSDL2_image -LSDL2_ttf\x86_64-w64-mingw32\lib -lSDL2_ttf -g #-mwindows
 CFLAGS := -c $(IARGS) -g
 
 NAME := mazer.exe
 
-all: cinput compile link
+all: celement compile link
 	@echo done
 
-r: cinput compile link run
+r: celement compile link run
 	@echo done
 
-a: cutils cgraph cinput compile link
+a: cutils cgraph celement compile link
 	@echo done
 
 z: cmazes link
@@ -28,10 +28,10 @@ n: compile link
 g: cgraph link
 	@echo done
 
-i: cinput link
+i: celement link
 	@echo done
 
-j: cinput link run
+j: celement link run
 	@echo done
 
 clean:
@@ -53,9 +53,9 @@ cutils:
 	@echo compiling utils
 	$(foreach mf, $(wildcard $(SRCDIR)utils/*.c), $(CC) $(mf) $(CFLAGS) -o $(ODIR)$(notdir $(basename $(mf))).o $(CMDSEP))
 
-cinput:
+celement:
 	@echo compiling utils
-	$(foreach mf, $(wildcard $(SRCDIR)input/*.c), $(CC) $(mf) $(CFLAGS) -o $(ODIR)$(notdir $(basename $(mf))).o $(CMDSEP))
+	$(foreach mf, $(wildcard $(SRCDIR)element/*.c), $(CC) $(mf) $(CFLAGS) -o $(ODIR)$(notdir $(basename $(mf))).o $(CMDSEP))
 
 link:
 	@echo linking
