@@ -55,10 +55,43 @@ void settings_maze_type(Button* b) {
 static Button *row_label, *col_label;
 
 void settings_row_inc1(Button* b) {
-    
+    game->stage->nr = MIN(game->stage->nr + 1, 100);
+    sprintf(row_label->text, game->stage->nr < 10 ? "0%d" : "%d", game->stage->nr);
 }
 
 void settings_row_inc10(Button* b) {
+    game->stage->nr = MIN(game->stage->nr + 10, 100);
+    sprintf(row_label->text, game->stage->nr < 10 ? "0%d" : "%d", game->stage->nr);
+}
+
+void settings_row_dec1(Button* b) {
+    game->stage->nr = MAX(game->stage->nr - 1, 2);
+    sprintf(row_label->text, game->stage->nr < 10 ? "0%d" : "%d", game->stage->nr);
+}
+
+void settings_row_dec10(Button* b) {
+    game->stage->nr = MAX(game->stage->nr - 10, 2);
+    sprintf(row_label->text, game->stage->nr < 10 ? "0%d" : "%d", game->stage->nr);
+}
+
+void settings_col_inc1(Button* b) {
+    game->stage->nc = MIN(game->stage->nc + 1, 100);
+    sprintf(col_label->text, game->stage->nc < 10 ? "0%d" : "%d", game->stage->nc);
+}
+
+void settings_col_inc10(Button* b) {
+    game->stage->nc = MIN(game->stage->nc + 10, 100);
+    sprintf(col_label->text, game->stage->nc < 10 ? "0%d" : "%d", game->stage->nc);
+}
+
+void settings_col_dec1(Button* b) {
+    game->stage->nc = MAX(game->stage->nc - 1, 2);
+    sprintf(col_label->text, game->stage->nc < 10 ? "0%d" : "%d", game->stage->nc);
+}
+
+void settings_col_dec10(Button* b) {
+    game->stage->nc = MAX(game->stage->nc - 10, 2);
+    sprintf(col_label->text, game->stage->nc < 10 ? "0%d" : "%d", game->stage->nc);
 }
 
 void maze_settings_back(Button* b) {
@@ -77,11 +110,18 @@ void create_all_buttons(void) {
     create_button(SETTINGS_PAGE, .2, .4, .6, .1, MAZE_TYPE_NAMES[0], 255, 255, 255, CLR_DBLUE, &settings_maze_type, NULL);
     row_label = create_button(SETTINGS_PAGE, .4, .55, .2, .1, "  10  ", 255, 255, 255, CLR_BLACK, NULL, NULL);
     col_label = create_button(SETTINGS_PAGE, .4, .7, .2, .1, "  10  ", 255, 255, 255, CLR_BLACK, NULL, NULL);
-    create_button(SETTINGS_PAGE, .05, .05, .05, .05,
-                  "Back", 255, 255, 255, CLR_DBLUE, &maze_settings_back, NULL);
+    create_button(SETTINGS_PAGE, .05, .05, .05, .05, "Back", 255, 255, 255, CLR_DBLUE, &maze_settings_back, NULL);
+    create_button(SETTINGS_PAGE, .3, .55, .1, .1, "-", 255, 255, 255, CLR_DBLUE, &settings_row_dec1, NULL);
+    create_button(SETTINGS_PAGE, .2, .55, .1, .1, "--", 255, 255, 255, CLR_DBLUE, &settings_row_dec10, NULL);
+    create_button(SETTINGS_PAGE, .6, .55, .1, .1, "+", 255, 255, 255, CLR_DBLUE, &settings_row_inc1, NULL);
+    create_button(SETTINGS_PAGE, .7, .55, .1, .1, "++", 255, 255, 255, CLR_DBLUE, &settings_row_inc10, NULL);
 
-    create_button(MAZE_PAGE, .05, .05, .05, .05,
-                  "Back", 255, 255, 255, CLR_DBLUE, &maze_settings_back, NULL);
+    create_button(SETTINGS_PAGE, .3, .7, .1, .1, "-", 255, 255, 255, CLR_DBLUE, &settings_col_dec1, NULL);
+    create_button(SETTINGS_PAGE, .2, .7, .1, .1, "--", 255, 255, 255, CLR_DBLUE, &settings_col_dec10, NULL);
+    create_button(SETTINGS_PAGE, .6, .7, .1, .1, "+", 255, 255, 255, CLR_DBLUE, &settings_col_inc1, NULL);
+    create_button(SETTINGS_PAGE, .7, .7, .1, .1, "++", 255, 255, 255, CLR_DBLUE, &settings_col_inc10, NULL);
+
+    create_button(MAZE_PAGE, .05, .05, .05, .05, "Back", 255, 255, 255, CLR_DBLUE, &maze_settings_back, NULL);
 }
 
 void update_buttons(SDL_MouseButtonEvent e) {
