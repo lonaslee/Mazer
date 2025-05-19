@@ -5,15 +5,17 @@
 #include "common.h"
 #include "event.h"
 
+ButtonManager *button_manager;
+
 ButtonManager* get_button_manager(void) {
-    static ButtonManager* button_manager = NULL;
-    if (button_manager == NULL) {
-        button_manager = calloc(1, sizeof(ButtonManager));
-        button_manager->title = arnew(10);
-        button_manager->settings = arnew(10);
-        button_manager->maze = arnew(10);
+    static ButtonManager* bm = NULL;
+    if (bm == NULL) {
+        bm = calloc(1, sizeof(ButtonManager));
+        bm->title = arnew(10);
+        bm->settings = arnew(10);
+        bm->maze = arnew(10);
     }
-    return button_manager;
+    return bm;
 }
 
 void free_button_manager(void) {
@@ -100,11 +102,11 @@ void maze_settings_back(Button* b) {
 }
 
 void create_all_buttons(void) {
-    create_button(TITLE_PAGE, .25, .5, .5, .1, "Enter Maze", 255, 255, 255, CLR_LGREEN, &title_enter_maze, NULL)
+    create_button(TITLE_PAGE, .25, .5, .5, .1,  "     Enter Maze     ", 255, 255, 255, CLR_LGREEN, &title_enter_maze, NULL)
         ->enabled = true;
-    create_button(TITLE_PAGE, .25, .62, .5, .1, " Settings ", 255, 255, 255, CLR_LGREEN, &title_settings, NULL)
+    create_button(TITLE_PAGE, .25, .62, .5, .1, "      Settings      ", 255, 255, 255, CLR_LGREEN, &title_settings, NULL)
         ->enabled = true;
-    create_button(TITLE_PAGE, .25, .74, .5, .1, "Quit Game ", 255, 255, 255, CLR_LGREEN, &title_quit, NULL)
+    create_button(TITLE_PAGE, .25, .74, .5, .1, "       Exit         ", 255, 255, 255, CLR_LGREEN, &title_quit, NULL)
         ->enabled = true;
 
     create_button(SETTINGS_PAGE, .2, .4, .6, .1, MAZE_TYPE_NAMES[0], 255, 255, 255, CLR_DBLUE, &settings_maze_type, NULL);

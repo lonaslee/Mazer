@@ -37,7 +37,6 @@ int main(int argc_, char *argv_[]) {
     create_all_buttons();
 
     game->stage->graph = new_graph(10, 10);
-    void *state = NULL;
     long long loops = 0;
 
     while (++loops) {
@@ -55,30 +54,32 @@ int main(int argc_, char *argv_[]) {
             if (!game->stage->generated) {
                 switch (game->stage->maze_type) {
                     case ALDOUS_BRODER:
-                        state = alduous_broder(game->stage->graph, state);
+                        game->stage->state = alduous_broder(game->stage->graph, game->stage->state);
                         break;
                     case BINARY_TREE:
-                        state = binary_tree(game->stage->graph, state);
+                        game->stage->state = binary_tree(game->stage->graph, game->stage->state);
                         break;
                     case RECURSIVE_BACKTRACKER:
-                        state = recursive_backtracker(game->stage->graph, state);
+                        game->stage->state = recursive_backtracker(game->stage->graph, game->stage->state);
                         break;
                     case SIDEWINDER:
-                        state = sidewinder(game->stage->graph, state);
+                        game->stage->state = sidewinder(game->stage->graph, game->stage->state);
                         break;
                     case ELLERS:
-                        state = ellers(game->stage->graph, state);
+                        game->stage->state = ellers(game->stage->graph, game->stage->state);
                         break;
                     case HUNT_AND_KILL:
-                        state = hunt_and_kill(game->stage->graph, state);
+                        game->stage->state = hunt_and_kill(game->stage->graph, game->stage->state);
                         break;
                     default:
                         EXIT_ERR("Unknown maze type %i\n", game->stage->maze_type);
                         break;
                 }
 
-                if (state == NULL)
+                if (game->stage->state == NULL) {
                     game->stage->generated = true;
+                    puts("Finish generation.");
+                }
             }
             draw_graph(game->stage->graph);
         }

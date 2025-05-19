@@ -122,6 +122,7 @@ typedef enum {
 typedef struct {
     Graph *graph;
     int nc, nr;
+    void *state;
     MazeType maze_type;
     bool generated;
     Page page;
@@ -149,7 +150,7 @@ typedef struct Coord {
 /**
  * @brief The main game object.
  */
-Game *game;
+extern Game *game;
 
 /**
  * @brief Get the game object. Creates the game on first call, return the same pointer

@@ -68,5 +68,8 @@ void switch_page(Page to) {
     if (to == MAZE_PAGE) {
         del_graph(game->stage->graph);
         game->stage->graph = new_graph(game->stage->nc, game->stage->nr);
+        game->stage->generated = false;
+        game->stage->state = NULL;
+        game->stage->flags = 0;
     }
 }

@@ -12,9 +12,11 @@ const int NUM_MAZE_TYPES = 6;
 const char *MAZE_TYPE_NAMES[] = {"    Alduous Broder    ", "     Binary Tree      ", "Recursive Backtracker ",
                                  "      Sidewinder      ", "       Eller's        ", "     Hunt & Kill      "};
 
+Game *game;
+
 Game *get_game(void) {
-    static Game *game = NULL;
-    if (game == NULL) {
+    static Game *pgame = NULL;
+    if (pgame == NULL) {
         SDL_Window *win;
         if ((win = SDL_CreateWindow("Mazer.exe",
                                     SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
@@ -26,17 +28,17 @@ Game *get_game(void) {
         if ((renderer = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC)) == NULL)
             EXIT_ERR("Failed to create renderer: %s\n", SDL_GetError());
 
-        game = calloc(1, sizeof(Game));
-        game->win = win;
-        game->renderer = renderer;
-        game->stage = calloc(1, sizeof(GameStage));
-        game->stage->page = TITLE_PAGE;
-        game->stage->nr = 10;
-        game->stage->nc = 10;
-        game->stage->maze_type = ALDOUS_BRODER;
-        game->resources = get_resources();
+        pgame = calloc(1, sizeof(Game));
+        pgame->win = win;
+        pgame->renderer = renderer;
+        pgame->stage = calloc(1, sizeof(GameStage));
+        pgame->stage->page = TITLE_PAGE;
+        pgame->stage->nr = 10;
+        pgame->stage->nc = 10;
+        pgame->stage->maze_type = ALDOUS_BRODER;
+        pgame->resources = get_resources();
     }
-    return game;
+    return pgame;
 }
 
 int choice(int n, ...) {

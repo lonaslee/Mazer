@@ -66,7 +66,6 @@ void *binary_tree(Graph *g, void *state) {
 
     Node *n = get(g, s->c.x, s->c.y);
     llunflip(n->data, PRIMARY_CELL);
-    llflip(n->data, SECONDARY_CELL);
     if (rand() % 2) {
         ifnn(n->wny) * (n->wny) = false;
         else ifnn(n->wnx) * (n->wnx) = false;

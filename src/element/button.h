@@ -27,7 +27,7 @@ typedef struct {
     Array *maze;
 } ButtonManager;
 
-ButtonManager *button_manager;
+extern ButtonManager *button_manager;
 
 /**
  * @brief Retrieve or create it if called first time.
