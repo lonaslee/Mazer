@@ -1,0 +1,66 @@
+CC := gcc
+CMDSEP := ;
+
+SRCDIR := src/
+ODIR := output/
+
+IARGS := -Isrc/ -Isrc/mazes -Isrc/graph -Isrc/element -Isrc/utils -I/usr/local/include/SDL2 -D_THREADSAFE
+LARGS := -L/usr/local/lib -lSDL2 -lSDL2_image -lSDL2_ttf -lm -g
+CFLAGS := -c $(IARGS) -g 
+
+NAME := mazer
+
+all: celement compile link
+	@echo done
+
+r: celement compile link run
+	@echo done
+
+a: cutils cgraph celement compile link
+	@echo done
+
+z: cmazes link
+	@echo done
+
+n: compile link
+	@echo done
+
+g: cgraph link
+	@echo done
+
+i: celement link
+	@echo done
+
+j: celement link run
+	@echo done
+
+clean:
+	rm output/*.o
+	rm mazer
+
+compile:
+	@echo compiling
+	$(foreach sf, $(wildcard $(SRCDIR)*.c), $(CC) $(sf) $(CFLAGS) -o $(ODIR)$(notdir $(basename $(sf))).o $(CMDSEP))
+
+cmazes:
+	@echo compiling mazes
+	$(foreach mf, $(wildcard $(SRCDIR)mazes/*.c), $(CC) $(mf) $(CFLAGS) -o $(ODIR)$(notdir $(basename $(mf))).o $(CMDSEP))
+
+cgraph:
+	@echo compiling graph
+	$(foreach mf, $(wildcard $(SRCDIR)graph/*.c), $(CC) $(mf) $(CFLAGS) -o $(ODIR)$(notdir $(basename $(mf))).o $(CMDSEP))
+
+cutils:
+	@echo compiling utils
+	$(foreach mf, $(wildcard $(SRCDIR)utils/*.c), $(CC) $(mf) $(CFLAGS) -o $(ODIR)$(notdir $(basename $(mf))).o $(CMDSEP))
+
+celement:
+	@echo compiling utils
+	$(foreach mf, $(wildcard $(SRCDIR)element/*.c), $(CC) $(mf) $(CFLAGS) -o $(ODIR)$(notdir $(basename $(mf))).o $(CMDSEP))
+
+link:
+	@echo linking
+	$(CC) $(wildcard $(ODIR)*.o) -o $(NAME) $(LARGS)
+
+run:
+	./$(NAME)

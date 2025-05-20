@@ -27,6 +27,7 @@ Array *arnew(arsize_t size) {
     if (array->elems == NULL) ARERROR("failed elems allocation")
     array->len = 0;
     array->_size = size;
+    return array;
 }
 
 void ardel(Array *array) {

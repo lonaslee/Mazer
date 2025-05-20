@@ -13,6 +13,7 @@ Resources *get_resources(void) {
         r = calloc(1, sizeof(Resources));
         r->textures = arnew(25);
         r->fonts = arnew(5);
+        printf("Created resources. Textures: %u %u\n", r->textures->len, r->textures->_size);
     }
     return r;
 }

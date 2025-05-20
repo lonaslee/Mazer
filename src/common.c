@@ -49,6 +49,7 @@ int choice(int n, ...) {
         int varg = va_arg(vargs, int);
         if (i == randnum) return varg;
     }
+    return 0;
 }
 
 int choicenz(int n, ...) {
