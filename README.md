@@ -1,3 +1,7 @@
 # Mazer
 
-Maze game work in progress.
+## Linux
+
+sudo apt install libsdl2-dev libsdl2-image-dev libsdl2-ttf-dev
+mv makefile.linux makefile
+make

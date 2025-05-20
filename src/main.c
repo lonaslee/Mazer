@@ -1,5 +1,3 @@
-#include "main.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -16,19 +14,20 @@
 #include "graph/maze_algs.h"
 #include "images.h"
 
-// test
-int tmain(int argc_, char *argv_[]) {
-    return 0;
-}
+static void cleanup(void);
 
 int main(int argc_, char *argv_[]) {
     puts("Enter.\n");
     atexit(&cleanup);
     srand(time(NULL));
 
-    if (SDL_InitSubSystem(SDL_INIT_EVERYTHING)) EXIT_ERR("Failed to init SDL.")
+    puts("Initializing SDL");
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER)) EXIT_ERR("Failed to init SDL.")
+    puts("Initializing IMG");
     if (IMG_Init(IMG_INIT_PNG) < IMG_INIT_PNG) EXIT_ERR("Failed to init SDL image.")
+    puts("Initializing TTF");
     if (TTF_Init() == -1) EXIT_ERR("Failed to init SDL ttf.")
+    puts("Init finish.");
 
     game = get_game();
     load_resources();

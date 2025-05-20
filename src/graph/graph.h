@@ -48,6 +48,6 @@ void dir2str(AxisDirection dir, char *buf);
 
 Graph *connect_all(Graph *g);
 Graph *disconnect_all(Graph *g);
-void connect(Node *a, Node *b);
+void connect_nodes(Node *a, Node *b);
 void surround(Node *n);
 void extrude_to(Node *n, AxisDirection dir);

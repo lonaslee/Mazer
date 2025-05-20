@@ -147,7 +147,7 @@ Graph *disconnect_all(Graph *g) {
     return g;
 }
 
-void connect(Node *a, Node *b) {
+void connect_nodes(Node *a, Node *b) {
     if (a->nny == b) {
         *(a->wny) = false;
     } else if (a->nnx == b) {
@@ -158,7 +158,7 @@ void connect(Node *a, Node *b) {
         *(a->wpx) = false;
     } else {
         printf("Not able to connect nodes (%d, %d) & (%d, %d).", a->x, a->y, b->x, b->y);
-        abort();
+        // abort();
     }
 }
 
