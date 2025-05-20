@@ -10,7 +10,7 @@ CFLAGS := -c $(IARGS) -g
 
 NAME := mazer
 
-all: celement compile link
+all: a
 	@echo done
 
 r: celement compile link run

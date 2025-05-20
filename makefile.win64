@@ -1,14 +1,14 @@
 CC := gcc
-CMDSEP := ;
+CMDSEP := &
 
 SRCDIR := src/
 ODIR := output/
 
-IARGS := -Isrc/ -Isrc/mazes -Isrc/graph -Isrc/element -Isrc/utils -I/usr/include/SDL2 -D_REENTRANT
-LARGS := -lSDL2 -lSDL2_image -lSDL2_ttf -lm -g
+IARGS := -Isrc/ -Isrc/mazes/ -Isrc/graph -Isrc/element -ISDL2/x86_64-w64-mingw32/include/SDL2 -ISDL2_image/x86_64-w64-mingw32/include/SDL2 -ISDL2_ttf\x86_64-w64-mingw32\include\SDL2
+LARGS := -LSDL2/x86_64-w64-mingw32/lib -lmingw32 -lSDL2main -lSDL2 -LSDL2_image/x86_64-w64-mingw32/lib -lSDL2_image -LSDL2_ttf\x86_64-w64-mingw32\lib -lSDL2_ttf -g -mwindows
 CFLAGS := -c $(IARGS) -g
 
-NAME := mazer
+NAME := mazer.exe
 
 all: a
 	@echo done
@@ -35,7 +35,8 @@ j: celement link run
 	@echo done
 
 clean:
-	rm **/*.o mazer
+	del /q /s output\* 
+	del /q /s mazer.exe
 
 compile:
 	@echo compiling

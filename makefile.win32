@@ -4,13 +4,13 @@ CMDSEP := &
 SRCDIR := src/
 ODIR := output/
 
-IARGS := -Isrc/ -Isrc/mazes/ -Isrc/graph -Isrc/element -ISDL2/x86_64-w64-mingw32/include/SDL2 -ISDL2_image/x86_64-w64-mingw32/include/SDL2 -ISDL2_ttf\x86_64-w64-mingw32\include\SDL2
-LARGS := -LSDL2/x86_64-w64-mingw32/lib -lmingw32 -lSDL2main -lSDL2 -LSDL2_image/x86_64-w64-mingw32/lib -lSDL2_image -LSDL2_ttf\x86_64-w64-mingw32\lib -lSDL2_ttf -g -mwindows
+IARGS := -Isrc/ -Isrc/mazes/ -Isrc/graph -Isrc/element -ISDL2/i686-w64-mingw32/include/SDL2 -ISDL2_image/i686-w64-mingw32/include/SDL2 -ISDL2_ttf\i686-w64-mingw32\include\SDL2
+LARGS := -LSDL2/i686-w64-mingw32/lib -lmingw32 -lSDL2main -lSDL2 -LSDL2_image/i686-w64-mingw32/lib -lSDL2_image -LSDL2_ttf\i686-w64-mingw32\lib -lSDL2_ttf -g -mwindows
 CFLAGS := -c $(IARGS) -g
 
 NAME := mazer.exe
 
-all: celement compile link
+all: a
 	@echo done
 
 r: celement compile link run
@@ -35,7 +35,8 @@ j: celement link run
 	@echo done
 
 clean:
-	rm -f *.o mazer
+	del /q /s output\* 
+	del /q /s mazer.exe
 
 compile:
 	@echo compiling
